@@ -15,7 +15,6 @@
 <script src="https://cdn.tailwindcss.com"></script>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-database-compat.js"></script>
 
 <style>
@@ -39,8 +38,10 @@ body { font-family: 'Mukta', sans-serif; }
 }
 .no-scrollbar::-webkit-scrollbar { display: none; }
 .ticker-wrap { overflow: hidden; white-space: nowrap; }
-.ticker-move { display: inline-block; animation: ticker 65s linear infinite; }
-@keyframes ticker { 0% { transform: translate3d(100%, 0, 0); } 100% { transform: translate3d(-100%, 0, 0); } }
+/* धीमी गति (120s) ताकि ब्रेकिंग न्यूज़ आराम से पढ़ी जा सके */
+.ticker-move { display: inline-block; animation: ticker 120s linear infinite; }
+.ticker-wrap:hover .ticker-move { animation-play-state: paused; }
+@keyframes ticker { 0% { transform: translate3d(100vw, 0, 0); } 100% { transform: translate3d(-100%, 0, 0); } }
 </style>
 </head>
 
@@ -71,7 +72,7 @@ body { font-family: 'Mukta', sans-serif; }
 </button>
 
 <button type="button" id="btnLoginOpen"
-onclick="document.getElementById('authModal').classList.remove('hidden')"
+onclick="openStaffLoginModal('admin')"
 class="text-xs bg-white text-red-700 font-bold px-3 py-1.5 rounded-full shadow-sm hover:bg-gray-100">
 <i class="fa-solid fa-user-lock"></i> स्टाफ़ लॉगिन
 </button>
@@ -85,9 +86,9 @@ class="text-xs bg-white text-red-700 font-bold px-3 py-1.5 rounded-full shadow-s
 </div>
 </div>
 
-<!-- BREAKING TICKER -->
+<!-- SLOW BREAKING TICKER -->
 <div class="bg-[#001428] text-white text-xs flex items-center border-t border-red-800">
-<span class="bg-[#C8102E] text-amber-300 px-2.5 py-1 font-black text-[10px] uppercase shrink-0 tracking-wider">
+<span class="bg-[#C8102E] text-amber-300 px-2.5 py-1 font-black text-[10px] uppercase shrink-0 tracking-wider z-10">
 <i class="fa-solid fa-bolt animate-pulse"></i> ब्रेकिंग
 </span>
 <div class="ticker-wrap w-full py-0.5">
@@ -529,41 +530,89 @@ class="text-xs bg-white text-red-700 font-bold px-3 py-1.5 rounded-full shadow-s
 </div>
 </section>
 
-<!-- MANAGE REPORTERS -->
+<!-- MANAGE REPORTERS & PASSWORDS -->
 <section id="manageReportersSection" class="hidden bg-white p-5 rounded-2xl border space-y-5">
 <h3 class="text-sm font-bold border-b pb-2">
 <i class="fa-solid fa-user-plus text-red-600"></i>
-रिपोर्टर एवं एडमिन प्रबंधन
+रिपोर्टर, पासवर्ड एवं एडमिन प्रबंधन
 </h3>
 
+<!-- ADMIN PASSWORD & PHOTO SETUP -->
 <div class="bg-red-50 border border-red-200 rounded-xl p-4 space-y-3">
-<h3 class="font-bold text-sm text-red-800">प्रधान संपादक की फोटो अपडेट करें</h3>
-<img id="adminPhotoPreview" src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png" class="w-24 h-24 rounded-full object-cover border-4 border-red-600 mx-auto">
-<input type="file" id="adminPhotoInput" accept="image/*" class="w-full text-xs border p-2 rounded-lg bg-white">
-<button type="button" onclick="saveAdminPhoto()" class="w-full bg-red-700 text-white py-2 rounded-lg text-sm font-bold">एडमिन फोटो सेव करें</button>
+<h3 class="font-bold text-sm text-red-800">प्रधान संपादक (Admin) की फोटो और पासवर्ड</h3>
+
+<div class="grid grid-cols-1 sm:grid-cols-2 gap-3 items-center">
+  <div class="text-center">
+    <img id="adminPhotoPreview" src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png" class="w-20 h-20 rounded-full object-cover border-4 border-red-600 mx-auto">
+    <input type="file" id="adminPhotoInput" accept="image/*" class="w-full text-xs border p-1 rounded-lg bg-white mt-2">
+    <button type="button" onclick="saveAdminPhoto()" class="w-full bg-red-700 text-white py-1.5 rounded-lg text-xs font-bold mt-1.5">फोटो सेव करें</button>
+  </div>
+
+  <div class="bg-white p-3 rounded-xl border border-red-200 space-y-2">
+    <label class="text-xs font-bold text-slate-800 block">एडमिन लॉगिन पासवर्ड बदलें:</label>
+    <input id="adminNewPinInput" type="text" placeholder="नया पासवर्ड दर्ज करें" class="w-full border p-2 rounded text-xs font-bold">
+    <button type="button" onclick="updateAdminPin()" class="w-full bg-slate-900 text-amber-300 py-1.5 rounded-lg text-xs font-bold">नया Admin पासवर्ड सेव करें</button>
+    <p class="text-[10px] text-gray-500">एडमिन नंबर: 8853252811</p>
+  </div>
+</div>
 </div>
 
-<div class="space-y-3">
-<h3 class="font-bold text-sm">नया रिपोर्टर जोड़ें</h3>
-<input id="repNameInput" type="text" placeholder="रिपोर्टर का पूरा नाम" class="w-full border p-2 rounded text-xs">
-<input id="repPhoneInput" type="tel" placeholder="10 अंकों का मोबाइल नंबर" maxlength="10" class="w-full border p-2 rounded text-xs">
-<input id="repAddressInput" type="text" placeholder="पूरा स्थायी पता" class="w-full border p-2 rounded text-xs">
-<input id="repPaymentInput" type="text" placeholder="बैंक खाता या UPI ID" class="w-full border p-2 rounded text-xs">
-<label class="text-xs font-semibold block">रिपोर्टर की पासपोर्ट फोटो</label>
-<input type="file" id="repPhotoFileInput" accept="image/*" class="w-full text-xs border p-2 rounded">
-<div id="repPhotoPreviewBox" class="hidden">
-<img id="repPhotoPreview" class="w-20 h-20 rounded-full object-cover border-2 border-red-600">
-</div>
-<button type="button" onclick="addNewReporterByAdmin()" class="bg-red-700 text-white px-5 py-2.5 rounded-lg text-xs font-bold">रिपोर्टर अधिकृत करें</button>
+<!-- ADD NEW REPORTER WITH PASSWORD -->
+<div class="space-y-3 bg-blue-50/50 p-4 rounded-xl border border-blue-200">
+<h3 class="font-bold text-sm text-blue-950">नया रिपोर्टर जोड़ें और लॉगिन पासवर्ड बनाएं</h3>
+
+<div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+  <input id="repNameInput" type="text" placeholder="रिपोर्टर का पूरा नाम *" class="w-full border p-2 rounded text-xs bg-white">
+  <input id="repPhoneInput" type="tel" placeholder="10 अंकों का मोबाइल नंबर *" maxlength="10" class="w-full border p-2 rounded text-xs bg-white">
 </div>
 
-<div class="pt-4 border-t">
-<h4 class="text-sm font-bold mb-3">अधिकृत रिपोर्टर एवं मानदेय हिसाब</h4>
+<div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+  <input id="repPinInput" type="text" placeholder="रिपोर्टर लॉगिन पासवर्ड बनाएं *" class="w-full border border-blue-400 p-2 rounded text-xs font-bold bg-white">
+  <input id="repPaymentInput" type="text" placeholder="बैंक खाता या UPI ID *" class="w-full border p-2 rounded text-xs bg-white">
+</div>
+
+<input id="repAddressInput" type="text" placeholder="पूरा स्थायी पता *" class="w-full border p-2 rounded text-xs bg-white">
+
+<div>
+  <label class="text-xs font-semibold block mb-1">रिपोर्टर की पासपोर्ट फोटो</label>
+  <input type="file" id="repPhotoFileInput" accept="image/*" class="w-full text-xs border p-1.5 rounded bg-white">
+  <div id="repPhotoPreviewBox" class="hidden mt-2">
+    <img id="repPhotoPreview" class="w-20 h-20 rounded-full object-cover border-2 border-red-600">
+  </div>
+</div>
+
+<button type="button" onclick="addNewReporterByAdmin()" class="w-full bg-blue-800 hover:bg-blue-900 text-white py-2.5 rounded-lg text-xs font-black shadow">
+रिपोर्टर अधिकृत करें और पासवर्ड सेव करें
+</button>
+</div>
+
+<div class="pt-2">
+<h4 class="text-sm font-bold mb-3">अधिकृत रिपोर्टर सूची, पासवर्ड अपडेट एवं मानदेय हिसाब</h4>
 <div id="approvedReportersList" class="space-y-3 text-xs"></div>
 </div>
 </section>
 
 </main>
+
+<!-- UPDATE REPORTER PASSWORD MODAL (ADMIN ONLY) -->
+<div id="updateRepPasswordModal" class="fixed inset-0 bg-black/80 z-[1000001] flex items-center justify-center p-4 hidden">
+  <div class="bg-white rounded-2xl p-5 max-w-sm w-full space-y-3 shadow-2xl border-2 border-blue-700">
+    <div class="flex justify-between items-center border-b pb-2">
+      <h3 class="text-sm font-black text-slate-900"><i class="fa-solid fa-key text-blue-700"></i> रिपोर्टर पासवर्ड अपडेट करें</h3>
+      <button onclick="closeRepPassModal()" class="text-lg font-bold text-gray-400 hover:text-black">✕</button>
+    </div>
+    <input type="hidden" id="editRepPassKey">
+    <p class="text-xs text-gray-600">रिपोर्टर: <strong id="editRepPassName" class="text-slate-900"></strong></p>
+    <div>
+      <label class="text-xs font-bold text-gray-700">नया लॉगिन पासवर्ड लिखें *</label>
+      <input id="newRepPasswordInput" type="text" class="w-full mt-1 border-2 border-blue-300 rounded-xl px-3 py-2 text-sm font-black outline-none focus:border-blue-700" placeholder="नया पासवर्ड डालें">
+    </div>
+    <div class="flex gap-2 pt-2">
+      <button onclick="saveUpdatedRepPassword()" class="flex-1 bg-blue-700 hover:bg-blue-800 text-white font-bold py-2.5 rounded-xl text-xs shadow">पासवर्ड अपडेट करें</button>
+      <button onclick="closeRepPassModal()" class="bg-gray-200 text-gray-800 px-4 py-2.5 rounded-xl text-xs font-bold">रद्द करें</button>
+    </div>
+  </div>
+</div>
 
 <!-- EDIT AD MODAL -->
 <div id="editAdModal" class="fixed inset-0 bg-black/80 z-[1000000] flex items-center justify-center p-4 hidden">
@@ -640,7 +689,78 @@ class="text-xs bg-white text-red-700 font-bold px-3 py-1.5 rounded-full shadow-s
 </div>
 </div>
 
-<!-- ================= MODERN OFFICIAL ID CARD MODAL (EXACT TEMPLATE CLONE) ================= -->
+<!-- ================= DUAL-TAB STAFF LOGIN MODAL (ADMIN LOGIN & REPORTER LOGIN) ================= -->
+<div id="authModal" class="fixed inset-0 bg-black/80 z-[999999] flex items-center justify-center p-4 hidden">
+  <div class="bg-white max-w-sm w-full p-5 rounded-3xl relative shadow-2xl border-2 border-red-700 space-y-4">
+    <button onclick="document.getElementById('authModal').classList.add('hidden')" class="absolute top-3 right-4 text-xl font-bold text-gray-400 hover:text-black">✕</button>
+    
+    <div class="text-center">
+      <h2 class="font-black text-base text-slate-900">आवाज़ बुंदेलखंड स्टाफ़ पोर्टल</h2>
+      <p class="text-[11px] text-gray-500">अपना लॉगिन प्रकार चुनें</p>
+    </div>
+
+    <!-- TWO LOGIN OPTION TABS -->
+    <div class="grid grid-cols-2 gap-2 bg-gray-100 p-1 rounded-2xl">
+      <button type="button" id="btnSwitchAdminLogin" onclick="switchLoginRoleTab('admin')" class="py-2 rounded-xl text-xs font-black bg-red-700 text-white shadow transition">
+        <i class="fa-solid fa-user-shield"></i> एडमिन लॉगिन
+      </button>
+      <button type="button" id="btnSwitchReporterLogin" onclick="switchLoginRoleTab('reporter')" class="py-2 rounded-xl text-xs font-black text-gray-600 hover:text-slate-900 transition">
+        <i class="fa-solid fa-microphone-lines"></i> रिपोर्टर लॉगिन
+      </button>
+    </div>
+
+    <!-- 1. ADMIN LOGIN FORM -->
+    <div id="adminLoginFormBox" class="space-y-3">
+      <div class="bg-red-50 border border-red-200 p-2 rounded-xl text-center">
+        <span class="text-[11px] font-bold text-red-800"><i class="fa-solid fa-crown text-amber-600"></i> प्रधान संपादक (Admin) लॉगिन</span>
+      </div>
+
+      <div>
+        <label class="text-xs font-bold text-gray-700 block mb-1">एडमिन मोबाइल नंबर *</label>
+        <div class="flex border rounded-xl overflow-hidden bg-slate-50 focus-within:border-red-600">
+          <span class="bg-gray-200 px-3 py-2 text-xs font-bold text-gray-700">+91</span>
+          <input type="tel" id="adminLoginPhoneInput" maxlength="10" value="8853252811" placeholder="मोबाइल नंबर" class="w-full px-3 py-2 text-sm outline-none bg-transparent font-bold">
+        </div>
+      </div>
+
+      <div>
+        <label class="text-xs font-bold text-gray-700 block mb-1">एडमिन पासवर्ड *</label>
+        <input type="password" id="adminLoginPassInput" placeholder="पासवर्ड दर्ज करें" class="w-full border rounded-xl p-2.5 text-center font-black tracking-widest text-base bg-slate-50 outline-none focus:border-red-600">
+      </div>
+
+      <button id="btnAdminLoginSubmit" onclick="loginAdminWithPassword()" class="w-full bg-red-700 hover:bg-red-800 text-white py-3 rounded-xl text-sm font-black shadow-lg transition flex items-center justify-center gap-2">
+        <i class="fa-solid fa-right-to-bracket"></i> एडमिन लॉगिन करें
+      </button>
+    </div>
+
+    <!-- 2. REPORTER LOGIN FORM -->
+    <div id="reporterLoginFormBox" class="hidden space-y-3">
+      <div class="bg-blue-50 border border-blue-200 p-2 rounded-xl text-center">
+        <span class="text-[11px] font-bold text-blue-900"><i class="fa-solid fa-id-badge text-blue-700"></i> अधिकृत रिपोर्टर लॉगिन</span>
+      </div>
+
+      <div>
+        <label class="text-xs font-bold text-gray-700 block mb-1">रिपोर्टर मोबाइल नंबर *</label>
+        <div class="flex border rounded-xl overflow-hidden bg-slate-50 focus-within:border-blue-700">
+          <span class="bg-gray-200 px-3 py-2 text-xs font-bold text-gray-700">+91</span>
+          <input type="tel" id="repLoginPhoneInput" maxlength="10" placeholder="10 अंकों का मोबाइल नंबर" class="w-full px-3 py-2 text-sm outline-none bg-transparent font-bold">
+        </div>
+      </div>
+
+      <div>
+        <label class="text-xs font-bold text-gray-700 block mb-1">रिपोर्टर पासवर्ड *</label>
+        <input type="password" id="repLoginPassInput" placeholder="पासवर्ड दर्ज करें" class="w-full border rounded-xl p-2.5 text-center font-black tracking-widest text-base bg-slate-50 outline-none focus:border-blue-700">
+      </div>
+
+      <button id="btnReporterLoginSubmit" onclick="loginReporterWithPassword()" class="w-full bg-blue-800 hover:bg-blue-900 text-white py-3 rounded-xl text-sm font-black shadow-lg transition flex items-center justify-center gap-2">
+        <i class="fa-solid fa-right-to-bracket"></i> रिपोर्टर लॉगिन करें
+      </button>
+    </div>
+
+  </div>
+</div>
+
+<!-- ================= OFFICIAL ID CARD MODAL (FRONT & BACK) ================= -->
 <div id="icardModal" class="fixed inset-0 bg-black/85 z-[1000] flex items-center justify-center p-3 overflow-y-auto hidden">
   <div class="bg-white rounded-3xl p-4 max-w-2xl w-full space-y-4 my-auto shadow-2xl border-2 border-amber-400">
     <div class="flex justify-between items-center border-b pb-2">
@@ -650,15 +770,10 @@ class="text-xs bg-white text-red-700 font-bold px-3 py-1.5 rounded-full shadow-s
       <button onclick="document.getElementById('icardModal').classList.add('hidden')" class="text-xl font-bold text-gray-500 hover:text-black">✕</button>
     </div>
 
-    <!-- PRINTABLE ID CARD WRAPPER (FRONT + BACK) -->
     <div id="printableIcardArea" class="flex flex-col md:flex-row gap-5 items-center justify-center p-2">
-      
-      <!-- ================= FRONT SIDE ================= -->
+      <!-- FRONT SIDE -->
       <div class="w-[300px] h-[485px] bg-white rounded-3xl overflow-hidden border-2 border-blue-900 shadow-2xl flex flex-col justify-between relative shrink-0">
-        <!-- Top Metallic Lanyard Clip Hole -->
         <div class="w-16 h-3 bg-gradient-to-r from-gray-300 via-gray-100 to-gray-300 rounded-full mx-auto mt-2 border border-gray-400 shadow-inner"></div>
-
-        <!-- Top Header & Logo Area -->
         <div class="px-3 pt-1 flex items-center justify-between">
           <div class="w-24 h-12 rounded-xl shadow-md border-2 border-amber-400 overflow-hidden bg-gradient-to-b from-[#8B0000] via-[#A00000] to-[#002D62] flex flex-col items-center justify-between p-0.5 shrink-0">
             <span class="text-[9px] font-black text-white leading-none tracking-tighter mt-0.5">आवाज</span>
@@ -667,23 +782,19 @@ class="text-xs bg-white text-red-700 font-bold px-3 py-1.5 rounded-full shadow-s
               <span class="text-[10px] font-black text-white tracking-widest leading-none">NEWS</span>
             </div>
           </div>
-
           <div class="border-l-2 border-red-600 pl-2 text-right">
             <span class="text-xs font-black text-blue-900 leading-tight block">सच की आवाज</span>
             <span class="text-[11px] font-black text-red-600 leading-tight block">बुंदेलखंड की</span>
           </div>
         </div>
 
-        <!-- Photo & Name -->
         <div class="flex flex-col items-center mt-1 space-y-1.5">
           <div class="w-24 h-28 rounded-2xl border-2 border-blue-800 overflow-hidden shadow-md bg-slate-50 p-0.5">
             <img id="cardPhoto" src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png" class="w-full h-full object-cover rounded-xl">
           </div>
-          
           <div class="w-48 bg-[#002D62] text-white text-center py-1 rounded-xl shadow">
             <h4 id="cardName" class="text-sm font-black tracking-wide leading-none">मयंक सिंह</h4>
           </div>
-          
           <div class="flex items-center gap-2">
             <span class="w-6 h-[1.5px] bg-red-600"></span>
             <span class="text-xs font-black text-slate-900 tracking-wider">रिपोर्टर</span>
@@ -691,7 +802,6 @@ class="text-xs bg-white text-red-700 font-bold px-3 py-1.5 rounded-full shadow-s
           </div>
         </div>
 
-        <!-- Details -->
         <div class="px-4 text-[10px] font-bold text-slate-800 space-y-0.5">
           <div class="flex justify-between">
             <span class="text-slate-500">ID No.</span>
@@ -707,7 +817,6 @@ class="text-xs bg-white text-red-700 font-bold px-3 py-1.5 rounded-full shadow-s
           </div>
         </div>
 
-        <!-- Bottom QR & Signature -->
         <div class="px-4 flex items-end justify-between pb-1">
           <img id="cardQrImg" src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=AwajBundelkhandNews" class="w-12 h-12 rounded border p-0.5 bg-white shadow-sm">
           <div class="text-right">
@@ -717,18 +826,14 @@ class="text-xs bg-white text-red-700 font-bold px-3 py-1.5 rounded-full shadow-s
           </div>
         </div>
 
-        <!-- Press Footer Bar -->
         <div class="bg-[#002244] text-white text-center py-1.5 border-t-2 border-amber-400">
           <span class="text-xs font-black tracking-widest">— PRESS —</span>
         </div>
       </div>
 
-      <!-- ================= BACK SIDE ================= -->
+      <!-- BACK SIDE -->
       <div class="w-[300px] h-[485px] bg-white rounded-3xl overflow-hidden border-2 border-blue-900 shadow-2xl flex flex-col justify-between relative shrink-0">
-        <!-- Top Metallic Lanyard Clip Hole -->
         <div class="w-16 h-3 bg-gradient-to-r from-gray-300 via-gray-100 to-gray-300 rounded-full mx-auto mt-2 border border-gray-400 shadow-inner"></div>
-
-        <!-- Top Header & Tagline -->
         <div class="px-3 pt-1 flex items-center justify-between">
           <div class="w-20 h-10 rounded-xl shadow border border-amber-400 overflow-hidden bg-gradient-to-b from-[#8B0000] to-[#002D62] flex flex-col items-center justify-center p-0.5 shrink-0">
             <span class="text-[8px] font-black text-white leading-none">आवाज बुंदेलखंड</span>
@@ -740,7 +845,6 @@ class="text-xs bg-white text-red-700 font-bold px-3 py-1.5 rounded-full shadow-s
           </div>
         </div>
 
-        <!-- Blue PRESS Bar -->
         <div class="bg-[#002D62] text-white text-center py-1 mt-1">
           <span class="text-lg font-black tracking-widest">PRESS</span>
         </div>
@@ -749,7 +853,6 @@ class="text-xs bg-white text-red-700 font-bold px-3 py-1.5 rounded-full shadow-s
           सही खबर | निष्पक्ष पत्रकारिता | जनहित
         </p>
 
-        <!-- Terms & Instructions List -->
         <div class="px-4 space-y-2 text-[10px] text-slate-800 leading-tight">
           <div class="flex items-start gap-2">
             <div class="w-5 h-5 rounded-full bg-blue-900 text-white flex items-center justify-center shrink-0 text-[9px] mt-0.5">
@@ -771,22 +874,18 @@ class="text-xs bg-white text-red-700 font-bold px-3 py-1.5 rounded-full shadow-s
           </div>
         </div>
 
-        <!-- Channel Slogan -->
         <div class="text-center space-y-0.5 py-1">
           <span class="text-[11px] font-black text-red-700 block">हर गांव, हर खबर</span>
           <span class="text-sm font-black text-blue-950 block tracking-wide">आवाज बुंदेलखंड न्यूज़</span>
         </div>
 
-        <!-- Bottom Website Bar -->
         <div class="bg-[#002244] text-white text-center py-1.5 border-t-2 border-amber-400 space-y-0.5">
           <span class="text-[9px] font-bold text-slate-200 block">Aawaz Bundelkhand News</span>
           <span class="text-[8px] text-amber-300 block font-mono"><i class="fa-solid fa-globe text-[7px]"></i> www.aawazbundelkhandnews.in</span>
         </div>
       </div>
-
     </div>
 
-    <!-- Print Button -->
     <div class="pt-2 border-t flex justify-end gap-2">
       <button onclick="window.print()" class="bg-emerald-600 hover:bg-emerald-700 text-white font-black px-6 py-2.5 rounded-xl text-xs flex items-center gap-1.5 shadow">
         <i class="fa-solid fa-print"></i> दोनों साइड (Front & Back) प्रिंट करें
@@ -796,6 +895,21 @@ class="text-xs bg-white text-red-700 font-bold px-3 py-1.5 rounded-full shadow-s
       </button>
     </div>
   </div>
+</div>
+
+<!-- FULLSCREEN 50s SHORTS MODAL -->
+<div id="shortsModal" class="fixed inset-0 z-[9999999] bg-black hidden flex flex-col justify-between">
+<div class="p-3 flex items-center justify-between text-white z-20 bg-gradient-to-b from-black/80 to-transparent">
+<span class="text-xs font-bold text-amber-400 flex items-center gap-1.5">
+<i class="fa-solid fa-bolt text-red-500"></i> AB शॉर्ट्स (अधिकतम 50 सेकंड)
+</span>
+<button onclick="closeShortsModal()" class="w-8 h-8 rounded-full bg-white/20 flex items-center justify-center text-white text-sm">✕</button>
+</div>
+<div class="relative flex-1 flex items-center justify-center bg-black overflow-hidden" id="shortsPlayerContainer"></div>
+<div class="p-4 z-20 text-white bg-gradient-to-t from-black/90 to-transparent space-y-1">
+<h4 id="shortsTitleText" class="text-sm font-bold text-white leading-snug"></h4>
+<p class="text-[10px] text-amber-300 font-semibold">आवाज़ बुंदेलखंड न्यूज़ | ग्राउंड बुलेटिन</p>
+</div>
 </div>
 
 <!-- FOOTER -->
@@ -821,15 +935,14 @@ appId: "1:105958974098:web:40ac74cdac62368120bc4b"
 };
 
 firebase.initializeApp(firebaseConfig);
-const auth = firebase.auth();
 const db = firebase.database();
 
 const ADMIN_PHONE = "+918853252811";
 const ADMIN_UPI = "8853252811@apl";
+const DEFAULT_ADMIN_PASS = "998124";
 const PAYOUT_PER_NEWS = 30;
 
-let currentUser = null;
-let confirmationResult = null;
+let currentUserPhone = null;
 let isAdmin = false;
 let isReporter = false;
 
@@ -866,17 +979,213 @@ const el=document.getElementById("liveTime");
 if(el) el.innerText=new Date().toLocaleTimeString("hi-IN");
 },1000);
 
-function logoutDirect(){
-auth.signOut().then(()=>location.reload());
+/* ================= DUAL-OPTION LOGIN MODAL SWITCHER ================= */
+function openStaffLoginModal(defaultTab = 'admin') {
+  document.getElementById("authModal").classList.remove("hidden");
+  switchLoginRoleTab(defaultTab);
 }
 
-/* OPEN ID CARD WITH DYNAMIC DATA MATCHING SAMPLE */
+function switchLoginRoleTab(type) {
+  const adminForm = document.getElementById("adminLoginFormBox");
+  const repForm = document.getElementById("reporterLoginFormBox");
+  const btnAdmin = document.getElementById("btnSwitchAdminLogin");
+  const btnRep = document.getElementById("btnSwitchReporterLogin");
+
+  if (type === "admin") {
+    adminForm.classList.remove("hidden");
+    repForm.classList.add("hidden");
+    btnAdmin.className = "py-2 rounded-xl text-xs font-black bg-red-700 text-white shadow transition";
+    btnRep.className = "py-2 rounded-xl text-xs font-black text-gray-600 hover:text-slate-900 transition";
+  } else {
+    adminForm.classList.add("hidden");
+    repForm.classList.remove("hidden");
+    btnRep.className = "py-2 rounded-xl text-xs font-black bg-blue-800 text-white shadow transition";
+    btnAdmin.className = "py-2 rounded-xl text-xs font-black text-gray-600 hover:text-slate-900 transition";
+  }
+}
+
+/* ================= 1. ADMIN LOGIN ENGINE ================= */
+function loginAdminWithPassword() {
+  const rawPhone = document.getElementById("adminLoginPhoneInput").value.trim();
+  const enteredPass = document.getElementById("adminLoginPassInput").value.trim();
+
+  if (!/^\d{10}$/.test(rawPhone)) {
+    return alert("कृपया 10 अंकों का एडमिन मोबाइल नंबर दर्ज करें।");
+  }
+  if (!enteredPass) {
+    return alert("कृपया एडमिन पासवर्ड दर्ज करें।");
+  }
+
+  const fullPhone = "+91" + rawPhone;
+  if (fullPhone !== ADMIN_PHONE) {
+    return alert("यह नंबर एडमिन के रूप में पंजीकृत नहीं है!");
+  }
+
+  const btn = document.getElementById("btnAdminLoginSubmit");
+  btn.disabled = true;
+  btn.innerText = "सत्यापित हो रहा है...";
+
+  db.ref("settings/adminPin").once("value").then(snap => {
+    const savedPass = snap.exists() ? String(snap.val()) : DEFAULT_ADMIN_PASS;
+    if (enteredPass === savedPass) {
+      localStorage.setItem("abn_staff_role", "admin");
+      localStorage.setItem("abn_staff_phone", fullPhone);
+      localStorage.setItem("abn_staff_pass", enteredPass);
+      document.getElementById("authModal").classList.add("hidden");
+      setupAdminSession();
+    } else {
+      alert("गलत एडमिन पासवर्ड दर्ज किया गया है!");
+    }
+  }).catch(err => alert("त्रुटि: " + err.message))
+  .finally(() => {
+    btn.disabled = false;
+    btn.innerHTML = `<i class="fa-solid fa-right-to-bracket"></i> एडमिन लॉगिन करें`;
+  });
+}
+
+/* ================= 2. REPORTER LOGIN ENGINE ================= */
+function loginReporterWithPassword() {
+  const rawPhone = document.getElementById("repLoginPhoneInput").value.trim();
+  const enteredPass = document.getElementById("repLoginPassInput").value.trim();
+
+  if (!/^\d{10}$/.test(rawPhone)) {
+    return alert("कृपया 10 अंकों का रिपोर्टर मोबाइल नंबर दर्ज करें।");
+  }
+  if (!enteredPass) {
+    return alert("कृपया अपना रिपोर्टर पासवर्ड दर्ज करें।");
+  }
+
+  const fullPhone = "+91" + rawPhone;
+  const btn = document.getElementById("btnReporterLoginSubmit");
+  btn.disabled = true;
+  btn.innerText = "सत्यापित हो रहा है...";
+
+  db.ref("authorized_reporters").orderByChild("phone").equalTo(fullPhone).once("value").then(snap => {
+    if (!snap.exists()) {
+      alert("यह मोबाइल नंबर रिपोर्टर के रूप में पंजीकृत नहीं है।");
+      return;
+    }
+    const repData = Object.values(snap.val())[0];
+    if (repData.status !== "approved") {
+      alert("आपका अकाउंट एडमिन द्वारा स्वीकृत नहीं है।");
+      return;
+    }
+    if (String(repData.pin) === enteredPass) {
+      localStorage.setItem("abn_staff_role", "reporter");
+      localStorage.setItem("abn_staff_phone", fullPhone);
+      localStorage.setItem("abn_staff_pass", enteredPass);
+      document.getElementById("authModal").classList.add("hidden");
+      setupReporterSession(repData);
+    } else {
+      alert("गलत पासवर्ड दर्ज किया गया है! सही पासवर्ड के लिए एडमिन से संपर्क करें।");
+    }
+  }).catch(err => alert("त्रुटि: " + err.message))
+  .finally(() => {
+    btn.disabled = false;
+    btn.innerHTML = `<i class="fa-solid fa-right-to-bracket"></i> रिपोर्टर लॉगिन करें`;
+  });
+}
+
+function setupAdminSession() {
+  currentUserPhone = ADMIN_PHONE;
+  isAdmin = true;
+  isReporter = false;
+  myProfile = {
+    name: "मयंक सिंह",
+    phone: ADMIN_PHONE,
+    address: "सरीला, हमीरपुर (उ.प्र.)",
+    paymentDetail: "Admin Account",
+    photo: DEFAULT_PHOTO
+  };
+  db.ref("settings/adminPhoto").once("value").then(snap => {
+    if (snap.exists()) {
+      adminPhoto = snap.val();
+      myProfile.photo = adminPhoto;
+      document.getElementById("adminPhotoPreview").src = adminPhoto;
+    }
+    activateDashboard("मुख्य संपादक (Admin)", true);
+  });
+}
+
+function setupReporterSession(repData) {
+  currentUserPhone = repData.phone;
+  isAdmin = false;
+  isReporter = true;
+  myProfile = repData;
+  activateDashboard("रिपोर्टर आवाज़ बुंदेलखंड", false);
+}
+
+function updateAdminPin() {
+  if (!isAdmin) return;
+  const newPass = document.getElementById("adminNewPinInput").value.trim();
+  if (newPass.length < 4) return alert("कृपया कम से कम 4 अक्षर या अंकों का पासवर्ड डालें।");
+  db.ref("settings/adminPin").set(newPass).then(() => {
+    localStorage.setItem("abn_staff_pass", newPass);
+    document.getElementById("adminNewPinInput").value = "";
+    alert("नया Admin पासवर्ड सफलतापूर्वक सेव हो गया है!");
+  });
+}
+
+function logoutDirect() {
+  localStorage.removeItem("abn_staff_role");
+  localStorage.removeItem("abn_staff_phone");
+  localStorage.removeItem("abn_staff_pass");
+  location.reload();
+}
+
+/* AUTO-LOGIN ON APP REOPEN */
+function checkSavedSession() {
+  const savedRole = localStorage.getItem("abn_staff_role");
+  const savedPhone = localStorage.getItem("abn_staff_phone");
+  const savedPass = localStorage.getItem("abn_staff_pass");
+  if (!savedPhone || !savedPass) return;
+
+  if (savedRole === "admin" && savedPhone === ADMIN_PHONE) {
+    db.ref("settings/adminPin").once("value").then(snap => {
+      const currentPass = snap.exists() ? String(snap.val()) : DEFAULT_ADMIN_PASS;
+      if (savedPass === currentPass) setupAdminSession();
+    });
+  } else if (savedRole === "reporter") {
+    db.ref("authorized_reporters").orderByChild("phone").equalTo(savedPhone).once("value").then(snap => {
+      if (snap.exists()) {
+        const repData = Object.values(snap.val())[0];
+        if (repData.status === "approved" && String(repData.pin) === savedPass) {
+          setupReporterSession(repData);
+        }
+      }
+    });
+  }
+}
+
+/* ACTIVATE DASHBOARD */
+function activateDashboard(role, admin) {
+  document.getElementById("btnLoginOpen").classList.add("hidden");
+  document.getElementById("userProfileBadge").classList.remove("hidden");
+  document.getElementById("userProfileBadge").classList.add("flex");
+  document.getElementById("userRoleBadge").innerText = role;
+  document.getElementById("staffNavigation").classList.remove("hidden");
+
+  document.getElementById("tabAdmin").classList.toggle("hidden", !admin);
+  document.getElementById("tabManageAds").classList.toggle("hidden", !admin);
+  document.getElementById("tabManageReporters").classList.toggle("hidden", !admin);
+
+  switchTab("feed");
+  loadReporterWallet();
+
+  if (admin) {
+    loadPendingNews();
+    loadReportersForAdmin();
+    loadAdsForAdmin();
+  }
+  loadNewsFeed();
+}
+
+/* OPEN ID CARD */
 function openIcard(rep){
   document.getElementById("cardName").innerText = rep.name || "रिपोर्टर";
   document.getElementById("cardId").innerText = rep.pressId || ("ABN-RP-" + Math.floor(1000 + Math.random() * 9000));
   document.getElementById("cardPhoto").src = rep.photo || DEFAULT_PHOTO;
 
-  // Dynamic QR for verification
   const qrData = encodeURIComponent(`https://awajbundelkhandnews.in/verify?id=${rep.pressId || 'ABN'}&phone=${rep.phone}&name=${rep.name}`);
   document.getElementById("cardQrImg").src = `https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${qrData}`;
 
@@ -1014,6 +1323,35 @@ function renderUniversalMediaEmbed(url) {
       <source src="${url}">
     </video>
   </div>`;
+}
+
+/* 50s SHORTS VIEWER */
+function openShortsModal(title, url) {
+  document.getElementById("shortsTitleText").innerText = title;
+  const container = document.getElementById("shortsPlayerContainer");
+  const ytMatch = url.match(/(?:youtu\.be\/|youtube\.com\/(?:watch\?v=|embed\/|shorts\/|live\/))([^?&/]+)/);
+  if (ytMatch) {
+    container.innerHTML = `<iframe class="w-full h-full" src="https://www.youtube.com/embed/${encodeURIComponent(ytMatch[1])}?autoplay=1&loop=1&playlist=${encodeURIComponent(ytMatch[1])}" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>`;
+  } else if (url.includes('facebook.com')) {
+    container.innerHTML = `<iframe src="https://www.facebook.com/plugins/video.php?href=${encodeURIComponent(url)}&autoplay=true" class="w-full h-full" frameborder="0" allow="autoplay"></iframe>`;
+  } else {
+    container.innerHTML = `<video id="shortsActiveVideo" class="w-full max-h-full object-contain" loop playsinline autoplay controls src="${url}"></video>`;
+    const vid = document.getElementById("shortsActiveVideo");
+    if (vid) {
+      vid.ontimeupdate = function() {
+        if (vid.currentTime >= 50) {
+          vid.currentTime = 0;
+          vid.play();
+        }
+      };
+    }
+  }
+  document.getElementById("shortsModal").classList.remove("hidden");
+}
+
+function closeShortsModal() {
+  document.getElementById("shortsPlayerContainer").innerHTML = "";
+  document.getElementById("shortsModal").classList.add("hidden");
 }
 
 /* COMPRESSION HELPERS */
@@ -1377,117 +1715,17 @@ document.getElementById("repPhotoFileInput").addEventListener("change",function(
   });
 });
 
-/* OTP LOGIN LOGIC */
-function initRecaptcha(){
-  if(!window.recaptchaVerifier){
-    window.recaptchaVerifier=new firebase.auth.RecaptchaVerifier("recaptcha-container",{size:"invisible"});
-  }
-}
-
-function sendOTP(){
-  const phone=document.getElementById("phoneNumber").value.trim();
-  if(!/^\d{10}$/.test(phone)) return alert("10 अंकों का मोबाइल नंबर भरें।");
-  initRecaptcha();
-  const btn=document.getElementById("btnSendOtp");
-  btn.disabled=true;
-  btn.innerText="OTP भेजा जा रहा है...";
-
-  auth.signInWithPhoneNumber("+91"+phone,window.recaptchaVerifier).then(result=>{
-    confirmationResult=result;
-    document.getElementById("phoneInputContainer").classList.add("hidden");
-    document.getElementById("otpInputContainer").classList.remove("hidden");
-  }).catch(err=>{
-    alert("त्रुटि: "+err.message);
-    btn.disabled=false;
-    btn.innerText="OTP प्राप्त करें";
-  });
-}
-
-function verifyOTP(){
-  const code=document.getElementById("verificationCode").value.trim();
-  if(!code)return alert("OTP दर्ज करें।");
-  confirmationResult.confirm(code).then(res=>{
-    currentUser=res.user;
-    document.getElementById("authModal").classList.add("hidden");
-    evaluateRoleAndSetupUI(currentUser);
-  }).catch(()=>alert("गलत OTP।"));
-}
-
-function resetLoginForm(){
-  document.getElementById("phoneInputContainer").classList.remove("hidden");
-  document.getElementById("otpInputContainer").classList.add("hidden");
-  const btn=document.getElementById("btnSendOtp");
-  btn.disabled=false;
-  btn.innerText="OTP प्राप्त करें";
-}
-
-/* ROLE EVALUATION */
-function evaluateRoleAndSetupUI(user){
-  const phone=user.phoneNumber;
-
-  if(phone===ADMIN_PHONE){
-    isAdmin=true;
-    isReporter=false;
-    myProfile={
-      name:"मयंक सिंह",
-      phone:ADMIN_PHONE,
-      address:"सरीला, हमीरपुर (उ.प्र.)",
-      paymentDetail:"Admin Account",
-      photo:DEFAULT_PHOTO
-    };
-    db.ref("settings/adminPhoto").once("value").then(snap=>{
-      if(snap.exists()){
-        adminPhoto=snap.val();
-        myProfile.photo=adminPhoto;
-        document.getElementById("adminPhotoPreview").src=adminPhoto;
-      }
-      activateDashboard("मुख्य संपादक (Admin)",true);
-    });
-  } else {
-    db.ref("authorized_reporters").orderByChild("phone").equalTo(phone).once("value").then(snap=>{
-      if(!snap.exists()){ alert("यह नंबर पंजीकृत नहीं है।"); logoutDirect(); return; }
-      const data=Object.values(snap.val())[0];
-      if(data.status!=="approved"){ alert("आपका अकाउंट अभी स्वीकृत नहीं हुआ है।"); logoutDirect(); return; }
-      isAdmin=false;
-      isReporter=true;
-      myProfile=data;
-      activateDashboard("रिपोर्टर आवाज़ बुंदेलखंड",false);
-    });
-  }
-}
-
-function activateDashboard(role,admin){
-  document.getElementById("btnLoginOpen").classList.add("hidden");
-  document.getElementById("userProfileBadge").classList.remove("hidden");
-  document.getElementById("userProfileBadge").classList.add("flex");
-  document.getElementById("userRoleBadge").innerText=role;
-  document.getElementById("staffNavigation").classList.remove("hidden");
-
-  document.getElementById("tabAdmin").classList.toggle("hidden",!admin);
-  document.getElementById("tabManageAds").classList.toggle("hidden",!admin);
-  document.getElementById("tabManageReporters").classList.toggle("hidden",!admin);
-
-  switchTab("feed");
-  loadReporterWallet();
-
-  if(admin){
-    loadPendingNews();
-    loadReportersForAdmin();
-    loadAdsForAdmin();
-  }
-  loadNewsFeed();
-}
-
-/* ADD REPORTER */
+/* ADD REPORTER WITH PASSWORD */
 function addNewReporterByAdmin(){
   if(!isAdmin)return;
   const name=document.getElementById("repNameInput").value.trim();
   const raw=document.getElementById("repPhoneInput").value.trim();
+  const pin=document.getElementById("repPinInput").value.trim();
   const address=document.getElementById("repAddressInput").value.trim();
   const payment=document.getElementById("repPaymentInput").value.trim();
 
-  if(!name || !/^\d{10}$/.test(raw) || !address || !payment){
-    return alert("सभी जानकारी सही-सही भरें।");
+  if(!name || !/^\d{10}$/.test(raw) || pin.length < 4 || !address || !payment){
+    return alert("कृपया नाम, 10 अंकों का मोबाइल नंबर, कम से कम 4 अंकों का पासवर्ड, पता और पेमेंट विवरण सभी भरें।");
   }
 
   const phone="+91"+raw;
@@ -1498,6 +1736,7 @@ function addNewReporterByAdmin(){
     return db.ref("authorized_reporters").push({
       name: name,
       phone: phone,
+      pin: pin,
       address: address,
       paymentDetail: payment,
       photo: compressedRepPhoto || DEFAULT_PHOTO,
@@ -1507,15 +1746,15 @@ function addNewReporterByAdmin(){
     });
   }).then(result=>{
     if(!result)return;
-    alert("रिपोर्टर सफलतापूर्वक अधिकृत हो गया।");
-    ["repNameInput","repPhoneInput","repAddressInput","repPaymentInput"].forEach(id=>document.getElementById(id).value="");
+    alert(`रिपोर्टर सफलतापूर्वक अधिकृत हो गया!\n\nमोबाइल: ${raw}\nलॉगिन पासवर्ड: ${pin}`);
+    ["repNameInput","repPhoneInput","repPinInput","repAddressInput","repPaymentInput"].forEach(id=>document.getElementById(id).value="");
     document.getElementById("repPhotoFileInput").value="";
     document.getElementById("repPhotoPreviewBox").classList.add("hidden");
     compressedRepPhoto="";
   });
 }
 
-/* LOAD REPORTERS FOR ADMIN */
+/* LOAD REPORTERS FOR ADMIN (WITH UPDATE PASSWORD BUTTON) */
 function loadReportersForAdmin(){
   db.ref("authorized_reporters").on("value",snap=>{
     const container=document.getElementById("approvedReportersList");
@@ -1534,22 +1773,25 @@ function loadReportersForAdmin(){
         });
 
         const card=document.createElement("div");
-        card.className="p-3 bg-gray-50 border rounded-xl flex items-center justify-between text-xs";
+        card.className="p-3 bg-gray-50 border rounded-xl flex flex-col sm:flex-row sm:items-center justify-between gap-2 text-xs";
         
         card.innerHTML=`
           <div class="flex items-center gap-2.5">
-            <img src="${rep.photo || DEFAULT_PHOTO}" class="w-12 h-12 rounded-full object-cover border-2 border-blue-900 shadow-sm">
+            <img src="${rep.photo || DEFAULT_PHOTO}" class="w-12 h-12 rounded-full object-cover border-2 border-blue-900 shadow-sm shrink-0">
             <div>
               <strong class="text-sm text-slate-900">${escapeHTML(rep.name)}</strong>
-              <span class="text-[10px] text-gray-500 block">${escapeHTML(rep.phone)} | ID: ${escapeHTML(rep.pressId || 'ABN-RP-0425')}</span>
+              <span class="text-[10px] text-gray-500 block">${escapeHTML(rep.phone)} | <strong class="text-blue-700">पासवर्ड: ${escapeHTML(rep.pin || 'N/A')}</strong></span>
               <span class="text-[10px] text-emerald-700 font-bold block">मानदेय: ₹${count*30} (${count} स्वीकृत खबरें)</span>
             </div>
           </div>
-          <div class="flex items-center gap-1.5">
-            <button class="bg-blue-700 hover:bg-blue-800 text-white px-3 py-1.5 rounded-lg text-xs font-black shadow flex items-center gap-1" onclick='openIcard(${JSON.stringify(rep)})'>
+          <div class="flex flex-wrap items-center gap-1.5">
+            <button class="bg-blue-700 hover:bg-blue-800 text-white px-2.5 py-1.5 rounded-lg text-[11px] font-black shadow flex items-center gap-1" onclick='openIcard(${JSON.stringify(rep)})'>
               <i class="fa-solid fa-id-card"></i> आई-कार्ड
             </button>
-            <button class="bg-red-600 hover:bg-red-700 text-white px-2.5 py-1.5 rounded-lg text-xs font-bold" onclick="deleteReporter('${key}')">
+            <button class="bg-amber-500 hover:bg-amber-600 text-slate-950 px-2.5 py-1.5 rounded-lg text-[11px] font-black shadow flex items-center gap-1" onclick="openUpdateRepPassModal('${key}', '${escapeHTML(rep.name)}', '${escapeHTML(rep.pin || '')}')">
+              <i class="fa-solid fa-key"></i> पासवर्ड बदलें
+            </button>
+            <button class="bg-red-600 hover:bg-red-700 text-white px-2.5 py-1.5 rounded-lg text-[11px] font-bold" onclick="deleteReporter('${key}')">
               हटाएं
             </button>
           </div>
@@ -1558,6 +1800,36 @@ function loadReportersForAdmin(){
       });
     });
   });
+}
+
+/* UPDATE REPORTER PASSWORD MODAL HANDLERS */
+function openUpdateRepPassModal(key, name, currentPass) {
+  if (!isAdmin) return;
+  document.getElementById("editRepPassKey").value = key;
+  document.getElementById("editRepPassName").innerText = name;
+  document.getElementById("newRepPasswordInput").value = currentPass;
+  document.getElementById("updateRepPasswordModal").classList.remove("hidden");
+}
+
+function closeRepPassModal() {
+  document.getElementById("updateRepPasswordModal").classList.add("hidden");
+}
+
+function saveUpdatedRepPassword() {
+  if (!isAdmin) return;
+  const key = document.getElementById("editRepPassKey").value;
+  const newPass = document.getElementById("newRepPasswordInput").value.trim();
+
+  if (newPass.length < 4) {
+    return alert("कृपया कम से कम 4 अक्षर या अंकों का नया पासवर्ड लिखें।");
+  }
+
+  db.ref("authorized_reporters/" + key).update({ pin: newPass })
+    .then(() => {
+      alert("रिपोर्टर का पासवर्ड सफलतापूर्वक अपडेट कर दिया गया है!");
+      closeRepPassModal();
+    })
+    .catch(err => alert("त्रुटि: " + err.message));
 }
 
 function deleteReporter(key){
@@ -1569,7 +1841,7 @@ function deleteReporter(key){
 
 /* SUBMIT NEWS */
 function submitArticle(){
-  if(!currentUser || (!isAdmin && !isReporter)) return alert("पहले लॉगिन करें।");
+  if(!currentUserPhone || (!isAdmin && !isReporter)) return alert("पहले स्टाफ़ लॉगिन करें।");
   const title=document.getElementById("newsTitle").value.trim();
   const location=document.getElementById("newsLocation").value.trim();
   const category=document.getElementById("newsCategory").value;
@@ -1591,7 +1863,7 @@ function submitArticle(){
     imageUrl:compressedNewsImage || "",
     videoUrl:finalVideo,
     isShorts:false,
-    reporterPhone:currentUser.phoneNumber,
+    reporterPhone:currentUserPhone,
     reporterName:myProfile.name,
     reporterRole:isAdmin?"admin":"reporter",
     reporterAddress:myProfile.address,
@@ -1613,7 +1885,7 @@ function submitArticle(){
 
 /* SUBMIT SHORTS */
 function submitShortsArticle() {
-  if(!currentUser || (!isAdmin && !isReporter)) return alert("पहले लॉगिन करें।");
+  if(!currentUserPhone || (!isAdmin && !isReporter)) return alert("पहले स्टाफ़ लॉगिन करें।");
   const title = document.getElementById("shortTitle").value.trim();
   const location = document.getElementById("shortLocation").value.trim();
   const videoUrl = document.getElementById("shortVideoUrl").value.trim();
@@ -1633,7 +1905,7 @@ function submitShortsArticle() {
     imageUrl: "",
     videoUrl: finalVideo,
     isShorts: true,
-    reporterPhone: currentUser.phoneNumber,
+    reporterPhone: currentUserPhone,
     reporterName: myProfile.name,
     reporterRole: isAdmin ? "admin" : "reporter",
     reporterAddress: myProfile.address,
@@ -1892,7 +2164,7 @@ function loadNewsFeed(){
       });
 
     if (tickerHeadlines.length > 0 && tickerText) {
-      tickerText.innerText = tickerHeadlines.join(" ••• ") + " ••• आवाज़ बुंदेलखंड न्यूज़ नेटवर्क";
+      tickerText.innerText = tickerHeadlines.join("   •••   ") + "   •••   आवाज़ बुंदेलखंड न्यूज़ नेटवर्क";
     }
 
     if (!shortsFound) {
@@ -1942,11 +2214,11 @@ function reviewArticle(key,status){
 
 /* REPORTER WALLET */
 function loadReporterWallet(){
-  if(!currentUser)return;
+  if(!currentUserPhone)return;
   document.getElementById("dispReporterAddress").innerText=myProfile.address || "दर्ज नहीं";
   document.getElementById("dispReporterPayment").innerText=myProfile.paymentDetail || "दर्ज नहीं";
 
-  db.ref("news_articles").orderByChild("reporterPhone").equalTo(currentUser.phoneNumber).on("value",snap=>{
+  db.ref("news_articles").orderByChild("reporterPhone").equalTo(currentUserPhone).on("value",snap=>{
     let count=0;
     Object.values(snap.val() || {}).forEach(item=>{
       if(item.status==="approved")count++;
@@ -1959,7 +2231,7 @@ function loadReporterWallet(){
 /* SAFE TAB SWITCHING */
 function switchTab(tab){
   if((tab==="admin" || tab==="manageAds" || tab==="manageReporters") && !isAdmin)return;
-  if((tab==="reporter" || tab==="shortsPost" || tab==="wallet") && !currentUser)return;
+  if((tab==="reporter" || tab==="shortsPost" || tab==="wallet") && !currentUserPhone)return;
 
   const sectionMap = {
     "feed": "feedSection",
@@ -1994,13 +2266,9 @@ function switchTab(tab){
 /* INITIALIZE */
 loadNewsFeed();
 loadAdminSpecialAd();
-auth.onAuthStateChanged(user=>{
-  if(user){
-    currentUser=user;
-    evaluateRoleAndSetupUI(user);
-  }
-});
+checkSavedSession();
 </script>
 
 </body>
 </html>
+.
