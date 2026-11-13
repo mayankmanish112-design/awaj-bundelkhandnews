@@ -39,10 +39,15 @@ body { font-family: 'Mukta', sans-serif; }
 .no-scrollbar::-webkit-scrollbar { display: none; }
 .ticker-wrap { overflow: hidden; white-space: nowrap; }
 .ticker-move { display: inline-block; animation: ticker 120s linear infinite; }
-.live-ticker-move { display: inline-block; animation: liveTicker 25s linear infinite; }
+.live-ticker-move { display: inline-block; animation: liveTicker 28s linear infinite; }
 .ticker-wrap:hover .ticker-move { animation-play-state: paused; }
 @keyframes ticker { 0% { transform: translate3d(100vw, 0, 0); } 100% { transform: translate3d(-100%, 0, 0); } }
 @keyframes liveTicker { 0% { transform: translate3d(100%, 0, 0); } 100% { transform: translate3d(-100%, 0, 0); } }
+
+/* ABP Live Style Slanted Time Box */
+.abp-slant-box {
+  clip-path: polygon(0 0, 100% 0, 82% 100%, 0% 100%);
+}
 </style>
 </head>
 
@@ -100,11 +105,11 @@ class="text-xs bg-white text-red-700 font-bold px-3 py-1.5 rounded-full shadow-s
 </div>
 </header>
 
-<!-- STAFF NAVIGATION BAR (WITH LIVE STUDIO TAB) -->
+<!-- STAFF NAVIGATION BAR -->
 <nav id="staffNavigation" class="hidden bg-white border-b sticky top-[75px] z-40 shadow-sm">
 <div class="max-w-4xl mx-auto flex justify-around text-xs font-bold overflow-x-auto">
 <button onclick="switchTab('feed')" id="tabFeed" class="navtab py-3 px-2 border-b-2 border-red-700 text-red-700 whitespace-nowrap">मुख्य समाचार</button>
-<button onclick="switchTab('liveStudio')" id="tabLiveStudio" class="navtab py-3 px-2 border-b-2 border-transparent text-red-600 font-black whitespace-nowrap flex items-center gap-1"><span class="w-2 h-2 rounded-full bg-red-600 animate-ping"></span> लाइव प्रसारण (LIVE)</button>
+<button onclick="switchTab('liveStudio')" id="tabLiveStudio" class="navtab py-3 px-2 border-b-2 border-transparent text-red-600 font-black whitespace-nowrap flex items-center gap-1"><span class="w-2 h-2 rounded-full bg-red-600 animate-ping"></span> लाइव स्टूडियो (TV फ्रेम)</button>
 <button onclick="switchTab('reporter')" id="tabReporter" class="navtab py-3 px-2 border-b-2 border-transparent text-gray-500 whitespace-nowrap">नई ख़बर पोस्ट</button>
 <button onclick="switchTab('shortsPost')" id="tabShortsPost" class="navtab py-3 px-2 border-b-2 border-transparent text-gray-500 whitespace-nowrap"><i class="fa-solid fa-bolt text-amber-500"></i> शॉर्ट वीडियो पोस्ट</button>
 <button onclick="switchTab('wallet')" id="tabWallet" class="navtab py-3 px-2 border-b-2 border-transparent text-gray-500 whitespace-nowrap">मेरा पर्स (₹30/ख़बर)</button>
@@ -235,62 +240,94 @@ class="text-xs bg-white text-red-700 font-bold px-3 py-1.5 rounded-full shadow-s
 </div>
 </section>
 
-<!-- ================= LIVE STREAM STUDIO SECTION (FOR STAFF & REPORTERS) ================= -->
-<section id="liveStudioSection" class="hidden bg-white p-5 rounded-3xl shadow-xl border-2 border-red-700 space-y-4">
+<!-- ================= LIVE STREAM STUDIO SECTION (ABP LIVE TV BROADCAST FRAME + LOGO & TEXT EDIT) ================= -->
+<section id="liveStudioSection" class="hidden bg-white p-4 sm:p-5 rounded-3xl shadow-xl border-2 border-red-700 space-y-4">
   <div class="border-b pb-2.5 flex justify-between items-center">
     <div>
       <h3 class="text-sm font-black text-red-700 flex items-center gap-2">
         <span class="w-3 h-3 rounded-full bg-red-600 animate-ping"></span>
-        ग्राउंड जीरो लाइव प्रसारण स्टूडियो (LIVE STUDIO)
+        टी.वी. ब्रॉडकास्ट लाइव स्टूडियो (ABP स्टाइल फ्रेम)
       </h3>
-      <p class="text-[10px] text-gray-500">ऑन-स्क्रीन लोगो, टॉप बैंड और लाइव टिकर के साथ सीधा प्रसारण करें</p>
+      <p class="text-[10px] text-gray-500">ऑन-स्क्रीन लोगो एडिट करें और लाइव हेडलाइन व टिकर चलाएं</p>
     </div>
     <button onclick="switchTab('feed')" class="text-xs font-bold text-gray-400 hover:text-black">✕ बंद करें</button>
   </div>
 
-  <!-- LIVE TV OVERLAY PREVIEW BOX -->
-  <div class="relative w-full aspect-video bg-slate-950 rounded-2xl overflow-hidden border-2 border-slate-800 shadow-lg">
-    <!-- Camera Preview or YouTube Stream -->
+  <!-- ================= BROADCAST TV OVERLAY PREVIEW (EXACT ABP LIVE STYLE FRAME) ================= -->
+  <div class="relative w-full aspect-video bg-slate-950 rounded-2xl overflow-hidden border-2 border-slate-900 shadow-2xl select-none">
+    <!-- Camera Preview -->
     <video id="studioLocalCamVideo" autoplay muted playsinline class="w-full h-full object-cover"></video>
-    <div id="studioNoCamMsg" class="absolute inset-0 flex flex-col items-center justify-center text-white/70 text-center p-4">
-      <i class="fa-solid fa-video text-3xl mb-2 text-red-500"></i>
+    <div id="studioNoCamMsg" class="absolute inset-0 flex flex-col items-center justify-center text-white/70 text-center p-4 pb-20">
+      <i class="fa-solid fa-video text-3xl mb-1 text-red-500"></i>
       <p class="text-xs font-bold">लाइव कैमरा चालू करें अथवा नीचे YouTube Live लिंक डालें</p>
     </div>
 
-    <!-- TOP BAND OVERLAY (LIVE BADGE + TOP LOCATION BAND + CHANNEL LOGO) -->
-    <div class="absolute top-0 left-0 right-0 p-2.5 flex items-start justify-between z-20 bg-gradient-to-b from-black/80 via-black/30 to-transparent pointer-events-none">
-      <!-- Top Left: LIVE Badge + Location Top Band -->
-      <div class="flex flex-col gap-1">
-        <div class="flex items-center gap-1.5">
-          <span class="bg-red-600 text-white text-[10px] font-black px-2.5 py-0.5 rounded flex items-center gap-1.5 shadow-md tracking-wider">
-            <span class="w-2 h-2 rounded-full bg-white animate-ping"></span> LIVE
-          </span>
-          <span id="studioTopBandPreview" class="bg-amber-400 text-slate-950 text-[10px] font-black px-2.5 py-0.5 rounded shadow">
-            सरीला, हमीरपुर से सीधा प्रसारण
-          </span>
+    <!-- TOP-RIGHT CHANNEL LOGO & DOWNLOAD/LIVE BADGE (EXACT ABP STYLE) -->
+    <div class="absolute top-2.5 right-3 z-30 flex flex-col items-end pointer-events-none">
+      <span id="studioTopDownloadText" class="text-[9px] font-black text-slate-900 bg-white/90 px-1.5 py-0.2 rounded-t shadow-sm tracking-tight leading-tight">
+        download
+      </span>
+      <div class="flex items-stretch shadow-lg border border-white/80 rounded-sm overflow-hidden bg-white">
+        <!-- Custom Channel Logo -->
+        <div class="bg-white px-1.5 py-0.5 flex items-center justify-center">
+          <img id="studioTopLogoImg" src="https://cdn-icons-png.flaticon.com/512/2965/2965879.png" class="h-6 w-auto object-contain">
         </div>
-      </div>
-
-      <!-- Top Right: Official 3D News Logo Badge -->
-      <div class="w-11 h-11 rounded-xl shadow-lg border-2 border-amber-400 overflow-hidden bg-gradient-to-b from-[#8B0000] via-[#A00000] to-[#002D62] flex flex-col items-center justify-between p-0.5 shrink-0">
-        <span class="text-[9px] font-black text-white leading-none tracking-tighter mt-0.5">आवाज</span>
-        <span class="text-[8px] font-black text-white leading-none tracking-tighter">बुंदेलखंड</span>
-        <div class="w-full bg-[#002244] text-center rounded-[2px] py-0.5 border-t border-amber-400/60">
-          <span class="text-[10px] font-black text-white tracking-widest leading-none">NEWS</span>
+        <!-- Red LIVE Box -->
+        <div class="bg-[#C8102E] text-white font-black text-xs px-2 flex items-center tracking-wider">
+          LIVE
         </div>
       </div>
     </div>
 
-    <!-- BOTTOM LIVE TICKER OVERLAY -->
-    <div class="absolute bottom-0 left-0 right-0 z-20 pointer-events-none">
-      <div class="bg-red-700 text-white text-[9px] font-black px-2.5 py-0.5 inline-block rounded-tr-lg uppercase tracking-wider">
-        आवाज़ बुंदेलखंड लाइव बुलेटिन
-      </div>
-      <div class="bg-[#001428]/95 text-white border-t-2 border-amber-400 py-1.5 px-2 flex items-center overflow-hidden">
-        <div id="studioBottomTickerPreview" class="live-ticker-move text-xs font-bold text-amber-200 whitespace-nowrap">
-          ब्रेकिंग न्यूज़: आवाज़ बुंदेलखंड न्यूज़ पर ग्राउंड जीरो से सीधा प्रसारण जारी है...
+    <!-- LOWER-THIRD BROADCAST GRAPHIC BAND (EXACT ABP LIVE STYLE) -->
+    <div class="absolute bottom-0 left-0 right-0 z-30 flex flex-col shadow-2xl pointer-events-none">
+      
+      <!-- UPPER ROW OF LOWER THIRD (Red Logo Block + Slanted Time + Main White Headline) -->
+      <div class="flex items-stretch bg-white border-t-2 border-red-700 min-h-[44px] sm:min-h-[54px]">
+        
+        <!-- Left Red Logo & Clock Block -->
+        <div class="bg-gradient-to-b from-[#D90429] to-[#9B0000] text-white px-2 py-1 flex flex-col items-center justify-center shrink-0 w-16 sm:w-20 border-r border-white/40">
+          <img id="studioBottomLogoImg" src="https://cdn-icons-png.flaticon.com/512/2965/2965879.png" class="h-5 w-auto object-contain bg-white rounded px-1 mb-0.5">
+          <span id="studioLiveClockSmall" class="text-[10px] font-black leading-none tracking-tighter">08:00</span>
+          <span id="studioLiveDateSmall" class="text-[7px] text-amber-200 font-bold leading-none mt-0.5">13 Nov</span>
+        </div>
+
+        <!-- Slanted Red Time Block (8:00 PM Style) + Red Arrows -->
+        <div class="flex items-center shrink-0 bg-white">
+          <div class="abp-slant-box bg-[#C8102E] text-white h-full pl-2.5 pr-5 flex flex-col items-center justify-center">
+            <span id="studioBigTimeText" class="text-sm sm:text-lg font-black leading-none tracking-tight">8:00</span>
+            <span id="studioAmPmText" class="text-[9px] font-bold leading-none mt-0.5">PM</span>
+          </div>
+          <span class="text-[#C8102E] font-black text-sm sm:text-base -ml-2 pr-1 tracking-tighter">»</span>
+        </div>
+
+        <!-- Main Big Headline Area -->
+        <div class="flex-1 flex items-center justify-between px-2 py-1 bg-gradient-to-r from-white via-slate-50 to-gray-100 overflow-hidden">
+          <h2 id="studioMainHeadlineShow" class="text-xs sm:text-base md:text-lg font-black text-slate-950 leading-tight line-clamp-2">
+            सरीला, हमीरपुर: ग्राउंड जीरो से सबसे बड़ी और सटीक लाइव कवरेज
+          </h2>
+          <!-- Right Side Sponsor / Tag Badge -->
+          <div class="hidden sm:flex flex-col items-end shrink-0 border-l pl-2 ml-2 border-gray-300">
+            <span class="text-[8px] font-bold text-gray-400 uppercase">NETWORK</span>
+            <span class="text-[10px] font-black text-blue-950 leading-none">आवाज़ बुंदेलखंड</span>
+          </div>
         </div>
       </div>
+
+      <!-- BOTTOM ROW OF LOWER THIRD (Navy Blue "TOP NEWS" Box + White Scrolling Ticker) -->
+      <div class="flex items-stretch h-6 sm:h-7 bg-white border-t border-gray-300">
+        <!-- Navy Blue Category Box -->
+        <div class="bg-[#001D4A] text-white font-black text-[10px] sm:text-xs px-3 flex items-center justify-center shrink-0 uppercase tracking-wider w-24 sm:w-28">
+          <span id="studioBlueTagShow">TOP NEWS</span>
+        </div>
+        <!-- Scrolling White Ticker -->
+        <div class="ticker-wrap flex-1 flex items-center bg-white text-slate-950 px-2 overflow-hidden">
+          <div id="studioBottomTickerShow" class="live-ticker-move text-[11px] sm:text-xs font-extrabold text-slate-900">
+            हमीरपुर की ताज़ा खबरें: सरीला तहसील में प्रशासन की बड़ी कार्रवाई | बुंदेलखंड के हर गांव की खबर सबसे पहले आवाज़ बुंदेलखंड न्यूज़ पर...
+          </div>
+        </div>
+      </div>
+
     </div>
   </div>
 
@@ -307,31 +344,57 @@ class="text-xs bg-white text-red-700 font-bold px-3 py-1.5 rounded-full shadow-s
     </button>
   </div>
 
-  <!-- TEXT & OVERLAY MANAGEMENT CONTROLS -->
-  <div class="bg-slate-50 p-4 rounded-2xl border space-y-3 text-xs">
-    <h4 class="font-black text-slate-900 border-b pb-1.5 flex items-center gap-1.5">
-      <i class="fa-solid fa-sliders text-red-600"></i> लाइव टेक्स्ट, टॉप बैंड व टिकर मैनेजमेंट
+  <!-- ================= LOGO EDIT & TEXT EDIT CONTROLS ================= -->
+  <div class="bg-slate-50 p-4 rounded-2xl border border-slate-200 space-y-3 text-xs">
+    <h4 class="font-black text-slate-900 border-b pb-1.5 flex items-center justify-between">
+      <span><i class="fa-solid fa-sliders text-red-600"></i> लाइव लोगो एडिट (Logo Edit) व टेक्स्ट एडिट</span>
+      <span class="text-[9px] bg-emerald-100 text-emerald-800 px-2 py-0.5 rounded font-bold">रियल-टाइम अपडेट</span>
     </h4>
 
-    <div>
-      <label class="font-bold text-gray-700">1. टॉप बैंड टेक्स्ट (ऊपर पीली पट्टी में दिखेगा) *</label>
-      <input id="liveTopBandInput" oninput="updateLivePreviewText()" value="सरीला, हमीरपुर से सीधा प्रसारण" class="w-full mt-1 border rounded-lg px-3 py-2 text-xs font-bold bg-white" placeholder="उदा. सरीला, हमीरपुर से लाइव कवरेज">
+    <!-- 1. LOGO UPLOAD / EDIT BOX -->
+    <div class="p-3 bg-white border border-blue-200 rounded-xl space-y-2">
+      <div class="flex items-center justify-between">
+        <label class="font-bold text-blue-950 flex items-center gap-1.5">
+          <i class="fa-solid fa-image text-blue-600"></i> चैनल लोगो बदलें / एडिट करें (Logo Edit):
+        </label>
+        <button type="button" onclick="resetChannelLogo()" class="text-[10px] text-red-600 font-bold hover:underline">डिफ़ॉल्ट लोगो करें</button>
+      </div>
+      <div class="flex items-center gap-3">
+        <img id="editLogoPreviewThumb" src="https://cdn-icons-png.flaticon.com/512/2965/2965879.png" class="w-12 h-12 rounded-lg border object-contain p-1 bg-slate-50 shrink-0">
+        <input type="file" id="liveLogoFileInput" accept="image/*" class="w-full text-xs border p-1.5 rounded bg-slate-50">
+      </div>
+    </div>
+
+    <!-- 2. TEXT EDIT BOXES -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+      <div>
+        <label class="font-bold text-gray-700">ऊपरी बैज टेक्स्ट (Top Download/Live Tag):</label>
+        <input id="liveTopBadgeInput" oninput="syncLiveStudioInputsToPreview()" value="download" class="w-full mt-1 border rounded-lg px-3 py-2 text-xs font-bold bg-white" placeholder="उदा. download या LIVE">
+      </div>
+      <div>
+        <label class="font-bold text-gray-700">नीले बॉक्स का टेक्स्ट (Blue Box Tag):</label>
+        <input id="liveBlueTagInput" oninput="syncLiveStudioInputsToPreview()" value="TOP NEWS" class="w-full mt-1 border rounded-lg px-3 py-2 text-xs font-bold bg-white" placeholder="उदा. TOP NEWS या BREAKING">
+      </div>
     </div>
 
     <div>
-      <label class="font-bold text-gray-700">2. नीचे चलने वाला लाइव टिकर टेक्स्ट (Ticker) *</label>
-      <input id="liveTickerInput" oninput="updateLivePreviewText()" value="ब्रेकिंग न्यूज़: आवाज़ बुंदेलखंड न्यूज़ पर ग्राउंड जीरो से सीधा प्रसारण जारी है..." class="w-full mt-1 border rounded-lg px-3 py-2 text-xs font-bold bg-white" placeholder="लाइव टिकर में चलने वाली खबर लिखें">
+      <label class="font-bold text-gray-700">मुख्य बड़ी हेडलाइन (Main White Strip Headline) *</label>
+      <input id="liveMainHeadlineInput" oninput="syncLiveStudioInputsToPreview()" value="सरीला, हमीरपुर: ग्राउंड जीरो से सबसे बड़ी और सटीक लाइव कवरेज" class="w-full mt-1 border border-red-300 rounded-lg px-3 py-2 text-xs font-black bg-white" placeholder="मुख्य बड़ी खबर यहाँ लिखें">
     </div>
 
     <div>
-      <label class="font-bold text-gray-700">3. YouTube Live / Facebook Live लिंक (पब्लिक दर्शकों के लिए) *</label>
-      <input id="liveStreamUrlInput" type="url" class="w-full mt-1 border border-red-300 rounded-lg px-3 py-2 text-xs bg-white" placeholder="https://youtube.com/live/... (यहाँ लाइव स्ट्रीम लिंक पेस्ट करें)">
-      <p class="text-[10px] text-gray-500 mt-1">नोट: पब्लिक के मोबाइल पर लाइव वीडियो चलाने के लिए अपने YouTube चैनल से 'Go Live' करके उसका लिंक यहाँ डालें।</p>
+      <label class="font-bold text-gray-700">नीचे चलने वाला लाइव टिकर टेक्स्ट (Bottom Scrolling Ticker) *</label>
+      <input id="liveBottomTickerInput" oninput="syncLiveStudioInputsToPreview()" value="हमीरपुर की ताज़ा खबरें: सरीला तहसील में प्रशासन की बड़ी कार्रवाई | बुंदेलखंड के हर गांव की खबर सबसे पहले आवाज़ बुंदेलखंड न्यूज़ पर..." class="w-full mt-1 border rounded-lg px-3 py-2 text-xs font-bold bg-white" placeholder="नीचे स्क्रॉल होने वाली खबरें लिखें">
+    </div>
+
+    <div>
+      <label class="font-bold text-gray-700">YouTube Live / Facebook Live लिंक (पब्लिक दर्शकों के लिए):</label>
+      <input id="liveStreamUrlInput" type="url" class="w-full mt-1 border border-blue-300 rounded-lg px-3 py-2 text-xs bg-white" placeholder="https://youtube.com/live/... (यहाँ लाइव स्ट्रीम लिंक पेस्ट करें)">
     </div>
 
     <div class="flex gap-2 pt-2">
       <button type="button" onclick="publishOrUpdateLiveStream()" class="flex-1 bg-red-700 hover:bg-red-800 text-white font-black py-3 rounded-xl text-xs shadow-lg flex items-center justify-center gap-1.5 transition">
-        <i class="fa-solid fa-tower-broadcast animate-pulse"></i> लाइव शुरू करें / टेक्स्ट अपडेट करें
+        <i class="fa-solid fa-tower-broadcast animate-pulse"></i> लाइव शुरू करें / लोगो व टेक्स्ट अपडेट करें
       </button>
       <button type="button" onclick="endLiveStream()" class="bg-slate-900 hover:bg-black text-amber-300 font-black px-4 py-3 rounded-xl text-xs shadow flex items-center justify-center gap-1.5 transition">
         <i class="fa-solid fa-circle-stop text-red-500"></i> लाइव बंद करें
@@ -343,41 +406,69 @@ class="text-xs bg-white text-red-700 font-bold px-3 py-1.5 rounded-full shadow-s
 <!-- ================= MAIN FEED SECTION ================= -->
 <section id="feedSection" class="space-y-4">
 
-<!-- PUBLIC LIVE STREAM PLAYER WITH TOP BAND, LOGO & LIVE TICKER (AUTO SHOWS WHEN LIVE IS ON) -->
-<div id="publicLiveStreamCard" class="hidden bg-slate-950 rounded-3xl overflow-hidden border-2 border-red-600 shadow-2xl space-y-0">
+<!-- PUBLIC LIVE BROADCAST CARD WITH ABP-STYLE TV FRAME (AUTO SHOWS WHEN LIVE IS ACTIVE) -->
+<div id="publicLiveStreamCard" class="hidden bg-slate-950 rounded-2xl overflow-hidden border-2 border-red-700 shadow-2xl">
   <div class="relative w-full aspect-video bg-black">
     <!-- Embedded YouTube/FB Live Player -->
     <div id="publicLiveIframeBox" class="w-full h-full"></div>
 
-    <!-- TOP BAND OVERLAY (LIVE BADGE + TOP TEXT + LOGO) -->
-    <div class="absolute top-0 left-0 right-0 p-2.5 flex items-start justify-between z-20 bg-gradient-to-b from-black/85 via-black/30 to-transparent pointer-events-none">
-      <div class="flex items-center gap-1.5 flex-wrap">
-        <span class="bg-red-600 text-white text-[10px] font-black px-2.5 py-0.5 rounded flex items-center gap-1.5 shadow-md tracking-wider">
-          <span class="w-2 h-2 rounded-full bg-white animate-ping"></span> LIVE
-        </span>
-        <span id="publicLiveTopBandText" class="bg-amber-400 text-slate-950 text-[10px] font-black px-2.5 py-0.5 rounded shadow">
-          ग्राउंड जीरो से सीधा प्रसारण
-        </span>
-      </div>
-
-      <!-- Official 3D Logo Badge -->
-      <div class="w-10 h-10 rounded-xl shadow-lg border-2 border-amber-400 overflow-hidden bg-gradient-to-b from-[#8B0000] via-[#A00000] to-[#002D62] flex flex-col items-center justify-between p-0.5 shrink-0">
-        <span class="text-[8px] font-black text-white leading-none tracking-tighter mt-0.5">आवाज</span>
-        <span class="text-[7px] font-black text-white leading-none tracking-tighter">बुंदेलखंड</span>
-        <div class="w-full bg-[#002244] text-center rounded-[2px] py-0.5 border-t border-amber-400/60">
-          <span class="text-[9px] font-black text-white tracking-widest leading-none">NEWS</span>
+    <!-- TOP-RIGHT CHANNEL LOGO & LIVE BADGE -->
+    <div class="absolute top-2.5 right-3 z-30 flex flex-col items-end pointer-events-none">
+      <span id="publicTopDownloadText" class="text-[9px] font-black text-slate-900 bg-white/95 px-1.5 py-0.2 rounded-t shadow-sm tracking-tight leading-tight">
+        download
+      </span>
+      <div class="flex items-stretch shadow-lg border border-white/80 rounded-sm overflow-hidden bg-white">
+        <div class="bg-white px-1.5 py-0.5 flex items-center justify-center">
+          <img id="publicTopLogoImg" src="https://cdn-icons-png.flaticon.com/512/2965/2965879.png" class="h-6 w-auto object-contain">
+        </div>
+        <div class="bg-[#C8102E] text-white font-black text-xs px-2 flex items-center tracking-wider">
+          LIVE
         </div>
       </div>
     </div>
-  </div>
 
-  <!-- BOTTOM LIVE TICKER STRIP -->
-  <div class="bg-[#001428] text-white border-t-2 border-red-600 py-1.5 px-2.5 flex items-center gap-2 overflow-hidden">
-    <span class="bg-red-600 text-white text-[9px] font-black px-2 py-0.5 rounded shrink-0 uppercase">लाइव अपडेट</span>
-    <div class="ticker-wrap w-full">
-      <div id="publicLiveBottomTicker" class="live-ticker-move text-xs font-bold text-amber-300">
-        आवाज़ बुंदेलखंड न्यूज़ पर सीधा प्रसारण जारी है...
+    <!-- LOWER-THIRD BROADCAST GRAPHIC BAND -->
+    <div class="absolute bottom-0 left-0 right-0 z-30 flex flex-col shadow-2xl pointer-events-none">
+      
+      <!-- UPPER ROW (Red Logo Block + Slanted Time + Main Headline) -->
+      <div class="flex items-stretch bg-white border-t-2 border-red-700 min-h-[42px] sm:min-h-[52px]">
+        <div class="bg-gradient-to-b from-[#D90429] to-[#9B0000] text-white px-2 py-1 flex flex-col items-center justify-center shrink-0 w-16 sm:w-20 border-r border-white/40">
+          <img id="publicBottomLogoImg" src="https://cdn-icons-png.flaticon.com/512/2965/2965879.png" class="h-5 w-auto object-contain bg-white rounded px-1 mb-0.5">
+          <span id="publicLiveClockSmall" class="text-[10px] font-black leading-none tracking-tighter">08:00</span>
+          <span id="publicLiveDateSmall" class="text-[7px] text-amber-200 font-bold leading-none mt-0.5">13 Nov</span>
+        </div>
+
+        <div class="flex items-center shrink-0 bg-white">
+          <div class="abp-slant-box bg-[#C8102E] text-white h-full pl-2.5 pr-5 flex flex-col items-center justify-center">
+            <span id="publicBigTimeText" class="text-sm sm:text-lg font-black leading-none tracking-tight">8:00</span>
+            <span id="publicAmPmText" class="text-[9px] font-bold leading-none mt-0.5">PM</span>
+          </div>
+          <span class="text-[#C8102E] font-black text-sm sm:text-base -ml-2 pr-1 tracking-tighter">»</span>
+        </div>
+
+        <div class="flex-1 flex items-center justify-between px-2 py-1 bg-gradient-to-r from-white via-slate-50 to-gray-100 overflow-hidden">
+          <h2 id="publicMainHeadlineShow" class="text-xs sm:text-base font-black text-slate-950 leading-tight line-clamp-2">
+            सरीला, हमीरपुर: ग्राउंड जीरो से लाइव कवरेज
+          </h2>
+          <div class="hidden sm:flex flex-col items-end shrink-0 border-l pl-2 ml-2 border-gray-300">
+            <span class="text-[8px] font-bold text-gray-400 uppercase">NETWORK</span>
+            <span class="text-[10px] font-black text-blue-950 leading-none">आवाज़ बुंदेलखंड</span>
+          </div>
+        </div>
       </div>
+
+      <!-- BOTTOM ROW (Blue Tag Box + Scrolling Ticker) -->
+      <div class="flex items-stretch h-6 sm:h-7 bg-white border-t border-gray-300">
+        <div class="bg-[#001D4A] text-white font-black text-[10px] sm:text-xs px-3 flex items-center justify-center shrink-0 uppercase tracking-wider w-24 sm:w-28">
+          <span id="publicBlueTagShow">TOP NEWS</span>
+        </div>
+        <div class="ticker-wrap flex-1 flex items-center bg-white text-slate-950 px-2 overflow-hidden">
+          <div id="publicBottomTickerShow" class="live-ticker-move text-[11px] sm:text-xs font-extrabold text-slate-900">
+            हमीरपुर की ताज़ा खबरें: आवाज़ बुंदेलखंड न्यूज़ पर सीधा प्रसारण जारी है...
+          </div>
+        </div>
+      </div>
+
     </div>
   </div>
 </div>
@@ -615,9 +706,6 @@ class="text-xs bg-white text-red-700 font-bold px-3 py-1.5 rounded-full shadow-s
   </h4>
   <span class="text-[9px] bg-red-600 text-white font-bold px-2 py-0.5 rounded">ऐप का अपना Ad</span>
 </div>
-<p class="text-[10px] text-slate-600">
-यहाँ आप अपना कोई भी वीडियो Ad लगा सकते हैं, जो यूज़र के स्क्रीन पर आते ही पूरी आवाज़ के साथ अपने-आप चलेगा।
-</p>
 
 <div>
   <label class="text-[11px] font-bold text-slate-700">Ad का शीर्षक (Heading)</label>
@@ -834,7 +922,7 @@ class="text-xs bg-white text-red-700 font-bold px-3 py-1.5 rounded-full shadow-s
 </div>
 </div>
 
-<!-- DUAL-TAB STAFF LOGIN MODAL (ADMIN LOGIN & REPORTER LOGIN) -->
+<!-- DUAL-TAB STAFF LOGIN MODAL -->
 <div id="authModal" class="fixed inset-0 bg-black/80 z-[999999] flex items-center justify-center p-4 hidden">
   <div class="bg-white max-w-sm w-full p-5 rounded-3xl relative shadow-2xl border-2 border-red-700 space-y-4">
     <button onclick="document.getElementById('authModal').classList.add('hidden')" class="absolute top-3 right-4 text-xl font-bold text-gray-400 hover:text-black">✕</button>
@@ -1081,6 +1169,7 @@ const db = firebase.database();
 const ADMIN_PHONE = "+918853252811";
 const ADMIN_UPI = "8853252811@apl";
 const DEFAULT_ADMIN_PASS = "998124";
+const DEFAULT_TV_LOGO = "https://cdn-icons-png.flaticon.com/512/2965/2965879.png";
 const PAYOUT_PER_NEWS = 30;
 
 let currentUserPhone = null;
@@ -1096,6 +1185,7 @@ let userAdReceiptBase64 = "";
 let galleryNewsVideoBase64 = "";
 let galleryShortVideoBase64 = "";
 let adminSpecialVideoBase64 = "";
+let customLiveLogoBase64 = DEFAULT_TV_LOGO;
 
 let audioEnabledByUser = false;
 let activeCamStream = null;
@@ -1116,24 +1206,77 @@ return String(value || "").replace(/[&<>"']/g, char => ({
 })[char]);
 }
 
+/* REAL-TIME CLOCK FOR BROADCAST OVERLAY & HEADER */
 setInterval(()=>{
-const el=document.getElementById("liveTime");
-if(el) el.innerText=new Date().toLocaleTimeString("hi-IN");
-},1000);
+  const now = new Date();
+  const el = document.getElementById("liveTime");
+  if(el) el.innerText = now.toLocaleTimeString("hi-IN");
 
-/* ================= LIVE COVERAGE & OVERLAY ENGINE ================= */
-function updateLivePreviewText() {
-  const topVal = document.getElementById("liveTopBandInput").value.trim() || "सरीला, हमीरपुर से सीधा प्रसारण";
-  const tickerVal = document.getElementById("liveTickerInput").value.trim() || "ब्रेकिंग न्यूज़: आवाज़ बुंदेलखंड न्यूज़ पर ग्राउंड जीरो से सीधा प्रसारण जारी है...";
-  document.getElementById("studioTopBandPreview").innerText = topVal;
-  document.getElementById("studioBottomTickerPreview").innerText = tickerVal;
+  // Update ABP-style Broadcast Clocks
+  let hours = now.getHours();
+  const minutes = String(now.getMinutes()).padStart(2, '0');
+  const ampm = hours >= 12 ? 'PM' : 'AM';
+  const hours12 = hours % 12 || 12;
+  const timeStr = `${hours12}:${minutes}`;
+  const smallTimeStr = `${String(now.getHours()).padStart(2, '0')}:${minutes}`;
+  const dateStr = now.toLocaleDateString("en-GB", { day: '2-digit', month: 'short' });
+
+  ["studioBigTimeText", "publicBigTimeText"].forEach(id => {
+    const e = document.getElementById(id);
+    if (e) e.innerText = timeStr;
+  });
+  ["studioAmPmText", "publicAmPmText"].forEach(id => {
+    const e = document.getElementById(id);
+    if (e) e.innerText = ampm;
+  });
+  ["studioLiveClockSmall", "publicLiveClockSmall"].forEach(id => {
+    const e = document.getElementById(id);
+    if (e) e.innerText = smallTimeStr;
+  });
+  ["studioLiveDateSmall", "publicLiveDateSmall"].forEach(id => {
+    const e = document.getElementById(id);
+    if (e) e.innerText = dateStr;
+  });
+}, 1000);
+
+/* ================= ABP-STYLE TV BROADCAST FRAME, LOGO & TEXT EDIT ENGINE ================= */
+document.getElementById("liveLogoFileInput").addEventListener("change", function(e) {
+  const file = e.target.files[0];
+  if (!file) return;
+  compressImage(file, 300, 300, 0.85, b64 => {
+    customLiveLogoBase64 = b64;
+    updateLiveLogoImagesUI(b64);
+  });
+});
+
+function resetChannelLogo() {
+  customLiveLogoBase64 = DEFAULT_TV_LOGO;
+  document.getElementById("liveLogoFileInput").value = "";
+  updateLiveLogoImagesUI(DEFAULT_TV_LOGO);
+}
+
+function updateLiveLogoImagesUI(logoSrc) {
+  ["editLogoPreviewThumb", "studioTopLogoImg", "studioBottomLogoImg", "publicTopLogoImg", "publicBottomLogoImg"].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.src = logoSrc;
+  });
+}
+
+function syncLiveStudioInputsToPreview() {
+  const topBadge = document.getElementById("liveTopBadgeInput").value.trim() || "download";
+  const blueTag = document.getElementById("liveBlueTagInput").value.trim() || "TOP NEWS";
+  const mainHeadline = document.getElementById("liveMainHeadlineInput").value.trim() || "आवाज़ बुंदेलखंड न्यूज़: लाइव कवरेज";
+  const bottomTicker = document.getElementById("liveBottomTickerInput").value.trim() || "आवाज़ बुंदेलखंड न्यूज़ पर सीधा प्रसारण जारी है...";
+
+  document.getElementById("studioTopDownloadText").innerText = topBadge;
+  document.getElementById("studioBlueTagShow").innerText = blueTag;
+  document.getElementById("studioMainHeadlineShow").innerText = mainHeadline;
+  document.getElementById("studioBottomTickerShow").innerText = bottomTicker;
 }
 
 async function startLiveCamera(facingMode = 'environment') {
   try {
-    if (activeCamStream) {
-      activeCamStream.getTracks().forEach(track => track.stop());
-    }
+    if (activeCamStream) activeCamStream.getTracks().forEach(track => track.stop());
     const stream = await navigator.mediaDevices.getUserMedia({
       video: { facingMode: facingMode },
       audio: true
@@ -1143,7 +1286,7 @@ async function startLiveCamera(facingMode = 'environment') {
     vid.srcObject = stream;
     document.getElementById("studioNoCamMsg").classList.add("hidden");
   } catch (err) {
-    alert("कैमरा एक्सेस नहीं हो पाया: कृपया ब्राउज़र/ऐप को कैमरा और माइक की अनुमति दें।\n(" + err.message + ")");
+    alert("कैमरा एक्सेस नहीं हो पाया: कृपया कैमरा और माइक की अनुमति दें।\n(" + err.message + ")");
   }
 }
 
@@ -1160,23 +1303,28 @@ function stopLiveCamera() {
 function publishOrUpdateLiveStream() {
   if (!currentUserPhone || (!isAdmin && !isReporter)) return alert("पहले स्टाफ़ लॉगिन करें।");
 
-  const topBand = document.getElementById("liveTopBandInput").value.trim();
-  const tickerText = document.getElementById("liveTickerInput").value.trim();
+  const topBadge = document.getElementById("liveTopBadgeInput").value.trim() || "download";
+  const blueTag = document.getElementById("liveBlueTagInput").value.trim() || "TOP NEWS";
+  const mainHeadline = document.getElementById("liveMainHeadlineInput").value.trim();
+  const bottomTicker = document.getElementById("liveBottomTickerInput").value.trim();
   const streamUrl = document.getElementById("liveStreamUrlInput").value.trim();
 
-  if (!topBand || !tickerText) {
-    return alert("कृपया टॉप बैंड टेक्स्ट और नीचे चलने वाला लाइव टिकर टेक्स्ट भरें।");
+  if (!mainHeadline || !bottomTicker) {
+    return alert("कृपया मुख्य बड़ी हेडलाइन और नीचे चलने वाला टिकर टेक्स्ट भरें।");
   }
 
   db.ref("settings/live_broadcast").set({
     isLive: true,
-    topBand: topBand,
-    tickerText: tickerText,
+    logoUrl: customLiveLogoBase64 || DEFAULT_TV_LOGO,
+    topBadge: topBadge,
+    blueTag: blueTag,
+    mainHeadline: mainHeadline,
+    tickerText: bottomTicker,
     streamUrl: streamUrl || "",
     reporterName: myProfile.name,
     updatedAt: Date.now()
   }).then(() => {
-    alert("लाइव प्रसारण और ऑन-स्क्रीन टेक्स्ट सफलतापूर्वक अपडेट हो गया है!");
+    alert("लाइव टी.वी. फ्रेम, लोगो और टेक्स्ट सफलतापूर्वक लाइव अपडेट हो गए हैं!");
   }).catch(err => alert("त्रुटि: " + err.message));
 }
 
@@ -1196,8 +1344,6 @@ function loadPublicLiveBroadcast() {
     const data = snap.val();
     const publicCard = document.getElementById("publicLiveStreamCard");
     const iframeBox = document.getElementById("publicLiveIframeBox");
-    const topBandEl = document.getElementById("publicLiveTopBandText");
-    const bottomTickerEl = document.getElementById("publicLiveBottomTicker");
 
     if (!data || !data.isLive || !data.streamUrl) {
       if (publicCard) publicCard.classList.add("hidden");
@@ -1206,10 +1352,24 @@ function loadPublicLiveBroadcast() {
     }
 
     if (publicCard) publicCard.classList.remove("hidden");
-    if (topBandEl) topBandEl.innerText = data.topBand || "ग्राउंड जीरो से सीधा प्रसारण";
-    if (bottomTickerEl) bottomTickerEl.innerText = data.tickerText || "आवाज़ बुंदेलखंड न्यूज़ पर सीधा प्रसारण जारी है...";
 
-    // Render YouTube Live / FB Live / MP4 Stream inside the public overlay box
+    // Sync Logo & Texts to Public Live Frame
+    const logoSrc = data.logoUrl || DEFAULT_TV_LOGO;
+    updateLiveLogoImagesUI(logoSrc);
+
+    document.getElementById("publicTopDownloadText").innerText = data.topBadge || "download";
+    document.getElementById("publicBlueTagShow").innerText = data.blueTag || "TOP NEWS";
+    document.getElementById("publicMainHeadlineShow").innerText = data.mainHeadline || "ग्राउंड जीरो से लाइव कवरेज";
+    document.getElementById("publicBottomTickerShow").innerText = data.tickerText || "आवाज़ बुंदेलखंड न्यूज़ पर सीधा प्रसारण जारी है...";
+
+    // Also populate Studio Inputs if Staff is logged in
+    document.getElementById("liveTopBadgeInput").value = data.topBadge || "download";
+    document.getElementById("liveBlueTagInput").value = data.blueTag || "TOP NEWS";
+    document.getElementById("liveMainHeadlineInput").value = data.mainHeadline || "";
+    document.getElementById("liveBottomTickerInput").value = data.tickerText || "";
+    document.getElementById("liveStreamUrlInput").value = data.streamUrl || "";
+    syncLiveStudioInputsToPreview();
+
     const url = data.streamUrl;
     const ytMatch = url.match(/(?:youtu\.be\/|youtube\.com\/(?:watch\?v=|embed\/|shorts\/|live\/))([^?&/]+)/);
     let embedHtml = "";
