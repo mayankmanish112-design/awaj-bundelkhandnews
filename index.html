@@ -38,10 +38,11 @@ body { font-family: 'Mukta', sans-serif; }
 }
 .no-scrollbar::-webkit-scrollbar { display: none; }
 .ticker-wrap { overflow: hidden; white-space: nowrap; }
-/* धीमी गति (120s) ताकि ब्रेकिंग न्यूज़ आराम से पढ़ी जा सके */
 .ticker-move { display: inline-block; animation: ticker 120s linear infinite; }
+.live-ticker-move { display: inline-block; animation: liveTicker 25s linear infinite; }
 .ticker-wrap:hover .ticker-move { animation-play-state: paused; }
 @keyframes ticker { 0% { transform: translate3d(100vw, 0, 0); } 100% { transform: translate3d(-100%, 0, 0); } }
+@keyframes liveTicker { 0% { transform: translate3d(100%, 0, 0); } 100% { transform: translate3d(-100%, 0, 0); } }
 </style>
 </head>
 
@@ -99,9 +100,11 @@ class="text-xs bg-white text-red-700 font-bold px-3 py-1.5 rounded-full shadow-s
 </div>
 </header>
 
+<!-- STAFF NAVIGATION BAR (WITH LIVE STUDIO TAB) -->
 <nav id="staffNavigation" class="hidden bg-white border-b sticky top-[75px] z-40 shadow-sm">
 <div class="max-w-4xl mx-auto flex justify-around text-xs font-bold overflow-x-auto">
 <button onclick="switchTab('feed')" id="tabFeed" class="navtab py-3 px-2 border-b-2 border-red-700 text-red-700 whitespace-nowrap">मुख्य समाचार</button>
+<button onclick="switchTab('liveStudio')" id="tabLiveStudio" class="navtab py-3 px-2 border-b-2 border-transparent text-red-600 font-black whitespace-nowrap flex items-center gap-1"><span class="w-2 h-2 rounded-full bg-red-600 animate-ping"></span> लाइव प्रसारण (LIVE)</button>
 <button onclick="switchTab('reporter')" id="tabReporter" class="navtab py-3 px-2 border-b-2 border-transparent text-gray-500 whitespace-nowrap">नई ख़बर पोस्ट</button>
 <button onclick="switchTab('shortsPost')" id="tabShortsPost" class="navtab py-3 px-2 border-b-2 border-transparent text-gray-500 whitespace-nowrap"><i class="fa-solid fa-bolt text-amber-500"></i> शॉर्ट वीडियो पोस्ट</button>
 <button onclick="switchTab('wallet')" id="tabWallet" class="navtab py-3 px-2 border-b-2 border-transparent text-gray-500 whitespace-nowrap">मेरा पर्स (₹30/ख़बर)</button>
@@ -232,8 +235,152 @@ class="text-xs bg-white text-red-700 font-bold px-3 py-1.5 rounded-full shadow-s
 </div>
 </section>
 
-<!-- MAIN FEED SECTION -->
+<!-- ================= LIVE STREAM STUDIO SECTION (FOR STAFF & REPORTERS) ================= -->
+<section id="liveStudioSection" class="hidden bg-white p-5 rounded-3xl shadow-xl border-2 border-red-700 space-y-4">
+  <div class="border-b pb-2.5 flex justify-between items-center">
+    <div>
+      <h3 class="text-sm font-black text-red-700 flex items-center gap-2">
+        <span class="w-3 h-3 rounded-full bg-red-600 animate-ping"></span>
+        ग्राउंड जीरो लाइव प्रसारण स्टूडियो (LIVE STUDIO)
+      </h3>
+      <p class="text-[10px] text-gray-500">ऑन-स्क्रीन लोगो, टॉप बैंड और लाइव टिकर के साथ सीधा प्रसारण करें</p>
+    </div>
+    <button onclick="switchTab('feed')" class="text-xs font-bold text-gray-400 hover:text-black">✕ बंद करें</button>
+  </div>
+
+  <!-- LIVE TV OVERLAY PREVIEW BOX -->
+  <div class="relative w-full aspect-video bg-slate-950 rounded-2xl overflow-hidden border-2 border-slate-800 shadow-lg">
+    <!-- Camera Preview or YouTube Stream -->
+    <video id="studioLocalCamVideo" autoplay muted playsinline class="w-full h-full object-cover"></video>
+    <div id="studioNoCamMsg" class="absolute inset-0 flex flex-col items-center justify-center text-white/70 text-center p-4">
+      <i class="fa-solid fa-video text-3xl mb-2 text-red-500"></i>
+      <p class="text-xs font-bold">लाइव कैमरा चालू करें अथवा नीचे YouTube Live लिंक डालें</p>
+    </div>
+
+    <!-- TOP BAND OVERLAY (LIVE BADGE + TOP LOCATION BAND + CHANNEL LOGO) -->
+    <div class="absolute top-0 left-0 right-0 p-2.5 flex items-start justify-between z-20 bg-gradient-to-b from-black/80 via-black/30 to-transparent pointer-events-none">
+      <!-- Top Left: LIVE Badge + Location Top Band -->
+      <div class="flex flex-col gap-1">
+        <div class="flex items-center gap-1.5">
+          <span class="bg-red-600 text-white text-[10px] font-black px-2.5 py-0.5 rounded flex items-center gap-1.5 shadow-md tracking-wider">
+            <span class="w-2 h-2 rounded-full bg-white animate-ping"></span> LIVE
+          </span>
+          <span id="studioTopBandPreview" class="bg-amber-400 text-slate-950 text-[10px] font-black px-2.5 py-0.5 rounded shadow">
+            सरीला, हमीरपुर से सीधा प्रसारण
+          </span>
+        </div>
+      </div>
+
+      <!-- Top Right: Official 3D News Logo Badge -->
+      <div class="w-11 h-11 rounded-xl shadow-lg border-2 border-amber-400 overflow-hidden bg-gradient-to-b from-[#8B0000] via-[#A00000] to-[#002D62] flex flex-col items-center justify-between p-0.5 shrink-0">
+        <span class="text-[9px] font-black text-white leading-none tracking-tighter mt-0.5">आवाज</span>
+        <span class="text-[8px] font-black text-white leading-none tracking-tighter">बुंदेलखंड</span>
+        <div class="w-full bg-[#002244] text-center rounded-[2px] py-0.5 border-t border-amber-400/60">
+          <span class="text-[10px] font-black text-white tracking-widest leading-none">NEWS</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- BOTTOM LIVE TICKER OVERLAY -->
+    <div class="absolute bottom-0 left-0 right-0 z-20 pointer-events-none">
+      <div class="bg-red-700 text-white text-[9px] font-black px-2.5 py-0.5 inline-block rounded-tr-lg uppercase tracking-wider">
+        आवाज़ बुंदेलखंड लाइव बुलेटिन
+      </div>
+      <div class="bg-[#001428]/95 text-white border-t-2 border-amber-400 py-1.5 px-2 flex items-center overflow-hidden">
+        <div id="studioBottomTickerPreview" class="live-ticker-move text-xs font-bold text-amber-200 whitespace-nowrap">
+          ब्रेकिंग न्यूज़: आवाज़ बुंदेलखंड न्यूज़ पर ग्राउंड जीरो से सीधा प्रसारण जारी है...
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CAMERA CONTROLS -->
+  <div class="flex flex-wrap gap-2">
+    <button type="button" onclick="startLiveCamera('environment')" class="flex-1 bg-slate-900 hover:bg-black text-white py-2 px-3 rounded-xl text-xs font-bold flex items-center justify-center gap-1.5 shadow">
+      <i class="fa-solid fa-camera text-amber-400"></i> बैक कैमरा चालू करें
+    </button>
+    <button type="button" onclick="startLiveCamera('user')" class="flex-1 bg-slate-800 hover:bg-slate-900 text-white py-2 px-3 rounded-xl text-xs font-bold flex items-center justify-center gap-1.5 shadow">
+      <i class="fa-solid fa-camera-rotate text-emerald-400"></i> सेल्फी कैमरा
+    </button>
+    <button type="button" onclick="stopLiveCamera()" class="bg-gray-200 hover:bg-gray-300 text-gray-800 py-2 px-3 rounded-xl text-xs font-bold">
+      कैमरा बंद
+    </button>
+  </div>
+
+  <!-- TEXT & OVERLAY MANAGEMENT CONTROLS -->
+  <div class="bg-slate-50 p-4 rounded-2xl border space-y-3 text-xs">
+    <h4 class="font-black text-slate-900 border-b pb-1.5 flex items-center gap-1.5">
+      <i class="fa-solid fa-sliders text-red-600"></i> लाइव टेक्स्ट, टॉप बैंड व टिकर मैनेजमेंट
+    </h4>
+
+    <div>
+      <label class="font-bold text-gray-700">1. टॉप बैंड टेक्स्ट (ऊपर पीली पट्टी में दिखेगा) *</label>
+      <input id="liveTopBandInput" oninput="updateLivePreviewText()" value="सरीला, हमीरपुर से सीधा प्रसारण" class="w-full mt-1 border rounded-lg px-3 py-2 text-xs font-bold bg-white" placeholder="उदा. सरीला, हमीरपुर से लाइव कवरेज">
+    </div>
+
+    <div>
+      <label class="font-bold text-gray-700">2. नीचे चलने वाला लाइव टिकर टेक्स्ट (Ticker) *</label>
+      <input id="liveTickerInput" oninput="updateLivePreviewText()" value="ब्रेकिंग न्यूज़: आवाज़ बुंदेलखंड न्यूज़ पर ग्राउंड जीरो से सीधा प्रसारण जारी है..." class="w-full mt-1 border rounded-lg px-3 py-2 text-xs font-bold bg-white" placeholder="लाइव टिकर में चलने वाली खबर लिखें">
+    </div>
+
+    <div>
+      <label class="font-bold text-gray-700">3. YouTube Live / Facebook Live लिंक (पब्लिक दर्शकों के लिए) *</label>
+      <input id="liveStreamUrlInput" type="url" class="w-full mt-1 border border-red-300 rounded-lg px-3 py-2 text-xs bg-white" placeholder="https://youtube.com/live/... (यहाँ लाइव स्ट्रीम लिंक पेस्ट करें)">
+      <p class="text-[10px] text-gray-500 mt-1">नोट: पब्लिक के मोबाइल पर लाइव वीडियो चलाने के लिए अपने YouTube चैनल से 'Go Live' करके उसका लिंक यहाँ डालें।</p>
+    </div>
+
+    <div class="flex gap-2 pt-2">
+      <button type="button" onclick="publishOrUpdateLiveStream()" class="flex-1 bg-red-700 hover:bg-red-800 text-white font-black py-3 rounded-xl text-xs shadow-lg flex items-center justify-center gap-1.5 transition">
+        <i class="fa-solid fa-tower-broadcast animate-pulse"></i> लाइव शुरू करें / टेक्स्ट अपडेट करें
+      </button>
+      <button type="button" onclick="endLiveStream()" class="bg-slate-900 hover:bg-black text-amber-300 font-black px-4 py-3 rounded-xl text-xs shadow flex items-center justify-center gap-1.5 transition">
+        <i class="fa-solid fa-circle-stop text-red-500"></i> लाइव बंद करें
+      </button>
+    </div>
+  </div>
+</section>
+
+<!-- ================= MAIN FEED SECTION ================= -->
 <section id="feedSection" class="space-y-4">
+
+<!-- PUBLIC LIVE STREAM PLAYER WITH TOP BAND, LOGO & LIVE TICKER (AUTO SHOWS WHEN LIVE IS ON) -->
+<div id="publicLiveStreamCard" class="hidden bg-slate-950 rounded-3xl overflow-hidden border-2 border-red-600 shadow-2xl space-y-0">
+  <div class="relative w-full aspect-video bg-black">
+    <!-- Embedded YouTube/FB Live Player -->
+    <div id="publicLiveIframeBox" class="w-full h-full"></div>
+
+    <!-- TOP BAND OVERLAY (LIVE BADGE + TOP TEXT + LOGO) -->
+    <div class="absolute top-0 left-0 right-0 p-2.5 flex items-start justify-between z-20 bg-gradient-to-b from-black/85 via-black/30 to-transparent pointer-events-none">
+      <div class="flex items-center gap-1.5 flex-wrap">
+        <span class="bg-red-600 text-white text-[10px] font-black px-2.5 py-0.5 rounded flex items-center gap-1.5 shadow-md tracking-wider">
+          <span class="w-2 h-2 rounded-full bg-white animate-ping"></span> LIVE
+        </span>
+        <span id="publicLiveTopBandText" class="bg-amber-400 text-slate-950 text-[10px] font-black px-2.5 py-0.5 rounded shadow">
+          ग्राउंड जीरो से सीधा प्रसारण
+        </span>
+      </div>
+
+      <!-- Official 3D Logo Badge -->
+      <div class="w-10 h-10 rounded-xl shadow-lg border-2 border-amber-400 overflow-hidden bg-gradient-to-b from-[#8B0000] via-[#A00000] to-[#002D62] flex flex-col items-center justify-between p-0.5 shrink-0">
+        <span class="text-[8px] font-black text-white leading-none tracking-tighter mt-0.5">आवाज</span>
+        <span class="text-[7px] font-black text-white leading-none tracking-tighter">बुंदेलखंड</span>
+        <div class="w-full bg-[#002244] text-center rounded-[2px] py-0.5 border-t border-amber-400/60">
+          <span class="text-[9px] font-black text-white tracking-widest leading-none">NEWS</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- BOTTOM LIVE TICKER STRIP -->
+  <div class="bg-[#001428] text-white border-t-2 border-red-600 py-1.5 px-2.5 flex items-center gap-2 overflow-hidden">
+    <span class="bg-red-600 text-white text-[9px] font-black px-2 py-0.5 rounded shrink-0 uppercase">लाइव अपडेट</span>
+    <div class="ticker-wrap w-full">
+      <div id="publicLiveBottomTicker" class="live-ticker-move text-xs font-bold text-amber-300">
+        आवाज़ बुंदेलखंड न्यूज़ पर सीधा प्रसारण जारी है...
+      </div>
+    </div>
+  </div>
+</div>
 
 <div onclick="openUserAdSection()" class="bg-gradient-to-r from-amber-500 to-red-600 text-white p-3 rounded-2xl shadow-md flex items-center justify-between cursor-pointer hover:opacity-95 transition">
   <div class="flex items-center gap-2.5">
@@ -537,7 +684,6 @@ class="text-xs bg-white text-red-700 font-bold px-3 py-1.5 rounded-full shadow-s
 रिपोर्टर, पासवर्ड एवं एडमिन प्रबंधन
 </h3>
 
-<!-- ADMIN PASSWORD & PHOTO SETUP -->
 <div class="bg-red-50 border border-red-200 rounded-xl p-4 space-y-3">
 <h3 class="font-bold text-sm text-red-800">प्रधान संपादक (Admin) की फोटो और पासवर्ड</h3>
 
@@ -557,7 +703,6 @@ class="text-xs bg-white text-red-700 font-bold px-3 py-1.5 rounded-full shadow-s
 </div>
 </div>
 
-<!-- ADD NEW REPORTER WITH PASSWORD -->
 <div class="space-y-3 bg-blue-50/50 p-4 rounded-xl border border-blue-200">
 <h3 class="font-bold text-sm text-blue-950">नया रिपोर्टर जोड़ें और लॉगिन पासवर्ड बनाएं</h3>
 
@@ -594,7 +739,7 @@ class="text-xs bg-white text-red-700 font-bold px-3 py-1.5 rounded-full shadow-s
 
 </main>
 
-<!-- UPDATE REPORTER PASSWORD MODAL (ADMIN ONLY) -->
+<!-- UPDATE REPORTER PASSWORD MODAL -->
 <div id="updateRepPasswordModal" class="fixed inset-0 bg-black/80 z-[1000001] flex items-center justify-center p-4 hidden">
   <div class="bg-white rounded-2xl p-5 max-w-sm w-full space-y-3 shadow-2xl border-2 border-blue-700">
     <div class="flex justify-between items-center border-b pb-2">
@@ -689,7 +834,7 @@ class="text-xs bg-white text-red-700 font-bold px-3 py-1.5 rounded-full shadow-s
 </div>
 </div>
 
-<!-- ================= DUAL-TAB STAFF LOGIN MODAL (ADMIN LOGIN & REPORTER LOGIN) ================= -->
+<!-- DUAL-TAB STAFF LOGIN MODAL (ADMIN LOGIN & REPORTER LOGIN) -->
 <div id="authModal" class="fixed inset-0 bg-black/80 z-[999999] flex items-center justify-center p-4 hidden">
   <div class="bg-white max-w-sm w-full p-5 rounded-3xl relative shadow-2xl border-2 border-red-700 space-y-4">
     <button onclick="document.getElementById('authModal').classList.add('hidden')" class="absolute top-3 right-4 text-xl font-bold text-gray-400 hover:text-black">✕</button>
@@ -699,7 +844,6 @@ class="text-xs bg-white text-red-700 font-bold px-3 py-1.5 rounded-full shadow-s
       <p class="text-[11px] text-gray-500">अपना लॉगिन प्रकार चुनें</p>
     </div>
 
-    <!-- TWO LOGIN OPTION TABS -->
     <div class="grid grid-cols-2 gap-2 bg-gray-100 p-1 rounded-2xl">
       <button type="button" id="btnSwitchAdminLogin" onclick="switchLoginRoleTab('admin')" class="py-2 rounded-xl text-xs font-black bg-red-700 text-white shadow transition">
         <i class="fa-solid fa-user-shield"></i> एडमिन लॉगिन
@@ -709,7 +853,6 @@ class="text-xs bg-white text-red-700 font-bold px-3 py-1.5 rounded-full shadow-s
       </button>
     </div>
 
-    <!-- 1. ADMIN LOGIN FORM -->
     <div id="adminLoginFormBox" class="space-y-3">
       <div class="bg-red-50 border border-red-200 p-2 rounded-xl text-center">
         <span class="text-[11px] font-bold text-red-800"><i class="fa-solid fa-crown text-amber-600"></i> प्रधान संपादक (Admin) लॉगिन</span>
@@ -733,7 +876,6 @@ class="text-xs bg-white text-red-700 font-bold px-3 py-1.5 rounded-full shadow-s
       </button>
     </div>
 
-    <!-- 2. REPORTER LOGIN FORM -->
     <div id="reporterLoginFormBox" class="hidden space-y-3">
       <div class="bg-blue-50 border border-blue-200 p-2 rounded-xl text-center">
         <span class="text-[11px] font-bold text-blue-900"><i class="fa-solid fa-id-badge text-blue-700"></i> अधिकृत रिपोर्टर लॉगिन</span>
@@ -756,11 +898,10 @@ class="text-xs bg-white text-red-700 font-bold px-3 py-1.5 rounded-full shadow-s
         <i class="fa-solid fa-right-to-bracket"></i> रिपोर्टर लॉगिन करें
       </button>
     </div>
-
   </div>
 </div>
 
-<!-- ================= OFFICIAL ID CARD MODAL (FRONT & BACK) ================= -->
+<!-- OFFICIAL ID CARD MODAL (FRONT & BACK) -->
 <div id="icardModal" class="fixed inset-0 bg-black/85 z-[1000] flex items-center justify-center p-3 overflow-y-auto hidden">
   <div class="bg-white rounded-3xl p-4 max-w-2xl w-full space-y-4 my-auto shadow-2xl border-2 border-amber-400">
     <div class="flex justify-between items-center border-b pb-2">
@@ -957,6 +1098,7 @@ let galleryShortVideoBase64 = "";
 let adminSpecialVideoBase64 = "";
 
 let audioEnabledByUser = false;
+let activeCamStream = null;
 
 let myProfile = {
 name:"संवाददाता",
@@ -978,6 +1120,114 @@ setInterval(()=>{
 const el=document.getElementById("liveTime");
 if(el) el.innerText=new Date().toLocaleTimeString("hi-IN");
 },1000);
+
+/* ================= LIVE COVERAGE & OVERLAY ENGINE ================= */
+function updateLivePreviewText() {
+  const topVal = document.getElementById("liveTopBandInput").value.trim() || "सरीला, हमीरपुर से सीधा प्रसारण";
+  const tickerVal = document.getElementById("liveTickerInput").value.trim() || "ब्रेकिंग न्यूज़: आवाज़ बुंदेलखंड न्यूज़ पर ग्राउंड जीरो से सीधा प्रसारण जारी है...";
+  document.getElementById("studioTopBandPreview").innerText = topVal;
+  document.getElementById("studioBottomTickerPreview").innerText = tickerVal;
+}
+
+async function startLiveCamera(facingMode = 'environment') {
+  try {
+    if (activeCamStream) {
+      activeCamStream.getTracks().forEach(track => track.stop());
+    }
+    const stream = await navigator.mediaDevices.getUserMedia({
+      video: { facingMode: facingMode },
+      audio: true
+    });
+    activeCamStream = stream;
+    const vid = document.getElementById("studioLocalCamVideo");
+    vid.srcObject = stream;
+    document.getElementById("studioNoCamMsg").classList.add("hidden");
+  } catch (err) {
+    alert("कैमरा एक्सेस नहीं हो पाया: कृपया ब्राउज़र/ऐप को कैमरा और माइक की अनुमति दें।\n(" + err.message + ")");
+  }
+}
+
+function stopLiveCamera() {
+  if (activeCamStream) {
+    activeCamStream.getTracks().forEach(track => track.stop());
+    activeCamStream = null;
+  }
+  const vid = document.getElementById("studioLocalCamVideo");
+  if (vid) vid.srcObject = null;
+  document.getElementById("studioNoCamMsg").classList.remove("hidden");
+}
+
+function publishOrUpdateLiveStream() {
+  if (!currentUserPhone || (!isAdmin && !isReporter)) return alert("पहले स्टाफ़ लॉगिन करें।");
+
+  const topBand = document.getElementById("liveTopBandInput").value.trim();
+  const tickerText = document.getElementById("liveTickerInput").value.trim();
+  const streamUrl = document.getElementById("liveStreamUrlInput").value.trim();
+
+  if (!topBand || !tickerText) {
+    return alert("कृपया टॉप बैंड टेक्स्ट और नीचे चलने वाला लाइव टिकर टेक्स्ट भरें।");
+  }
+
+  db.ref("settings/live_broadcast").set({
+    isLive: true,
+    topBand: topBand,
+    tickerText: tickerText,
+    streamUrl: streamUrl || "",
+    reporterName: myProfile.name,
+    updatedAt: Date.now()
+  }).then(() => {
+    alert("लाइव प्रसारण और ऑन-स्क्रीन टेक्स्ट सफलतापूर्वक अपडेट हो गया है!");
+  }).catch(err => alert("त्रुटि: " + err.message));
+}
+
+function endLiveStream() {
+  if (!currentUserPhone || (!isAdmin && !isReporter)) return;
+  if (confirm("क्या आप वाकई लाइव प्रसारण बंद करना चाहते हैं?")) {
+    db.ref("settings/live_broadcast").set({ isLive: false }).then(() => {
+      stopLiveCamera();
+      alert("लाइव प्रसारण बंद कर दिया गया है।");
+      switchTab("feed");
+    });
+  }
+}
+
+function loadPublicLiveBroadcast() {
+  db.ref("settings/live_broadcast").on("value", snap => {
+    const data = snap.val();
+    const publicCard = document.getElementById("publicLiveStreamCard");
+    const iframeBox = document.getElementById("publicLiveIframeBox");
+    const topBandEl = document.getElementById("publicLiveTopBandText");
+    const bottomTickerEl = document.getElementById("publicLiveBottomTicker");
+
+    if (!data || !data.isLive || !data.streamUrl) {
+      if (publicCard) publicCard.classList.add("hidden");
+      if (iframeBox) iframeBox.innerHTML = "";
+      return;
+    }
+
+    if (publicCard) publicCard.classList.remove("hidden");
+    if (topBandEl) topBandEl.innerText = data.topBand || "ग्राउंड जीरो से सीधा प्रसारण";
+    if (bottomTickerEl) bottomTickerEl.innerText = data.tickerText || "आवाज़ बुंदेलखंड न्यूज़ पर सीधा प्रसारण जारी है...";
+
+    // Render YouTube Live / FB Live / MP4 Stream inside the public overlay box
+    const url = data.streamUrl;
+    const ytMatch = url.match(/(?:youtu\.be\/|youtube\.com\/(?:watch\?v=|embed\/|shorts\/|live\/))([^?&/]+)/);
+    let embedHtml = "";
+
+    if (ytMatch) {
+      embedHtml = `<iframe class="w-full h-full" src="https://www.youtube.com/embed/${encodeURIComponent(ytMatch[1])}?autoplay=1&rel=0" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>`;
+    } else if (url.includes("facebook.com")) {
+      embedHtml = `<iframe src="https://www.facebook.com/plugins/video.php?href=${encodeURIComponent(url)}&autoplay=true&show_text=0" class="w-full h-full" frameborder="0" allow="autoplay" allowfullscreen></iframe>`;
+    } else {
+      embedHtml = `<video class="w-full h-full object-contain bg-black" autoplay controls playsinline src="${url}"></video>`;
+    }
+
+    if (iframeBox.getAttribute("data-current-url") !== url) {
+      iframeBox.innerHTML = embedHtml;
+      iframeBox.setAttribute("data-current-url", url);
+    }
+  });
+}
 
 /* ================= DUAL-OPTION LOGIN MODAL SWITCHER ================= */
 function openStaffLoginModal(defaultTab = 'admin') {
@@ -1004,22 +1254,16 @@ function switchLoginRoleTab(type) {
   }
 }
 
-/* ================= 1. ADMIN LOGIN ENGINE ================= */
+/* 1. ADMIN LOGIN ENGINE */
 function loginAdminWithPassword() {
   const rawPhone = document.getElementById("adminLoginPhoneInput").value.trim();
   const enteredPass = document.getElementById("adminLoginPassInput").value.trim();
 
-  if (!/^\d{10}$/.test(rawPhone)) {
-    return alert("कृपया 10 अंकों का एडमिन मोबाइल नंबर दर्ज करें।");
-  }
-  if (!enteredPass) {
-    return alert("कृपया एडमिन पासवर्ड दर्ज करें।");
-  }
+  if (!/^\d{10}$/.test(rawPhone)) return alert("कृपया 10 अंकों का एडमिन मोबाइल नंबर दर्ज करें।");
+  if (!enteredPass) return alert("कृपया एडमिन पासवर्ड दर्ज करें।");
 
   const fullPhone = "+91" + rawPhone;
-  if (fullPhone !== ADMIN_PHONE) {
-    return alert("यह नंबर एडमिन के रूप में पंजीकृत नहीं है!");
-  }
+  if (fullPhone !== ADMIN_PHONE) return alert("यह नंबर एडमिन के रूप में पंजीकृत नहीं है!");
 
   const btn = document.getElementById("btnAdminLoginSubmit");
   btn.disabled = true;
@@ -1043,17 +1287,13 @@ function loginAdminWithPassword() {
   });
 }
 
-/* ================= 2. REPORTER LOGIN ENGINE ================= */
+/* 2. REPORTER LOGIN ENGINE */
 function loginReporterWithPassword() {
   const rawPhone = document.getElementById("repLoginPhoneInput").value.trim();
   const enteredPass = document.getElementById("repLoginPassInput").value.trim();
 
-  if (!/^\d{10}$/.test(rawPhone)) {
-    return alert("कृपया 10 अंकों का रिपोर्टर मोबाइल नंबर दर्ज करें।");
-  }
-  if (!enteredPass) {
-    return alert("कृपया अपना रिपोर्टर पासवर्ड दर्ज करें।");
-  }
+  if (!/^\d{10}$/.test(rawPhone)) return alert("कृपया 10 अंकों का रिपोर्टर मोबाइल नंबर दर्ज करें।");
+  if (!enteredPass) return alert("कृपया अपना रिपोर्टर पासवर्ड दर्ज करें।");
 
   const fullPhone = "+91" + rawPhone;
   const btn = document.getElementById("btnReporterLoginSubmit");
@@ -1061,15 +1301,9 @@ function loginReporterWithPassword() {
   btn.innerText = "सत्यापित हो रहा है...";
 
   db.ref("authorized_reporters").orderByChild("phone").equalTo(fullPhone).once("value").then(snap => {
-    if (!snap.exists()) {
-      alert("यह मोबाइल नंबर रिपोर्टर के रूप में पंजीकृत नहीं है।");
-      return;
-    }
+    if (!snap.exists()) { alert("यह मोबाइल नंबर रिपोर्टर के रूप में पंजीकृत नहीं है।"); return; }
     const repData = Object.values(snap.val())[0];
-    if (repData.status !== "approved") {
-      alert("आपका अकाउंट एडमिन द्वारा स्वीकृत नहीं है।");
-      return;
-    }
+    if (repData.status !== "approved") { alert("आपका अकाउंट एडमिन द्वारा स्वीकृत नहीं है।"); return; }
     if (String(repData.pin) === enteredPass) {
       localStorage.setItem("abn_staff_role", "reporter");
       localStorage.setItem("abn_staff_phone", fullPhone);
@@ -1133,7 +1367,6 @@ function logoutDirect() {
   location.reload();
 }
 
-/* AUTO-LOGIN ON APP REOPEN */
 function checkSavedSession() {
   const savedRole = localStorage.getItem("abn_staff_role");
   const savedPhone = localStorage.getItem("abn_staff_phone");
@@ -1149,15 +1382,12 @@ function checkSavedSession() {
     db.ref("authorized_reporters").orderByChild("phone").equalTo(savedPhone).once("value").then(snap => {
       if (snap.exists()) {
         const repData = Object.values(snap.val())[0];
-        if (repData.status === "approved" && String(repData.pin) === savedPass) {
-          setupReporterSession(repData);
-        }
+        if (repData.status === "approved" && String(repData.pin) === savedPass) setupReporterSession(repData);
       }
     });
   }
 }
 
-/* ACTIVATE DASHBOARD */
 function activateDashboard(role, admin) {
   document.getElementById("btnLoginOpen").classList.add("hidden");
   document.getElementById("userProfileBadge").classList.remove("hidden");
@@ -1754,7 +1984,7 @@ function addNewReporterByAdmin(){
   });
 }
 
-/* LOAD REPORTERS FOR ADMIN (WITH UPDATE PASSWORD BUTTON) */
+/* LOAD REPORTERS FOR ADMIN */
 function loadReportersForAdmin(){
   db.ref("authorized_reporters").on("value",snap=>{
     const container=document.getElementById("approvedReportersList");
@@ -1802,7 +2032,6 @@ function loadReportersForAdmin(){
   });
 }
 
-/* UPDATE REPORTER PASSWORD MODAL HANDLERS */
 function openUpdateRepPassModal(key, name, currentPass) {
   if (!isAdmin) return;
   document.getElementById("editRepPassKey").value = key;
@@ -1820,9 +2049,7 @@ function saveUpdatedRepPassword() {
   const key = document.getElementById("editRepPassKey").value;
   const newPass = document.getElementById("newRepPasswordInput").value.trim();
 
-  if (newPass.length < 4) {
-    return alert("कृपया कम से कम 4 अक्षर या अंकों का नया पासवर्ड लिखें।");
-  }
+  if (newPass.length < 4) return alert("कृपया कम से कम 4 अक्षर या अंकों का नया पासवर्ड लिखें।");
 
   db.ref("authorized_reporters/" + key).update({ pin: newPass })
     .then(() => {
@@ -2231,10 +2458,11 @@ function loadReporterWallet(){
 /* SAFE TAB SWITCHING */
 function switchTab(tab){
   if((tab==="admin" || tab==="manageAds" || tab==="manageReporters") && !isAdmin)return;
-  if((tab==="reporter" || tab==="shortsPost" || tab==="wallet") && !currentUserPhone)return;
+  if((tab==="liveStudio" || tab==="reporter" || tab==="shortsPost" || tab==="wallet") && !currentUserPhone)return;
 
   const sectionMap = {
     "feed": "feedSection",
+    "liveStudio": "liveStudioSection",
     "reporter": "reporterSection",
     "shortsPost": "shortsPostSection",
     "wallet": "walletSection",
@@ -2266,9 +2494,9 @@ function switchTab(tab){
 /* INITIALIZE */
 loadNewsFeed();
 loadAdminSpecialAd();
+loadPublicLiveBroadcast();
 checkSavedSession();
 </script>
 
 </body>
 </html>
-.
