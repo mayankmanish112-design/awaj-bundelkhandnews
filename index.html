@@ -44,9 +44,9 @@ body { font-family: 'Mukta', sans-serif; }
 @keyframes ticker { 0% { transform: translate3d(100vw, 0, 0); } 100% { transform: translate3d(-100%, 0, 0); } }
 @keyframes liveTicker { 0% { transform: translate3d(100%, 0, 0); } 100% { transform: translate3d(-100%, 0, 0); } }
 
-/* ABP Live Style Slanted Time Box */
+/* Compact Slanted Box */
 .abp-slant-box {
-  clip-path: polygon(0 0, 100% 0, 82% 100%, 0% 100%);
+  clip-path: polygon(0 0, 100% 0, 84% 100%, 0% 100%);
 }
 </style>
 </head>
@@ -240,89 +240,84 @@ class="text-xs bg-white text-red-700 font-bold px-3 py-1.5 rounded-full shadow-s
 </div>
 </section>
 
-<!-- ================= LIVE STREAM STUDIO SECTION (ABP LIVE TV BROADCAST FRAME + LOGO & TEXT EDIT) ================= -->
+<!-- ================= LIVE STREAM STUDIO SECTION (SLIM & COMPACT TV FRAME) ================= -->
 <section id="liveStudioSection" class="hidden bg-white p-4 sm:p-5 rounded-3xl shadow-xl border-2 border-red-700 space-y-4">
   <div class="border-b pb-2.5 flex justify-between items-center">
     <div>
       <h3 class="text-sm font-black text-red-700 flex items-center gap-2">
         <span class="w-3 h-3 rounded-full bg-red-600 animate-ping"></span>
-        टी.वी. ब्रॉडकास्ट लाइव स्टूडियो (ABP स्टाइल फ्रेम)
+        टी.वी. ब्रॉडकास्ट लाइव स्टूडियो (स्लिम फ्रेम)
       </h3>
       <p class="text-[10px] text-gray-500">ऑन-स्क्रीन लोगो एडिट करें और लाइव हेडलाइन व टिकर चलाएं</p>
     </div>
     <button onclick="switchTab('feed')" class="text-xs font-bold text-gray-400 hover:text-black">✕ बंद करें</button>
   </div>
 
-  <!-- ================= BROADCAST TV OVERLAY PREVIEW (EXACT ABP LIVE STYLE FRAME) ================= -->
+  <!-- ================= COMPACT BROADCAST TV OVERLAY PREVIEW ================= -->
   <div class="relative w-full aspect-video bg-slate-950 rounded-2xl overflow-hidden border-2 border-slate-900 shadow-2xl select-none">
-    <!-- Camera Preview -->
+    <!-- Full Camera Preview -->
     <video id="studioLocalCamVideo" autoplay muted playsinline class="w-full h-full object-cover"></video>
-    <div id="studioNoCamMsg" class="absolute inset-0 flex flex-col items-center justify-center text-white/70 text-center p-4 pb-20">
-      <i class="fa-solid fa-video text-3xl mb-1 text-red-500"></i>
-      <p class="text-xs font-bold">लाइव कैमरा चालू करें अथवा नीचे YouTube Live लिंक डालें</p>
+    <div id="studioNoCamMsg" class="absolute inset-0 flex flex-col items-center justify-center text-white/70 text-center p-4 pb-12">
+      <i class="fa-solid fa-video text-2xl mb-1 text-red-500"></i>
+      <p class="text-[11px] font-bold">लाइव कैमरा चालू करें अथवा नीचे YouTube Live लिंक डालें</p>
     </div>
 
-    <!-- TOP-RIGHT CHANNEL LOGO & DOWNLOAD/LIVE BADGE (EXACT ABP STYLE) -->
-    <div class="absolute top-2.5 right-3 z-30 flex flex-col items-end pointer-events-none">
-      <span id="studioTopDownloadText" class="text-[9px] font-black text-slate-900 bg-white/90 px-1.5 py-0.2 rounded-t shadow-sm tracking-tight leading-tight">
+    <!-- COMPACT TOP-RIGHT CHANNEL LOGO & LIVE BADGE -->
+    <div class="absolute top-2 right-2 z-30 flex flex-col items-end pointer-events-none">
+      <span id="studioTopDownloadText" class="text-[7px] font-black text-slate-900 bg-white/95 px-1 rounded-t shadow-sm tracking-tight leading-none py-0.5">
         download
       </span>
-      <div class="flex items-stretch shadow-lg border border-white/80 rounded-sm overflow-hidden bg-white">
-        <!-- Custom Channel Logo -->
-        <div class="bg-white px-1.5 py-0.5 flex items-center justify-center">
-          <img id="studioTopLogoImg" src="https://cdn-icons-png.flaticon.com/512/2965/2965879.png" class="h-6 w-auto object-contain">
+      <div class="flex items-stretch shadow border border-white/80 rounded-sm overflow-hidden bg-white">
+        <div class="bg-white px-1 py-0.5 flex items-center justify-center">
+          <img id="studioTopLogoImg" src="https://cdn-icons-png.flaticon.com/512/2965/2965879.png" class="h-4 w-auto object-contain">
         </div>
-        <!-- Red LIVE Box -->
-        <div class="bg-[#C8102E] text-white font-black text-xs px-2 flex items-center tracking-wider">
+        <div class="bg-[#C8102E] text-white font-black text-[9px] px-1.5 flex items-center tracking-wider">
           LIVE
         </div>
       </div>
     </div>
 
-    <!-- LOWER-THIRD BROADCAST GRAPHIC BAND (EXACT ABP LIVE STYLE) -->
-    <div class="absolute bottom-0 left-0 right-0 z-30 flex flex-col shadow-2xl pointer-events-none">
+    <!-- SLIM & COMPACT LOWER-THIRD BROADCAST GRAPHIC BAND -->
+    <div class="absolute bottom-0 left-0 right-0 z-30 flex flex-col shadow-xl pointer-events-none">
       
-      <!-- UPPER ROW OF LOWER THIRD (Red Logo Block + Slanted Time + Main White Headline) -->
-      <div class="flex items-stretch bg-white border-t-2 border-red-700 min-h-[44px] sm:min-h-[54px]">
+      <!-- UPPER ROW (Compact 26px-32px height so camera stays huge) -->
+      <div class="flex items-stretch bg-white border-t border-red-700 h-7 sm:h-8">
         
-        <!-- Left Red Logo & Clock Block -->
-        <div class="bg-gradient-to-b from-[#D90429] to-[#9B0000] text-white px-2 py-1 flex flex-col items-center justify-center shrink-0 w-16 sm:w-20 border-r border-white/40">
-          <img id="studioBottomLogoImg" src="https://cdn-icons-png.flaticon.com/512/2965/2965879.png" class="h-5 w-auto object-contain bg-white rounded px-1 mb-0.5">
-          <span id="studioLiveClockSmall" class="text-[10px] font-black leading-none tracking-tighter">08:00</span>
-          <span id="studioLiveDateSmall" class="text-[7px] text-amber-200 font-bold leading-none mt-0.5">13 Nov</span>
+        <!-- Left Red Logo & Clock Block (Compact w-12) -->
+        <div class="bg-gradient-to-b from-[#D90429] to-[#9B0000] text-white px-1 py-0.5 flex flex-col items-center justify-center shrink-0 w-12 sm:w-14 border-r border-white/40">
+          <img id="studioBottomLogoImg" src="https://cdn-icons-png.flaticon.com/512/2965/2965879.png" class="h-3 w-auto object-contain bg-white rounded-xs px-0.5">
+          <span id="studioLiveClockSmall" class="text-[8px] font-black leading-none mt-0.5">08:00</span>
         </div>
 
-        <!-- Slanted Red Time Block (8:00 PM Style) + Red Arrows -->
+        <!-- Slanted Red Time Block (Compact) -->
         <div class="flex items-center shrink-0 bg-white">
-          <div class="abp-slant-box bg-[#C8102E] text-white h-full pl-2.5 pr-5 flex flex-col items-center justify-center">
-            <span id="studioBigTimeText" class="text-sm sm:text-lg font-black leading-none tracking-tight">8:00</span>
-            <span id="studioAmPmText" class="text-[9px] font-bold leading-none mt-0.5">PM</span>
+          <div class="abp-slant-box bg-[#C8102E] text-white h-full pl-1.5 pr-3.5 flex flex-col items-center justify-center">
+            <span id="studioBigTimeText" class="text-[11px] sm:text-xs font-black leading-none">8:00</span>
+            <span id="studioAmPmText" class="text-[7px] font-bold leading-none">PM</span>
           </div>
-          <span class="text-[#C8102E] font-black text-sm sm:text-base -ml-2 pr-1 tracking-tighter">»</span>
+          <span class="text-[#C8102E] font-black text-xs -ml-1.5 pr-0.5">»</span>
         </div>
 
-        <!-- Main Big Headline Area -->
-        <div class="flex-1 flex items-center justify-between px-2 py-1 bg-gradient-to-r from-white via-slate-50 to-gray-100 overflow-hidden">
-          <h2 id="studioMainHeadlineShow" class="text-xs sm:text-base md:text-lg font-black text-slate-950 leading-tight line-clamp-2">
+        <!-- Main Headline Area (Single crisp line) -->
+        <div class="flex-1 flex items-center justify-between px-1.5 bg-gradient-to-r from-white via-slate-50 to-gray-100 overflow-hidden">
+          <h2 id="studioMainHeadlineShow" class="text-[11px] sm:text-xs font-black text-slate-950 leading-none truncate">
             सरीला, हमीरपुर: ग्राउंड जीरो से सबसे बड़ी और सटीक लाइव कवरेज
           </h2>
-          <!-- Right Side Sponsor / Tag Badge -->
-          <div class="hidden sm:flex flex-col items-end shrink-0 border-l pl-2 ml-2 border-gray-300">
-            <span class="text-[8px] font-bold text-gray-400 uppercase">NETWORK</span>
-            <span class="text-[10px] font-black text-blue-950 leading-none">आवाज़ बुंदेलखंड</span>
+          <div class="hidden sm:flex flex-col items-end shrink-0 border-l pl-1.5 ml-1.5 border-gray-300">
+            <span class="text-[8px] font-black text-blue-950 leading-none">आवाज़ बुंदेलखंड</span>
           </div>
         </div>
       </div>
 
-      <!-- BOTTOM ROW OF LOWER THIRD (Navy Blue "TOP NEWS" Box + White Scrolling Ticker) -->
-      <div class="flex items-stretch h-6 sm:h-7 bg-white border-t border-gray-300">
+      <!-- BOTTOM ROW (Slim 18px-20px height) -->
+      <div class="flex items-stretch h-4 sm:h-5 bg-white border-t border-gray-300">
         <!-- Navy Blue Category Box -->
-        <div class="bg-[#001D4A] text-white font-black text-[10px] sm:text-xs px-3 flex items-center justify-center shrink-0 uppercase tracking-wider w-24 sm:w-28">
+        <div class="bg-[#001D4A] text-white font-black text-[8px] sm:text-[9px] px-2 flex items-center justify-center shrink-0 uppercase tracking-wider w-18 sm:w-22">
           <span id="studioBlueTagShow">TOP NEWS</span>
         </div>
         <!-- Scrolling White Ticker -->
-        <div class="ticker-wrap flex-1 flex items-center bg-white text-slate-950 px-2 overflow-hidden">
-          <div id="studioBottomTickerShow" class="live-ticker-move text-[11px] sm:text-xs font-extrabold text-slate-900">
+        <div class="ticker-wrap flex-1 flex items-center bg-white text-slate-950 px-1.5 overflow-hidden">
+          <div id="studioBottomTickerShow" class="live-ticker-move text-[9px] sm:text-[10px] font-extrabold text-slate-900">
             हमीरपुर की ताज़ा खबरें: सरीला तहसील में प्रशासन की बड़ी कार्रवाई | बुंदेलखंड के हर गांव की खबर सबसे पहले आवाज़ बुंदेलखंड न्यूज़ पर...
           </div>
         </div>
@@ -406,64 +401,62 @@ class="text-xs bg-white text-red-700 font-bold px-3 py-1.5 rounded-full shadow-s
 <!-- ================= MAIN FEED SECTION ================= -->
 <section id="feedSection" class="space-y-4">
 
-<!-- PUBLIC LIVE BROADCAST CARD WITH ABP-STYLE TV FRAME (AUTO SHOWS WHEN LIVE IS ACTIVE) -->
+<!-- PUBLIC LIVE BROADCAST CARD WITH SLIM & COMPACT TV FRAME -->
 <div id="publicLiveStreamCard" class="hidden bg-slate-950 rounded-2xl overflow-hidden border-2 border-red-700 shadow-2xl">
   <div class="relative w-full aspect-video bg-black">
     <!-- Embedded YouTube/FB Live Player -->
     <div id="publicLiveIframeBox" class="w-full h-full"></div>
 
-    <!-- TOP-RIGHT CHANNEL LOGO & LIVE BADGE -->
-    <div class="absolute top-2.5 right-3 z-30 flex flex-col items-end pointer-events-none">
-      <span id="publicTopDownloadText" class="text-[9px] font-black text-slate-900 bg-white/95 px-1.5 py-0.2 rounded-t shadow-sm tracking-tight leading-tight">
+    <!-- COMPACT TOP-RIGHT CHANNEL LOGO & LIVE BADGE -->
+    <div class="absolute top-2 right-2 z-30 flex flex-col items-end pointer-events-none">
+      <span id="publicTopDownloadText" class="text-[7px] font-black text-slate-900 bg-white/95 px-1 rounded-t shadow-sm tracking-tight leading-none py-0.5">
         download
       </span>
-      <div class="flex items-stretch shadow-lg border border-white/80 rounded-sm overflow-hidden bg-white">
-        <div class="bg-white px-1.5 py-0.5 flex items-center justify-center">
-          <img id="publicTopLogoImg" src="https://cdn-icons-png.flaticon.com/512/2965/2965879.png" class="h-6 w-auto object-contain">
+      <div class="flex items-stretch shadow border border-white/80 rounded-sm overflow-hidden bg-white">
+        <div class="bg-white px-1 py-0.5 flex items-center justify-center">
+          <img id="publicTopLogoImg" src="https://cdn-icons-png.flaticon.com/512/2965/2965879.png" class="h-4 w-auto object-contain">
         </div>
-        <div class="bg-[#C8102E] text-white font-black text-xs px-2 flex items-center tracking-wider">
+        <div class="bg-[#C8102E] text-white font-black text-[9px] px-1.5 flex items-center tracking-wider">
           LIVE
         </div>
       </div>
     </div>
 
-    <!-- LOWER-THIRD BROADCAST GRAPHIC BAND -->
-    <div class="absolute bottom-0 left-0 right-0 z-30 flex flex-col shadow-2xl pointer-events-none">
+    <!-- SLIM & COMPACT LOWER-THIRD BROADCAST GRAPHIC BAND -->
+    <div class="absolute bottom-0 left-0 right-0 z-30 flex flex-col shadow-xl pointer-events-none">
       
-      <!-- UPPER ROW (Red Logo Block + Slanted Time + Main Headline) -->
-      <div class="flex items-stretch bg-white border-t-2 border-red-700 min-h-[42px] sm:min-h-[52px]">
-        <div class="bg-gradient-to-b from-[#D90429] to-[#9B0000] text-white px-2 py-1 flex flex-col items-center justify-center shrink-0 w-16 sm:w-20 border-r border-white/40">
-          <img id="publicBottomLogoImg" src="https://cdn-icons-png.flaticon.com/512/2965/2965879.png" class="h-5 w-auto object-contain bg-white rounded px-1 mb-0.5">
-          <span id="publicLiveClockSmall" class="text-[10px] font-black leading-none tracking-tighter">08:00</span>
-          <span id="publicLiveDateSmall" class="text-[7px] text-amber-200 font-bold leading-none mt-0.5">13 Nov</span>
+      <!-- UPPER ROW (Compact 28px-32px height) -->
+      <div class="flex items-stretch bg-white border-t border-red-700 h-7 sm:h-8">
+        <div class="bg-gradient-to-b from-[#D90429] to-[#9B0000] text-white px-1 py-0.5 flex flex-col items-center justify-center shrink-0 w-12 sm:w-14 border-r border-white/40">
+          <img id="publicBottomLogoImg" src="https://cdn-icons-png.flaticon.com/512/2965/2965879.png" class="h-3 w-auto object-contain bg-white rounded-xs px-0.5">
+          <span id="publicLiveClockSmall" class="text-[8px] font-black leading-none mt-0.5">08:00</span>
         </div>
 
         <div class="flex items-center shrink-0 bg-white">
-          <div class="abp-slant-box bg-[#C8102E] text-white h-full pl-2.5 pr-5 flex flex-col items-center justify-center">
-            <span id="publicBigTimeText" class="text-sm sm:text-lg font-black leading-none tracking-tight">8:00</span>
-            <span id="publicAmPmText" class="text-[9px] font-bold leading-none mt-0.5">PM</span>
+          <div class="abp-slant-box bg-[#C8102E] text-white h-full pl-1.5 pr-3.5 flex flex-col items-center justify-center">
+            <span id="publicBigTimeText" class="text-[11px] sm:text-xs font-black leading-none">8:00</span>
+            <span id="publicAmPmText" class="text-[7px] font-bold leading-none">PM</span>
           </div>
-          <span class="text-[#C8102E] font-black text-sm sm:text-base -ml-2 pr-1 tracking-tighter">»</span>
+          <span class="text-[#C8102E] font-black text-xs -ml-1.5 pr-0.5">»</span>
         </div>
 
-        <div class="flex-1 flex items-center justify-between px-2 py-1 bg-gradient-to-r from-white via-slate-50 to-gray-100 overflow-hidden">
-          <h2 id="publicMainHeadlineShow" class="text-xs sm:text-base font-black text-slate-950 leading-tight line-clamp-2">
+        <div class="flex-1 flex items-center justify-between px-1.5 bg-gradient-to-r from-white via-slate-50 to-gray-100 overflow-hidden">
+          <h2 id="publicMainHeadlineShow" class="text-[11px] sm:text-xs font-black text-slate-950 leading-none truncate">
             सरीला, हमीरपुर: ग्राउंड जीरो से लाइव कवरेज
           </h2>
-          <div class="hidden sm:flex flex-col items-end shrink-0 border-l pl-2 ml-2 border-gray-300">
-            <span class="text-[8px] font-bold text-gray-400 uppercase">NETWORK</span>
-            <span class="text-[10px] font-black text-blue-950 leading-none">आवाज़ बुंदेलखंड</span>
+          <div class="hidden sm:flex flex-col items-end shrink-0 border-l pl-1.5 ml-1.5 border-gray-300">
+            <span class="text-[8px] font-black text-blue-950 leading-none">आवाज़ बुंदेलखंड</span>
           </div>
         </div>
       </div>
 
-      <!-- BOTTOM ROW (Blue Tag Box + Scrolling Ticker) -->
-      <div class="flex items-stretch h-6 sm:h-7 bg-white border-t border-gray-300">
-        <div class="bg-[#001D4A] text-white font-black text-[10px] sm:text-xs px-3 flex items-center justify-center shrink-0 uppercase tracking-wider w-24 sm:w-28">
+      <!-- BOTTOM ROW (Slim 16px-20px height) -->
+      <div class="flex items-stretch h-4 sm:h-5 bg-white border-t border-gray-300">
+        <div class="bg-[#001D4A] text-white font-black text-[8px] sm:text-[9px] px-2 flex items-center justify-center shrink-0 uppercase tracking-wider w-18 sm:w-22">
           <span id="publicBlueTagShow">TOP NEWS</span>
         </div>
-        <div class="ticker-wrap flex-1 flex items-center bg-white text-slate-950 px-2 overflow-hidden">
-          <div id="publicBottomTickerShow" class="live-ticker-move text-[11px] sm:text-xs font-extrabold text-slate-900">
+        <div class="ticker-wrap flex-1 flex items-center bg-white text-slate-950 px-1.5 overflow-hidden">
+          <div id="publicBottomTickerShow" class="live-ticker-move text-[9px] sm:text-[10px] font-extrabold text-slate-900">
             हमीरपुर की ताज़ा खबरें: आवाज़ बुंदेलखंड न्यूज़ पर सीधा प्रसारण जारी है...
           </div>
         </div>
@@ -1212,14 +1205,12 @@ setInterval(()=>{
   const el = document.getElementById("liveTime");
   if(el) el.innerText = now.toLocaleTimeString("hi-IN");
 
-  // Update ABP-style Broadcast Clocks
   let hours = now.getHours();
   const minutes = String(now.getMinutes()).padStart(2, '0');
   const ampm = hours >= 12 ? 'PM' : 'AM';
   const hours12 = hours % 12 || 12;
   const timeStr = `${hours12}:${minutes}`;
   const smallTimeStr = `${String(now.getHours()).padStart(2, '0')}:${minutes}`;
-  const dateStr = now.toLocaleDateString("en-GB", { day: '2-digit', month: 'short' });
 
   ["studioBigTimeText", "publicBigTimeText"].forEach(id => {
     const e = document.getElementById(id);
@@ -1233,13 +1224,9 @@ setInterval(()=>{
     const e = document.getElementById(id);
     if (e) e.innerText = smallTimeStr;
   });
-  ["studioLiveDateSmall", "publicLiveDateSmall"].forEach(id => {
-    const e = document.getElementById(id);
-    if (e) e.innerText = dateStr;
-  });
 }, 1000);
 
-/* ================= ABP-STYLE TV BROADCAST FRAME, LOGO & TEXT EDIT ENGINE ================= */
+/* ================= COMPACT TV BROADCAST FRAME, LOGO & TEXT EDIT ENGINE ================= */
 document.getElementById("liveLogoFileInput").addEventListener("change", function(e) {
   const file = e.target.files[0];
   if (!file) return;
@@ -1353,7 +1340,6 @@ function loadPublicLiveBroadcast() {
 
     if (publicCard) publicCard.classList.remove("hidden");
 
-    // Sync Logo & Texts to Public Live Frame
     const logoSrc = data.logoUrl || DEFAULT_TV_LOGO;
     updateLiveLogoImagesUI(logoSrc);
 
@@ -1362,7 +1348,6 @@ function loadPublicLiveBroadcast() {
     document.getElementById("publicMainHeadlineShow").innerText = data.mainHeadline || "ग्राउंड जीरो से लाइव कवरेज";
     document.getElementById("publicBottomTickerShow").innerText = data.tickerText || "आवाज़ बुंदेलखंड न्यूज़ पर सीधा प्रसारण जारी है...";
 
-    // Also populate Studio Inputs if Staff is logged in
     document.getElementById("liveTopBadgeInput").value = data.topBadge || "download";
     document.getElementById("liveBlueTagInput").value = data.blueTag || "TOP NEWS";
     document.getElementById("liveMainHeadlineInput").value = data.mainHeadline || "";
