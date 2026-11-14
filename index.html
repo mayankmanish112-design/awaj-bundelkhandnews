@@ -318,7 +318,7 @@ body { font-family: 'Mukta', sans-serif; }
       <input id="liveBottomTickerInput" oninput="syncLiveStudioInputsToPreview()" value="हमीरपुर की ताज़ा खबरें: सरीला तहसील में प्रशासन की बड़ी कार्रवाई..." class="w-full mt-1 border rounded-lg px-3 py-2 text-xs font-bold bg-white">
     </div>
     <div>
-      <label class="font-bold text-gray-700">YouTube Live / Facebook Live लिंक:</label>
+      <label class="font-bold text-gray-700">YouTube Live / Facebook Live लिंक (पब्लिक दर्शकों के लिए) *</label>
       <input id="liveStreamUrlInput" type="url" class="w-full mt-1 border border-blue-300 rounded-lg px-3 py-2 text-xs bg-white" placeholder="https://youtube.com/live/...">
     </div>
     <div class="flex gap-2 pt-2">
@@ -331,13 +331,13 @@ body { font-family: 'Mukta', sans-serif; }
 <!-- ================= MAIN FEED SECTION ================= -->
 <section id="feedSection" class="space-y-4">
 
-<!-- GOOGLE SIGN-IN PROMPT BAR FOR READERS (IF NOT LOGGED IN) -->
+<!-- GOOGLE SIGN-IN PROMPT BAR FOR READERS -->
 <div id="readerGoogleBanner" class="bg-blue-50 border border-blue-200 p-2.5 rounded-2xl flex items-center justify-between gap-2">
   <div class="flex items-center gap-2">
     <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" class="w-5 h-5 shrink-0">
     <div>
       <h4 class="text-[11px] font-black text-blue-950 leading-tight">अपने Google अकाउंट से जुड़ें</h4>
-      <p class="text-[9px] text-blue-700">ताज़ा खबरों पर अपनी उपस्थिति दर्ज करें और लोकल अपडेट पाएं</p>
+      <p class="text-[9px] text-blue-700">ताज़ा खबरों को लाइक करें और लोकल अपडेट पाएं</p>
     </div>
   </div>
   <button onclick="loginReaderWithGoogle()" class="bg-blue-700 hover:bg-blue-800 text-white text-[10px] font-black px-3 py-1.5 rounded-full shadow-sm shrink-0">
@@ -345,8 +345,14 @@ body { font-family: 'Mukta', sans-serif; }
   </button>
 </div>
 
-<!-- PUBLIC LIVE BROADCAST CARD -->
-<div id="publicLiveStreamCard" class="hidden bg-slate-950 rounded-2xl overflow-hidden border-2 border-red-700 shadow-2xl">
+<!-- PUBLIC LIVE BROADCAST CARD IN MAIN NEWS FEED (VISIBLE TO ALL USERS WHEN LIVE IS ON) -->
+<div id="publicLiveStreamCard" class="hidden bg-slate-950 rounded-2xl overflow-hidden border-2 border-red-600 shadow-2xl">
+  <!-- Live Header Strip -->
+  <div class="bg-red-700 text-white px-3 py-1.5 flex items-center justify-between text-xs font-black">
+    <span class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full bg-white animate-ping"></span> सीधा प्रसारण (LIVE COVERAGE)</span>
+    <span class="text-[10px] bg-black/30 px-2 py-0.5 rounded-full">आवाज़ बुंदेलखंड टी.वी.</span>
+  </div>
+
   <div class="relative w-full aspect-video bg-black">
     <div id="publicLiveIframeBox" class="w-full h-full"></div>
     <div class="absolute top-2 right-2 z-30 flex flex-col items-end pointer-events-none">
@@ -646,13 +652,13 @@ body { font-family: 'Mukta', sans-serif; }
 
 </main>
 
-<!-- ================= NEWS VIEWERS LIST MODAL (WHO VIEWED THIS NEWS WITH GOOGLE PHOTO & NAME) ================= -->
+<!-- ================= ADMIN-ONLY VIEWERS LIST MODAL ================= -->
 <div id="newsViewersModal" class="fixed inset-0 bg-black/80 z-[1000005] flex items-center justify-center p-4 hidden">
   <div class="bg-white rounded-3xl p-5 max-w-sm w-full space-y-3 shadow-2xl border-2 border-blue-800">
     <div class="flex justify-between items-center border-b pb-2">
       <div>
         <h3 class="text-sm font-black text-slate-900 flex items-center gap-1.5">
-          <i class="fa-solid fa-eye text-blue-700"></i> इस खबर को देखने वाले पाठक
+          <i class="fa-solid fa-eye text-blue-700"></i> इस खबर को देखने वाले पाठक (केवल एडमिन)
         </h3>
         <p id="viewerModalNewsTitle" class="text-[10px] text-gray-500 line-clamp-1 font-semibold mt-0.5"></p>
       </div>
@@ -946,6 +952,14 @@ return String(value || "").replace(/[&<>"']/g, char => ({
 })[char]);
 }
 
+/* FORMAT 1 MILLION+ VIEWS */
+function formatMillionViews(rawViews, timestamp) {
+  // Base boost over 1,000,000 + unique variance per article + real clicks
+  const seed = timestamp ? (timestamp % 285000) : 45000;
+  const total = 1012450 + seed + (rawViews || 0);
+  return (total / 1000000).toFixed(2) + "M";
+}
+
 /* FORMAT EXACT DATE & TIME FOR NEWS CARDS */
 function formatNewsDateTime(ts) {
   if (!ts) return "";
@@ -966,7 +980,7 @@ function loginReaderWithGoogle() {
       loadNewsFeed();
     })
     .catch(err => {
-      alert("Google लॉगिन में त्रुटि: कृपया सुनिश्चित करें कि Firebase Console में Google Sign-In Enabled है।\n(" + err.message + ")");
+      alert("Google लॉगिन में त्रुटि:\n" + err.message);
     });
 }
 
@@ -1001,16 +1015,14 @@ function updateReaderGoogleUI(user) {
   }
 }
 
-/* RECORD NEWS VIEW (TOTAL COUNT + GOOGLE USER PHOTO & NAME) */
+/* RECORD NEWS VIEW */
 function recordNewsArticleView(articleKey) {
   if (!articleKey || sessionCountedViews.has(articleKey)) return;
   sessionCountedViews.add(articleKey);
 
-  // 1. Increment Total Views Count
   const viewsRef = db.ref(`news_articles/${articleKey}/views`);
   viewsRef.transaction(currentViews => (currentViews || 0) + 1);
 
-  // 2. If Reader is logged in with Google, save their Name, Photo & Time
   if (currentGoogleReader) {
     db.ref(`news_articles/${articleKey}/viewers/${currentGoogleReader.uid}`).set({
       uid: currentGoogleReader.uid,
@@ -1021,8 +1033,24 @@ function recordNewsArticleView(articleKey) {
   }
 }
 
-/* SHOW LIST OF GOOGLE VIEWERS IN MODAL */
+/* LIKE / UNLIKE ARTICLE HANDLER */
+function toggleArticleLike(articleKey) {
+  const likedStorageKey = "abn_liked_" + articleKey;
+  const alreadyLiked = localStorage.getItem(likedStorageKey) === "true";
+  const likesRef = db.ref(`news_articles/${articleKey}/likes`);
+
+  if (alreadyLiked) {
+    likesRef.transaction(curr => Math.max(0, (curr || 1) - 1));
+    localStorage.removeItem(likedStorageKey);
+  } else {
+    likesRef.transaction(curr => (curr || 0) + 1);
+    localStorage.setItem(likedStorageKey, "true");
+  }
+}
+
+/* ADMIN-ONLY VIEWERS MODAL */
 function openViewersModal(articleKey, newsTitle) {
+  if (!isAdmin) return; // Strict Admin-Only check
   document.getElementById("viewerModalNewsTitle").innerText = newsTitle;
   const container = document.getElementById("newsViewersListContainer");
   container.innerHTML = "<p class='text-xs text-gray-400 text-center py-4'>पाठकों की सूची लोड हो रही है...</p>";
@@ -1036,7 +1064,6 @@ function openViewersModal(articleKey, newsTitle) {
         <div class="text-center py-6 space-y-1">
           <i class="fa-solid fa-user-slash text-2xl text-gray-300"></i>
           <p class="text-xs font-bold text-gray-500">अभी तक किसी Google लॉगिन पाठक ने यह खबर नहीं देखी है।</p>
-          <p class="text-[10px] text-gray-400">(बिना लॉगिन वाले व्यूज़ कुल गिनती में जुड़े हैं)</p>
         </div>`;
       return;
     }
@@ -1140,6 +1167,7 @@ function publishOrUpdateLiveStream() {
   const streamUrl = document.getElementById("liveStreamUrlInput").value.trim();
 
   if (!mainHeadline || !bottomTicker) return alert("कृपया मुख्य बड़ी हेडलाइन और टिकर टेक्स्ट भरें।");
+  if (!streamUrl) return alert("कृपया YouTube Live / Facebook Live लिंक डालें ताकि सभी यूज़र्स मुख्य समाचार पेज पर लाइव देख सकें!");
 
   db.ref("settings/live_broadcast").set({
     isLive: true,
@@ -1148,10 +1176,13 @@ function publishOrUpdateLiveStream() {
     blueTag: blueTag,
     mainHeadline: mainHeadline,
     tickerText: bottomTicker,
-    streamUrl: streamUrl || "",
+    streamUrl: streamUrl,
     reporterName: myProfile.name,
     updatedAt: Date.now()
-  }).then(() => alert("लाइव टी.वी. फ्रेम, लोगो और टेक्स्ट लाइव अपडेट हो गए हैं!"));
+  }).then(() => {
+    alert("लाइव प्रसारण मुख्य समाचार पेज पर लाइव हो गया है! अब सभी यूज़र्स इसे देख सकते हैं।");
+    switchTab("feed");
+  });
 }
 
 function endLiveStream() {
@@ -1187,7 +1218,9 @@ function loadPublicLiveBroadcast() {
     const ytMatch = url.match(/(?:youtu\.be\/|youtube\.com\/(?:watch\?v=|embed\/|shorts\/|live\/))([^?&/]+)/);
     let embedHtml = ytMatch
       ? `<iframe class="w-full h-full" src="https://www.youtube.com/embed/${encodeURIComponent(ytMatch[1])}?autoplay=1&rel=0" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>`
-      : `<video class="w-full h-full object-contain bg-black" autoplay controls playsinline src="${url}"></video>`;
+      : (url.includes("facebook.com")
+        ? `<iframe src="https://www.facebook.com/plugins/video.php?href=${encodeURIComponent(url)}&autoplay=true&show_text=0" class="w-full h-full" frameborder="0" allow="autoplay" allowfullscreen></iframe>`
+        : `<video class="w-full h-full object-contain bg-black" autoplay controls playsinline src="${url}"></video>`);
 
     if (iframeBox.getAttribute("data-current-url") !== url) {
       iframeBox.innerHTML = embedHtml;
@@ -1654,7 +1687,7 @@ function submitArticle(){
     imageUrl: compressedNewsImage || "", videoUrl: galleryNewsVideoBase64 || document.getElementById("newsVideoUrl").value.trim(),
     isShorts: false, reporterPhone: currentUserPhone, reporterName: myProfile.name, reporterRole: isAdmin?"admin":"reporter",
     reporterAddress: myProfile.address, reporterPhoto: myProfile.photo || DEFAULT_PHOTO, timestamp: Date.now(),
-    status: isAdmin?"approved":"pending", payoutAmount: 30, views: 0
+    status: isAdmin?"approved":"pending", payoutAmount: 30, views: 0, likes: 0
   }).then(()=>{ alert(isAdmin?"खबर प्रकाशित हो गई!":"खबर समीक्षा हेतु भेज दी गई!"); switchTab("feed"); });
 }
 
@@ -1666,7 +1699,7 @@ function submitShortsArticle() {
     title, location, category: "शॉर्ट्स रील्स", content: "आवाज़ बुंदेलखंड न्यूज़ रील।", imageUrl: "", videoUrl: finalVideo,
     isShorts: true, reporterPhone: currentUserPhone, reporterName: myProfile.name, reporterRole: isAdmin ? "admin" : "reporter",
     reporterAddress: myProfile.address, reporterPhoto: myProfile.photo || DEFAULT_PHOTO, timestamp: Date.now(),
-    status: isAdmin ? "approved" : "pending", payoutAmount: 30, views: 0
+    status: isAdmin ? "approved" : "pending", payoutAmount: 30, views: 0, likes: 0
   }).then(()=>{ alert("शॉर्ट वीडियो सेव हो गया!"); switchTab("feed"); });
 }
 
@@ -1683,7 +1716,7 @@ async function shareArticleDainikBhaskarStyle(title, imageUrl, content) {
 }
 function shareArticle() { shareArticleDainikBhaskarStyle("आवाज़ बुंदेलखंड न्यूज़", "", ""); }
 
-/* ================= NEWS FEED RENDERER (WITH DATE-TIME, VIEWS COUNTER & VIEWERS LIST) ================= */
+/* ================= NEWS FEED RENDERER (1M+ VIEWS, LIKES, & ADMIN-ONLY VIEWERS) ================= */
 function loadNewsFeed(){
   renderPublicAds();
 
@@ -1729,30 +1762,37 @@ function loadNewsFeed(){
         const card = document.createElement("div");
         card.className = "bg-white p-4 rounded-2xl border shadow-sm space-y-3 relative";
 
-        // Automatically record view when reader clicks or interacts with the card
         card.onclick = () => recordNewsArticleView(key);
 
         let media = "";
         if (item.imageUrl) media += `<img src="${item.imageUrl}" class="w-full rounded-xl max-h-96 object-cover mb-2">`;
         if (item.videoUrl) media += renderUniversalMediaEmbed(item.videoUrl);
 
-        // Calculate Total Views & Google Viewers Count
-        const totalViews = item.views || 0;
-        const googleViewersObj = item.viewers || {};
-        const googleViewersArr = Object.values(googleViewersObj);
+        // 1 Million+ Formatted Views
+        const formattedMillionViews = formatMillionViews(item.views, item.timestamp);
 
-        // Recent Google Viewers Avatar Stack
-        let viewerAvatarsHtml = "";
-        if (googleViewersArr.length > 0) {
-          const top3 = googleViewersArr.slice(0, 3);
-          viewerAvatarsHtml = `
-            <div class="flex items-center -space-x-1.5 mr-1">
-              ${top3.map(v => `<img src="${v.photo || DEFAULT_PHOTO}" title="${escapeHTML(v.name)}" class="w-5 h-5 rounded-full border border-white object-cover">`).join("")}
-            </div>
+        // Likes state
+        const isLiked = localStorage.getItem("abn_liked_" + key) === "true";
+        const baseLikes = item.timestamp ? ((item.timestamp % 850) + 120) : 250;
+        const totalLikes = baseLikes + (item.likes || 0);
+
+        // Admin-Only "Who Viewed" Button (Strictly hidden from normal users & reporters)
+        let adminOnlyViewersBtn = "";
+        if (isAdmin) {
+          const googleViewersArr = Object.values(item.viewers || {});
+          let viewerAvatarsHtml = "";
+          if (googleViewersArr.length > 0) {
+            const top3 = googleViewersArr.slice(0, 3);
+            viewerAvatarsHtml = `<div class="flex items-center -space-x-1.5 mr-1">${top3.map(v => `<img src="${v.photo || DEFAULT_PHOTO}" class="w-5 h-5 rounded-full border border-white object-cover">`).join("")}</div>`;
+          }
+          adminOnlyViewersBtn = `
+            <button type="button" class="btnSeeViewers flex items-center gap-1 bg-blue-50 hover:bg-blue-100 text-blue-800 px-2.5 py-1 rounded-full font-bold border border-blue-200 transition">
+              ${viewerAvatarsHtml}
+              <span>किसने देखा (${googleViewersArr.length})</span>
+            </button>
           `;
         }
 
-        // Exact Date & Time Badge
         const exactDateTime = formatNewsDateTime(item.timestamp);
 
         let adminControlButtons = isAdmin ? `
@@ -1782,36 +1822,48 @@ function loadNewsFeed(){
           ${media}
           <p class="text-sm text-gray-700 whitespace-pre-line leading-relaxed">${escapeHTML(item.content)}</p>
 
-          <!-- VIEWS COUNTER & WHO VIEWED THIS NEWS BAR -->
+          <!-- 1M+ VIEWS COUNTER & ADMIN-ONLY VIEWERS LIST -->
           <div class="flex flex-wrap items-center justify-between gap-2 border-t pt-2.5 text-[11px]">
-            <div class="flex items-center gap-1.5 bg-slate-100 px-2.5 py-1 rounded-full font-bold text-slate-700">
-              <i class="fa-solid fa-eye text-blue-600"></i>
-              <span>${totalViews} लोगों ने देखा</span>
+            <div class="flex items-center gap-1.5 bg-slate-100 px-3 py-1 rounded-full font-black text-slate-800">
+              <i class="fa-solid fa-eye text-red-600"></i>
+              <span>${formattedMillionViews} लोगों ने देखा</span>
             </div>
-
-            <button type="button" class="btnSeeViewers flex items-center gap-1 bg-blue-50 hover:bg-blue-100 text-blue-800 px-2.5 py-1 rounded-full font-bold border border-blue-200 transition">
-              ${viewerAvatarsHtml}
-              <span>किसने देखा (${googleViewersArr.length})</span>
-            </button>
+            ${adminOnlyViewersBtn}
           </div>
 
-          <div class="flex flex-wrap gap-2 pt-1">
-            <button class="shareBtn bg-green-600 hover:bg-green-700 text-white px-3 py-2 rounded-lg text-xs font-bold transition flex items-center gap-1.5">
+          <!-- LIKE, SHARE & WHATSAPP ACTION BUTTONS -->
+          <div class="flex flex-wrap items-center gap-2 pt-1">
+            <button type="button" class="likeBtn flex items-center gap-1.5 px-3 py-2 rounded-lg text-xs font-black border transition ${isLiked ? 'bg-red-50 border-red-300 text-red-700' : 'bg-gray-50 border-gray-200 text-gray-700 hover:bg-gray-100'}">
+              <i class="fa-${isLiked ? 'solid' : 'regular'} fa-heart text-red-600 text-sm"></i>
+              <span>पसंद (${totalLikes})</span>
+            </button>
+
+            <button type="button" class="shareBtn bg-green-600 hover:bg-green-700 text-white px-3 py-2 rounded-lg text-xs font-bold transition flex items-center gap-1.5">
               <i class="fa-solid fa-share-nodes"></i> शेयर करें
             </button>
-            <button class="whatsappBtn bg-green-700 hover:bg-green-800 text-white px-3 py-2 rounded-lg text-xs font-bold transition flex items-center gap-1.5">
+
+            <button type="button" class="whatsappBtn bg-green-700 hover:bg-green-800 text-white px-3 py-2 rounded-lg text-xs font-bold transition flex items-center gap-1.5">
               <i class="fa-brands fa-whatsapp"></i> WhatsApp
             </button>
           </div>
           ${adminControlButtons}
         `;
 
-        // Open Viewers List Modal
-        card.querySelector(".btnSeeViewers").onclick = (e) => {
+        // Like button click handler
+        card.querySelector(".likeBtn").onclick = (e) => {
           e.stopPropagation();
           recordNewsArticleView(key);
-          openViewersModal(key, item.title);
+          toggleArticleLike(key);
         };
+
+        // Admin-only Viewers List handler
+        const viewersBtn = card.querySelector(".btnSeeViewers");
+        if (viewersBtn && isAdmin) {
+          viewersBtn.onclick = (e) => {
+            e.stopPropagation();
+            openViewersModal(key, item.title);
+          };
+        }
 
         card.querySelector(".shareBtn").onclick = (e) => {
           e.stopPropagation();
