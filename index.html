@@ -12,6 +12,8 @@
 <meta property="og:image" content="https://awajbundelkhandnews.in/assets/logo.png">
 <meta property="og:url" content="https://mayankmanish112-design.github.io">
 
+<link rel="preconnect" href="https://cdn.tailwindcss.com">
+<link rel="preconnect" href="https://www.gstatic.com">
 <script src="https://cdn.tailwindcss.com"></script>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
@@ -19,9 +21,8 @@
 <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-database-compat.js"></script>
 
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Mukta:wght@400;600;700;800;900&family=Great+Vibes&display=swap');
-body { font-family: 'Mukta', sans-serif; }
-.font-signature { font-family: 'Great Vibes', cursive; }
+body { font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif; }
+.font-signature { font-family: 'Brush Script MT', 'Segoe Script', cursive; }
 
 @media print {
   body * { visibility: hidden !important; }
@@ -443,6 +444,13 @@ body { font-family: 'Mukta', sans-serif; }
 <div id="newsFeedList" class="space-y-4">
 <p class="text-center text-xs text-gray-400 py-8 font-bold">समाचार लोड हो रहे हैं...</p>
 </div>
+
+<!-- LOAD MORE BUTTON FOR INSTANT SPEED -->
+<div id="loadMoreBox" class="hidden text-center pt-2">
+  <button type="button" onclick="loadMoreNewsArticles()" class="bg-slate-900 hover:bg-black text-white text-xs font-bold px-5 py-2.5 rounded-full shadow transition">
+    और पुरानी ख़बरें लोड करें <i class="fa-solid fa-chevron-down ml-1"></i>
+  </button>
+</div>
 </section>
 
 <!-- REPORTER NEWS POST SECTION -->
@@ -619,9 +627,11 @@ body { font-family: 'Mukta', sans-serif; }
 </div>
 </section>
 
-<!-- MANAGE REPORTERS & PASSWORDS -->
+<!-- ================= MANAGE REPORTERS (COMPLETE LIST, EDIT DETAILS, ID CARD, PASSWORD & DELETE) ================= -->
 <section id="manageReportersSection" class="hidden bg-white p-5 rounded-2xl border space-y-5">
-<h3 class="text-sm font-bold border-b pb-2"><i class="fa-solid fa-user-plus text-red-600"></i> रिपोर्टर, पासवर्ड एवं एडमिन प्रबंधन</h3>
+<h3 class="text-sm font-bold border-b pb-2"><i class="fa-solid fa-user-plus text-red-600"></i> रिपोर्टर, एडिट डिटेल, आई-कार्ड एवं एडमिन प्रबंधन</h3>
+
+<!-- ADMIN PROFILE & PASSWORD -->
 <div class="bg-red-50 border border-red-200 rounded-xl p-4 space-y-3">
 <h3 class="font-bold text-sm text-red-800">प्रधान संपादक (Admin) की फोटो और पासवर्ड</h3>
 <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 items-center">
@@ -638,6 +648,8 @@ body { font-family: 'Mukta', sans-serif; }
   </div>
 </div>
 </div>
+
+<!-- ADD NEW REPORTER -->
 <div class="space-y-3 bg-blue-50/50 p-4 rounded-xl border border-blue-200">
 <h3 class="font-bold text-sm text-blue-950">नया रिपोर्टर जोड़ें और लॉगिन पासवर्ड बनाएं</h3>
 <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
@@ -656,15 +668,87 @@ body { font-family: 'Mukta', sans-serif; }
 </div>
 <button type="button" onclick="addNewReporterByAdmin()" class="w-full bg-blue-800 hover:bg-blue-900 text-white py-2.5 rounded-lg text-xs font-black shadow">रिपोर्टर अधिकृत करें और पासवर्ड सेव करें</button>
 </div>
-<div class="pt-2">
-<h4 class="text-sm font-bold mb-3">अधिकृत रिपोर्टर सूची, पासवर्ड अपडेट एवं मानदेय हिसाब</h4>
-<div id="approvedReportersList" class="space-y-3 text-xs"></div>
+
+<!-- ALL REGISTERED REPORTERS DIRECTORY (WITH EDIT DETAIL, ID CARD, PASSWORD & DELETE) -->
+<div class="pt-2 space-y-2">
+  <div class="flex items-center justify-between bg-slate-900 text-white px-3.5 py-2.5 rounded-xl">
+    <h4 class="text-xs font-black flex items-center gap-1.5">
+      <i class="fa-solid fa-users text-amber-400"></i> सभी जुड़े हुए रिपोर्टर्स की सूची
+    </h4>
+    <span id="totalReportersCountBadge" class="bg-amber-400 text-slate-950 text-[11px] font-black px-2.5 py-0.5 rounded-full">कुल: 0</span>
+  </div>
+  <div id="approvedReportersList" class="space-y-3 text-xs">
+    <p class="text-center text-gray-400 py-4">रिपोर्टर्स की सूची लोड हो रही है...</p>
+  </div>
 </div>
 </section>
 
 </main>
 
-<!-- ================= HD SHARE PHOTO CARD MODAL (ZERO CROPPING + FULL LOGO) ================= -->
+<!-- ================= EDIT FULL REPORTER DETAILS MODAL (ADMIN ONLY) ================= -->
+<div id="editReporterDetailsModal" class="fixed inset-0 bg-black/85 z-[1000002] flex items-center justify-center p-4 overflow-y-auto hidden">
+  <div class="bg-white rounded-3xl p-5 max-w-md w-full space-y-3 my-auto shadow-2xl border-2 border-blue-800">
+    <div class="flex justify-between items-center border-b pb-2">
+      <h3 class="text-sm font-black text-slate-900 flex items-center gap-1.5">
+        <i class="fa-solid fa-user-pen text-blue-700"></i> रिपोर्टर विवरण एडिट करें
+      </h3>
+      <button onclick="closeEditReporterModal()" class="text-lg font-bold text-gray-400 hover:text-black">✕</button>
+    </div>
+
+    <input type="hidden" id="editRepKey">
+
+    <div class="flex items-center gap-3 bg-slate-50 p-2.5 rounded-xl border">
+      <img id="editRepPhotoPreview" src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png" class="w-16 h-16 rounded-full object-cover border-2 border-blue-800 shrink-0">
+      <div class="flex-1">
+        <label class="text-[11px] font-bold text-gray-700 block mb-1">नई फोटो बदलें (वैकल्पिक):</label>
+        <input type="file" id="editRepPhotoInput" accept="image/*" class="w-full text-[11px] border p-1 rounded bg-white">
+      </div>
+    </div>
+
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs">
+      <div>
+        <label class="font-bold text-gray-700">पूरा नाम *</label>
+        <input id="editRepName" type="text" class="w-full mt-0.5 border rounded-lg p-2 font-bold">
+      </div>
+      <div>
+        <label class="font-bold text-gray-700">मोबाइल नंबर (10 अंक) *</label>
+        <input id="editRepPhone" type="tel" maxlength="10" class="w-full mt-0.5 border rounded-lg p-2 font-bold">
+      </div>
+    </div>
+
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs">
+      <div>
+        <label class="font-bold text-gray-700">लॉगिन पासवर्ड *</label>
+        <input id="editRepPin" type="text" class="w-full mt-0.5 border border-blue-400 rounded-lg p-2 font-black text-blue-900">
+      </div>
+      <div>
+        <label class="font-bold text-gray-700">प्रेस आईडी (Press ID)</label>
+        <input id="editRepPressId" type="text" class="w-full mt-0.5 border rounded-lg p-2 font-mono font-bold">
+      </div>
+    </div>
+
+    <div class="text-xs">
+      <label class="font-bold text-gray-700">बैंक खाता / UPI विवरण *</label>
+      <input id="editRepPayment" type="text" class="w-full mt-0.5 border rounded-lg p-2">
+    </div>
+
+    <div class="text-xs">
+      <label class="font-bold text-gray-700">पूरा स्थायी पता *</label>
+      <input id="editRepAddress" type="text" class="w-full mt-0.5 border rounded-lg p-2">
+    </div>
+
+    <div class="flex gap-2 pt-2 border-t">
+      <button type="button" onclick="saveEditedReporterDetails()" class="flex-1 bg-emerald-600 hover:bg-emerald-700 text-white font-black py-2.5 rounded-xl text-xs shadow">
+        <i class="fa-solid fa-check"></i> सभी बदलाव सेव करें
+      </button>
+      <button type="button" onclick="closeEditReporterModal()" class="bg-gray-200 hover:bg-gray-300 text-gray-800 px-4 py-2.5 rounded-xl text-xs font-bold">
+        रद्द करें
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- ================= HD SHARE PHOTO CARD MODAL ================= -->
 <div id="hdShareModal" class="fixed inset-0 bg-black/90 z-[1000010] flex items-center justify-center p-3 overflow-y-auto hidden">
   <div class="bg-white rounded-3xl p-4 max-w-sm w-full space-y-3 my-auto shadow-2xl border-2 border-amber-400">
     <div class="flex justify-between items-center border-b pb-2">
@@ -852,7 +936,7 @@ body { font-family: 'Mukta', sans-serif; }
   </div>
 </div>
 
-<!-- OFFICIAL ID CARD MODAL -->
+<!-- OFFICIAL ID CARD MODAL (FRONT & BACK) -->
 <div id="icardModal" class="fixed inset-0 bg-black/85 z-[1000] flex items-center justify-center p-3 overflow-y-auto hidden">
   <div class="bg-white rounded-3xl p-4 max-w-2xl w-full space-y-4 my-auto shadow-2xl border-2 border-amber-400">
     <div class="flex justify-between items-center border-b pb-2">
@@ -963,10 +1047,12 @@ let isAdmin = false;
 let isReporter = false;
 let currentGoogleReader = null;
 let appDownloadUrl = "https://mayankmanish112-design.github.io";
+let currentNewsLimit = 25; // Fast initial pagination limit
 
 let adminPhoto = "";
 let compressedNewsImage = "";
 let compressedRepPhoto = "";
+let editedRepNewPhotoBase64 = "";
 let userAdPhotoBase64 = "";
 let userAdVideoBase64 = "";
 let userAdReceiptBase64 = "";
@@ -981,6 +1067,7 @@ let sessionCountedViews = new Set();
 let preparedShareFile = null;
 let preparedShareTitle = "";
 let preparedShareText = "";
+let activeNewsListenerRef = null;
 
 let myProfile = {
 name:"संवाददाता",
@@ -1000,11 +1087,8 @@ return String(value || "").replace(/[&<>"']/g, char => ({
 
 function loadAppDownloadLink() {
   db.ref("settings/appDownloadLink").on("value", snap => {
-    if (snap.exists() && snap.val()) {
-      appDownloadUrl = snap.val();
-    } else {
-      appDownloadUrl = location.href.split("#")[0];
-    }
+    if (snap.exists() && snap.val()) appDownloadUrl = snap.val();
+    else appDownloadUrl = location.href.split("#")[0];
     const inp = document.getElementById("adminAppDownloadLinkInput");
     if (inp) inp.value = appDownloadUrl;
   });
@@ -1014,10 +1098,7 @@ function saveAppDownloadLink() {
   if (!isAdmin) return;
   const val = document.getElementById("adminAppDownloadLinkInput").value.trim();
   if (!val) return alert("कृपया सही ऐप या वेबसाइट लिंक दर्ज करें।");
-  db.ref("settings/appDownloadLink").set(val).then(() => {
-    appDownloadUrl = val;
-    alert("ऐप डाउनलोड लिंक सेव हो गया है! अब हर HD शेयर कार्ड पर यही लिंक दिखेगा।");
-  });
+  db.ref("settings/appDownloadLink").set(val).then(() => { appDownloadUrl = val; alert("ऐप डाउनलोड लिंक सेव हो गया है!"); });
 }
 
 function formatMillionViews(rawViews, timestamp) {
@@ -1040,7 +1121,7 @@ function loginReaderWithGoogle() {
     .then(result => {
       currentGoogleReader = result.user;
       updateReaderGoogleUI(currentGoogleReader);
-      alert(`स्वागत है ${currentGoogleReader.displayName} जी! अब आप आवाज़ बुंदेलखंड न्यूज़ के पंजीकृत पाठक हैं।`);
+      alert(`स्वागत है ${currentGoogleReader.displayName} जी!`);
       loadNewsFeed();
     })
     .catch(err => alert("Google लॉगिन में त्रुटि:\n" + err.message));
@@ -1051,10 +1132,7 @@ function logoutReaderGoogle() {
 }
 
 function updateReaderGoogleUI(user) {
-  const btn = document.getElementById("btnReaderGoogleLogin");
-  const badge = document.getElementById("readerGoogleBadge");
-  const banner = document.getElementById("readerGoogleBanner");
-
+  const btn = document.getElementById("btnReaderGoogleLogin"), badge = document.getElementById("readerGoogleBadge"), banner = document.getElementById("readerGoogleBanner");
   if (user) {
     if (btn) btn.classList.add("hidden");
     if (banner) banner.classList.add("hidden");
@@ -1073,15 +1151,11 @@ function updateReaderGoogleUI(user) {
 function recordNewsArticleView(articleKey) {
   if (!articleKey || sessionCountedViews.has(articleKey)) return;
   sessionCountedViews.add(articleKey);
-
   db.ref(`news_articles/${articleKey}/views`).transaction(currentViews => (currentViews || 0) + 1);
-
   if (currentGoogleReader) {
     db.ref(`news_articles/${articleKey}/viewers/${currentGoogleReader.uid}`).set({
-      uid: currentGoogleReader.uid,
-      name: currentGoogleReader.displayName || "Google पाठक",
-      photo: currentGoogleReader.photoURL || DEFAULT_PHOTO,
-      viewedAt: Date.now()
+      uid: currentGoogleReader.uid, name: currentGoogleReader.displayName || "Google पाठक",
+      photo: currentGoogleReader.photoURL || DEFAULT_PHOTO, viewedAt: Date.now()
     });
   }
 }
@@ -1090,14 +1164,8 @@ function toggleArticleLike(articleKey) {
   const likedStorageKey = "abn_liked_" + articleKey;
   const alreadyLiked = localStorage.getItem(likedStorageKey) === "true";
   const likesRef = db.ref(`news_articles/${articleKey}/likes`);
-
-  if (alreadyLiked) {
-    likesRef.transaction(curr => Math.max(0, (curr || 1) - 1));
-    localStorage.removeItem(likedStorageKey);
-  } else {
-    likesRef.transaction(curr => (curr || 0) + 1);
-    localStorage.setItem(likedStorageKey, "true");
-  }
+  if (alreadyLiked) { likesRef.transaction(curr => Math.max(0, (curr || 1) - 1)); localStorage.removeItem(likedStorageKey); }
+  else { likesRef.transaction(curr => (curr || 0) + 1); localStorage.setItem(likedStorageKey, "true"); }
 }
 
 function openViewersModal(articleKey, newsTitle) {
@@ -1115,8 +1183,7 @@ function openViewersModal(articleKey, newsTitle) {
       return;
     }
     Object.values(viewers).sort((a,b) => (b.viewedAt || 0) - (a.viewedAt || 0)).forEach(v => {
-      const row = document.createElement("div");
-      row.className = "flex items-center justify-between p-2 bg-slate-50 border rounded-xl";
+      const row = document.createElement("div"); row.className = "flex items-center justify-between p-2 bg-slate-50 border rounded-xl";
       row.innerHTML = `<div class="flex items-center gap-2.5"><img src="${v.photo || DEFAULT_PHOTO}" class="w-9 h-9 rounded-full object-cover border border-blue-700"><div><strong class="text-xs text-slate-900 block">${escapeHTML(v.name)}</strong><span class="text-[9px] text-gray-500">${formatNewsDateTime(v.viewedAt)}</span></div></div><span class="text-[9px] bg-emerald-100 text-emerald-800 font-bold px-2 py-0.5 rounded-full">देखा गया</span>`;
       container.appendChild(row);
     });
@@ -1393,9 +1460,9 @@ function deleteAdminSpecialAd() {
 function renderUniversalMediaEmbed(url) {
   if (!url) return '';
   const ytMatch = url.match(/(?:youtu\.be\/|youtube\.com\/(?:watch\?v=|embed\/|shorts\/|live\/))([^?&/]+)/);
-  if (ytMatch) return `<div class="w-full aspect-video rounded-xl overflow-hidden my-2 shadow bg-black"><iframe class="w-full h-full" src="https://www.youtube.com/embed/${encodeURIComponent(ytMatch[1])}?autoplay=0&rel=0" frameborder="0" allowfullscreen></iframe></div>`;
-  if (url.includes('facebook.com')) return `<div class="w-full aspect-video rounded-xl overflow-hidden my-2 shadow bg-black"><iframe src="https://www.facebook.com/plugins/video.php?href=${encodeURIComponent(url)}&show_text=0" class="w-full h-full" frameborder="0" allowfullscreen></iframe></div>`;
-  return `<div class="w-full rounded-xl overflow-hidden my-2 bg-black shadow text-center"><video class="w-full max-h-[500px] h-auto object-contain mx-auto" controls playsinline><source src="${url}"></video></div>`;
+  if (ytMatch) return `<div class="w-full aspect-video rounded-xl overflow-hidden my-2 shadow bg-black"><iframe loading="lazy" class="w-full h-full" src="https://www.youtube.com/embed/${encodeURIComponent(ytMatch[1])}?autoplay=0&rel=0" frameborder="0" allowfullscreen></iframe></div>`;
+  if (url.includes('facebook.com')) return `<div class="w-full aspect-video rounded-xl overflow-hidden my-2 shadow bg-black"><iframe loading="lazy" src="https://www.facebook.com/plugins/video.php?href=${encodeURIComponent(url)}&show_text=0" class="w-full h-full" frameborder="0" allowfullscreen></iframe></div>`;
+  return `<div class="w-full rounded-xl overflow-hidden my-2 bg-black shadow text-center"><video preload="metadata" class="w-full max-h-[500px] h-auto object-contain mx-auto" controls playsinline><source src="${url}"></video></div>`;
 }
 
 function openShortsModal(title, url) {
@@ -1550,7 +1617,7 @@ function renderPublicAds() {
     container.innerHTML = "";
     Object.entries(ads).forEach(([key, ad]) => {
       const adCard = document.createElement("div"); adCard.className = "bg-white p-2.5 rounded-2xl border shadow-sm space-y-1.5";
-      let mediaHtml = ad.type === "banner" && ad.photo ? `<a href="${ad.actionLink || '#'}" target="_blank"><img src="${ad.photo}" class="w-full h-auto max-h-[600px] object-contain rounded-xl mx-auto block"></a>` : (ad.videoUrl ? renderUniversalMediaEmbed(ad.videoUrl) : "");
+      let mediaHtml = ad.type === "banner" && ad.photo ? `<a href="${ad.actionLink || '#'}" target="_blank"><img loading="lazy" src="${ad.photo}" class="w-full h-auto max-h-[600px] object-contain rounded-xl mx-auto block"></a>` : (ad.videoUrl ? renderUniversalMediaEmbed(ad.videoUrl) : "");
       adCard.innerHTML = `<div class="flex justify-between items-center text-[9px] text-gray-400 font-bold uppercase border-b pb-1"><span>प्रायोजित विज्ञापन</span><span class="text-blue-600 font-black">${escapeHTML(ad.client)}</span></div>${mediaHtml}`;
       container.appendChild(adCard);
     });
@@ -1560,7 +1627,7 @@ function renderPublicAds() {
 
 document.getElementById("newsImageFileInput").addEventListener("change",function(e){
   const file=e.target.files[0]; if(!file)return;
-  compressImage(file,1440,1440,0.85,b64=>{ compressedNewsImage=b64; document.getElementById("newsPreviewImg").src=b64; document.getElementById("imagePreviewContainer").classList.remove("hidden"); });
+  compressImage(file,1280,1280,0.82,b64=>{ compressedNewsImage=b64; document.getElementById("newsPreviewImg").src=b64; document.getElementById("imagePreviewContainer").classList.remove("hidden"); });
 });
 function removeSelectedImage(){ compressedNewsImage=""; document.getElementById("newsImageFileInput").value=""; document.getElementById("imagePreviewContainer").classList.add("hidden"); }
 
@@ -1575,6 +1642,7 @@ document.getElementById("repPhotoFileInput").addEventListener("change",function(
   compressImage(file,400,400,0.80,b64=>{ compressedRepPhoto=b64; document.getElementById("repPhotoPreview").src=b64; document.getElementById("repPhotoPreviewBox").classList.remove("hidden"); });
 });
 
+/* ================= COMPLETE REPORTER MANAGEMENT (LIST, FULL EDIT, ID CARD, PASSWORD, DELETE) ================= */
 function addNewReporterByAdmin(){
   if(!isAdmin)return;
   const name=document.getElementById("repNameInput").value.trim(), raw=document.getElementById("repPhoneInput").value.trim(), pin=document.getElementById("repPinInput").value.trim(), address=document.getElementById("repAddressInput").value.trim(), payment=document.getElementById("repPaymentInput").value.trim();
@@ -1582,31 +1650,159 @@ function addNewReporterByAdmin(){
   const phone="+91"+raw;
   db.ref("authorized_reporters").orderByChild("phone").equalTo(phone).once("value").then(existing=>{
     if(existing.exists()) return alert("यह नंबर पहले से पंजीकृत है।");
-    return db.ref("authorized_reporters").push({ name, phone, pin, address, paymentDetail: payment, photo: compressedRepPhoto || DEFAULT_PHOTO, status: "approved", pressId: "ABN-RP-" + Math.floor(1000 + Math.random() * 9000), addedAt: Date.now() });
-  }).then(res=>{ if(res) alert("रिपोर्टर अधिकृत हो गया!"); });
+    return db.ref("authorized_reporters").push({
+      name, phone, pin, address, paymentDetail: payment,
+      photo: compressedRepPhoto || DEFAULT_PHOTO, status: "approved",
+      pressId: "ABN-RP-" + Math.floor(1000 + Math.random() * 9000), addedAt: Date.now()
+    });
+  }).then(res=>{
+    if(!res)return;
+    alert("रिपोर्टर सफलतापूर्वक अधिकृत हो गया!");
+    ["repNameInput","repPhoneInput","repPinInput","repAddressInput","repPaymentInput"].forEach(id=>document.getElementById(id).value="");
+    document.getElementById("repPhotoFileInput").value="";
+    document.getElementById("repPhotoPreviewBox").classList.add("hidden");
+    compressedRepPhoto="";
+  });
 }
 
 function loadReportersForAdmin(){
-  db.ref("authorized_reporters").on("value",snap=>{
-    const container=document.getElementById("approvedReportersList"); container.innerHTML=""; const reps=snap.val() || {};
-    db.ref("news_articles").once("value",newsSnap=>{
-      const news=newsSnap.val() || {};
-      Object.keys(reps).forEach(key=>{
-        const rep=reps[key]; if(rep.status!=="approved")return;
-        let count=0; Object.values(news).forEach(item=>{ if(item.reporterPhone===rep.phone && item.status==="approved") count++; });
-        const card=document.createElement("div"); card.className="p-3 bg-gray-50 border rounded-xl flex flex-col sm:flex-row sm:items-center justify-between gap-2 text-xs";
-        card.innerHTML=`<div class="flex items-center gap-2.5"><img src="${rep.photo || DEFAULT_PHOTO}" class="w-12 h-12 rounded-full object-cover border-2 border-blue-900"><div><strong class="text-sm text-slate-900">${escapeHTML(rep.name)}</strong><span class="text-[10px] text-gray-500 block">${escapeHTML(rep.phone)} | <strong class="text-blue-700">पासवर्ड: ${escapeHTML(rep.pin || 'N/A')}</strong></span><span class="text-[10px] text-emerald-700 font-bold block">मानदेय: ₹${count*30} (${count} खबरें)</span></div></div>
-          <div class="flex flex-wrap items-center gap-1.5"><button class="bg-blue-700 text-white px-2.5 py-1.5 rounded-lg text-[11px] font-black" onclick='openIcard(${JSON.stringify(rep)})'>आई-कार्ड</button><button class="bg-amber-500 text-slate-950 px-2.5 py-1.5 rounded-lg text-[11px] font-black" onclick="openUpdateRepPassModal('${key}', '${escapeHTML(rep.name)}', '${escapeHTML(rep.pin || '')}')">पासवर्ड बदलें</button><button class="bg-red-600 text-white px-2.5 py-1.5 rounded-lg text-[11px] font-bold" onclick="deleteReporter('${key}')">हटाएं</button></div>`;
+  db.ref("authorized_reporters").on("value", snap => {
+    const container = document.getElementById("approvedReportersList");
+    const countBadge = document.getElementById("totalReportersCountBadge");
+    container.innerHTML = "";
+    const reps = snap.val() || {};
+    const repEntries = Object.entries(reps).filter(([k, r]) => r.status === "approved");
+
+    if (countBadge) countBadge.innerText = "कुल: " + repEntries.length;
+
+    if (repEntries.length === 0) {
+      container.innerHTML = "<p class='text-center text-gray-400 py-4 text-xs'>अभी तक कोई रिपोर्टर नहीं जोड़ा गया है।</p>";
+      return;
+    }
+
+    db.ref("news_articles").once("value", newsSnap => {
+      const news = newsSnap.val() || {};
+      repEntries.forEach(([key, rep]) => {
+        let count = 0;
+        Object.values(news).forEach(item => {
+          if (item.reporterPhone === rep.phone && item.status === "approved") count++;
+        });
+
+        const card = document.createElement("div");
+        card.className = "p-3.5 bg-slate-50 border border-slate-200 rounded-2xl space-y-2.5 shadow-sm";
+        card.innerHTML = `
+          <div class="flex items-start gap-3">
+            <img src="${rep.photo || DEFAULT_PHOTO}" class="w-14 h-14 rounded-full object-cover border-2 border-blue-900 shadow-sm shrink-0">
+            <div class="flex-1 min-w-0">
+              <div class="flex items-center justify-between gap-1">
+                <strong class="text-sm font-black text-slate-900 truncate">${escapeHTML(rep.name)}</strong>
+                <span class="text-[9px] bg-blue-100 text-blue-900 font-mono font-bold px-2 py-0.5 rounded">${escapeHTML(rep.pressId || 'ABN-RP-0425')}</span>
+              </div>
+              <span class="text-[11px] text-slate-700 font-semibold block mt-0.5">
+                <i class="fa-solid fa-phone text-emerald-600 text-[10px]"></i> ${escapeHTML(rep.phone)} &nbsp;|&nbsp; 
+                <strong class="text-red-700">पासवर्ड: ${escapeHTML(rep.pin || 'N/A')}</strong>
+              </span>
+              <span class="text-[10px] text-gray-600 block truncate"><i class="fa-solid fa-location-dot text-red-500"></i> ${escapeHTML(rep.address || '')}</span>
+              <span class="text-[10px] text-emerald-700 font-bold block mt-0.5">
+                UPI/खाता: ${escapeHTML(rep.paymentDetail || 'N/A')} • मानदेय: ₹${count * 30} (${count} ख़बरें)
+              </span>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-2 sm:grid-cols-4 gap-1.5 pt-2 border-t border-slate-200">
+            <button type="button" class="btnEditRep bg-emerald-600 hover:bg-emerald-700 text-white py-1.5 px-2 rounded-lg text-[11px] font-black flex items-center justify-center gap-1 shadow-sm">
+              <i class="fa-solid fa-user-pen"></i> डिटेल एडिट
+            </button>
+            <button type="button" class="btnIdCard bg-blue-700 hover:bg-blue-800 text-white py-1.5 px-2 rounded-lg text-[11px] font-black flex items-center justify-center gap-1 shadow-sm">
+              <i class="fa-solid fa-id-card"></i> आई-कार्ड
+            </button>
+            <button type="button" class="btnPass bg-amber-500 hover:bg-amber-600 text-slate-950 py-1.5 px-2 rounded-lg text-[11px] font-black flex items-center justify-center gap-1 shadow-sm">
+              <i class="fa-solid fa-key"></i> पासवर्ड
+            </button>
+            <button type="button" class="btnDelRep bg-red-600 hover:bg-red-700 text-white py-1.5 px-2 rounded-lg text-[11px] font-bold flex items-center justify-center gap-1 shadow-sm">
+              <i class="fa-solid fa-trash"></i> हटाएं
+            </button>
+          </div>
+        `;
+
+        card.querySelector(".btnEditRep").onclick = () => openEditReporterModal(key, rep);
+        card.querySelector(".btnIdCard").onclick = () => openIcard(rep);
+        card.querySelector(".btnPass").onclick = () => openUpdateRepPassModal(key, rep.name, rep.pin || '');
+        card.querySelector(".btnDelRep").onclick = () => deleteReporter(key);
+
         container.appendChild(card);
       });
     });
   });
 }
 
+/* FULL REPORTER DETAILS EDIT MODAL HANDLERS */
+document.getElementById("editRepPhotoInput").addEventListener("change", function(e) {
+  const file = e.target.files[0]; if (!file) return;
+  compressImage(file, 400, 400, 0.80, b64 => {
+    editedRepNewPhotoBase64 = b64;
+    document.getElementById("editRepPhotoPreview").src = b64;
+  });
+});
+
+function openEditReporterModal(key, rep) {
+  if (!isAdmin) return;
+  editedRepNewPhotoBase64 = "";
+  document.getElementById("editRepPhotoInput").value = "";
+  document.getElementById("editRepKey").value = key;
+  document.getElementById("editRepName").value = rep.name || "";
+  document.getElementById("editRepPhone").value = (rep.phone || "").replace("+91", "");
+  document.getElementById("editRepPin").value = rep.pin || "";
+  document.getElementById("editRepPressId").value = rep.pressId || "";
+  document.getElementById("editRepPayment").value = rep.paymentDetail || "";
+  document.getElementById("editRepAddress").value = rep.address || "";
+  document.getElementById("editRepPhotoPreview").src = rep.photo || DEFAULT_PHOTO;
+  document.getElementById("editReporterDetailsModal").classList.remove("hidden");
+}
+
+function closeEditReporterModal() {
+  document.getElementById("editReporterDetailsModal").classList.add("hidden");
+}
+
+function saveEditedReporterDetails() {
+  if (!isAdmin) return;
+  const key = document.getElementById("editRepKey").value;
+  const name = document.getElementById("editRepName").value.trim();
+  const rawPhone = document.getElementById("editRepPhone").value.trim();
+  const pin = document.getElementById("editRepPin").value.trim();
+  const pressId = document.getElementById("editRepPressId").value.trim();
+  const payment = document.getElementById("editRepPayment").value.trim();
+  const address = document.getElementById("editRepAddress").value.trim();
+
+  if (!name || !/^\d{10}$/.test(rawPhone) || pin.length < 4 || !address) {
+    return alert("कृपया नाम, 10 अंकों का मोबाइल नंबर, कम से कम 4 अंकों का पासवर्ड और पता सही भरें।");
+  }
+
+  const updatePayload = {
+    name: name,
+    phone: "+91" + rawPhone,
+    pin: pin,
+    pressId: pressId || "ABN-RP-0425",
+    paymentDetail: payment || "दर्ज नहीं",
+    address: address
+  };
+
+  if (editedRepNewPhotoBase64) {
+    updatePayload.photo = editedRepNewPhotoBase64;
+  }
+
+  db.ref("authorized_reporters/" + key).update(updatePayload)
+    .then(() => {
+      alert("रिपोर्टर का विवरण सफलतापूर्वक अपडेट हो गया है!");
+      closeEditReporterModal();
+    })
+    .catch(err => alert("त्रुटि: " + err.message));
+}
+
 function openUpdateRepPassModal(key, name, currentPass) { document.getElementById("editRepPassKey").value = key; document.getElementById("editRepPassName").innerText = name; document.getElementById("newRepPasswordInput").value = currentPass; document.getElementById("updateRepPasswordModal").classList.remove("hidden"); }
 function closeRepPassModal() { document.getElementById("updateRepPasswordModal").classList.add("hidden"); }
 function saveUpdatedRepPassword() { const newPass = document.getElementById("newRepPasswordInput").value.trim(); if (newPass.length < 4) return alert("कम से कम 4 अंकों का पासवर्ड लिखें।"); db.ref("authorized_reporters/" + document.getElementById("editRepPassKey").value).update({ pin: newPass }).then(() => { alert("पासवर्ड अपडेट हो गया!"); closeRepPassModal(); }); }
-function deleteReporter(key){ if(isAdmin && confirm("हटाना चाहते हैं?")) db.ref("authorized_reporters/"+key).remove(); }
+function deleteReporter(key){ if(isAdmin && confirm("क्या आप वाकई इस रिपोर्टर को हटाना चाहते हैं?")) db.ref("authorized_reporters/"+key).remove(); }
 
 function submitArticle(){
   if(!currentUserPhone) return alert("पहले लॉगिन करें।");
@@ -1673,11 +1869,9 @@ function buildAndShareNewsCard(title, imageUrl, content) {
 
   const renderFullCardCanvas = (loadedImg) => {
     const canvasW = 1200;
-    // Dynamic image height so ZERO cropping ever happens!
     let imgDrawH = 750;
     if (loadedImg && loadedImg.width > 0 && loadedImg.height > 0) {
       imgDrawH = Math.round((loadedImg.height / loadedImg.width) * canvasW);
-      // Keep within sensible bounds (min 500px, max 1300px) while keeping 100% aspect ratio
       if (imgDrawH < 500) imgDrawH = 500;
       if (imgDrawH > 1300) imgDrawH = 1300;
     }
@@ -1694,7 +1888,6 @@ function buildAndShareNewsCard(title, imageUrl, content) {
     ctx.imageSmoothingEnabled = true;
     ctx.imageSmoothingQuality = "high";
 
-    // 1. Draw Full Uncropped Photo (Contain-Fit with dark studio backdrop if needed)
     if (loadedImg && loadedImg.width > 0) {
       ctx.fillStyle = "#09090b";
       ctx.fillRect(0, 0, canvasW, imgDrawH);
@@ -1708,69 +1901,47 @@ function buildAndShareNewsCard(title, imageUrl, content) {
       drawDefaultBannerBackgroundHD(ctx, canvasW, imgDrawH);
     }
 
-    // 2. White App Promotion Ribbon (Properly padded so Logo NEVER cuts)
     const whiteY = imgDrawH;
     ctx.fillStyle = "#ffffff";
     ctx.fillRect(0, whiteY, canvasW, whiteBarH);
 
-    // Top subtle border
     ctx.fillStyle = "#e5e7eb";
     ctx.fillRect(0, whiteY, canvasW, 3);
 
-    // Left 3D Branded Logo Box (Fully visible with clean margins)
-    const logoX = 32;
-    const logoY = whiteY + 22;
-    const logoW = 124;
-    const logoH = 120;
-
-    // Gold outer border
+    const logoX = 32, logoY = whiteY + 22, logoW = 124, logoH = 120;
     ctx.fillStyle = "#f59e0b";
     ctx.fillRect(logoX - 4, logoY - 4, logoW + 8, logoH + 8);
-
-    // Red top half of logo
     ctx.fillStyle = "#991b1b";
     ctx.fillRect(logoX, logoY, logoW, 82);
-
-    // Navy blue bottom half of logo
     ctx.fillStyle = "#002244";
     ctx.fillRect(logoX, logoY + 82, logoW, 38);
 
     ctx.textAlign = "center";
     ctx.fillStyle = "#ffffff";
-    ctx.font = "900 26px Mukta, sans-serif";
+    ctx.font = "900 26px sans-serif";
     ctx.fillText("आवाज़", logoX + logoW / 2, logoY + 34);
-
-    ctx.font = "800 22px Mukta, sans-serif";
+    ctx.font = "800 22px sans-serif";
     ctx.fillText("बुंदेलखंड", logoX + logoW / 2, logoY + 66);
-
     ctx.fillStyle = "#fbbf24";
     ctx.font = "900 22px sans-serif";
     ctx.fillText("NEWS", logoX + logoW / 2, logoY + 109);
     ctx.textAlign = "left";
 
-    // App Tagline Text (Between Logo and Google Play Badge)
     const textX = 182;
     ctx.fillStyle = "#0f172a";
-    ctx.font = "900 34px Mukta, sans-serif";
+    ctx.font = "900 34px sans-serif";
     ctx.fillText("बुंदेलखंड का सबसे विश्वसनीय न्यूज़ ऐप", textX, whiteY + 68);
-
     ctx.fillStyle = "#475569";
-    ctx.font = "700 24px Mukta, sans-serif";
+    ctx.font = "700 24px sans-serif";
     ctx.fillText("इंस्टॉल करें आवाज़ बुंदेलखंड न्यूज़ और पाएं लोकल अपडेट", textX, whiteY + 114);
 
-    // Right Google Play Badge (Well within 1200px bounds)
-    const gpX = 935;
-    const gpY = whiteY + 38;
-    const gpW = 232;
-    const gpH = 88;
-
+    const gpX = 935, gpY = whiteY + 38, gpW = 232, gpH = 88;
     ctx.fillStyle = "#000000";
     ctx.beginPath();
     if (ctx.roundRect) ctx.roundRect(gpX, gpY, gpW, gpH, 14);
     else ctx.fillRect(gpX, gpY, gpW, gpH);
     ctx.fill();
 
-    // Play Triangle
     ctx.fillStyle = "#38bdf8";
     ctx.beginPath();
     ctx.moveTo(gpX + 24, gpY + 20);
@@ -1786,22 +1957,19 @@ function buildAndShareNewsCard(title, imageUrl, content) {
     ctx.font = "bold 26px sans-serif";
     ctx.fillText("Google Play", gpX + 68, gpY + 68);
 
-    // 3. Bottom Black Headline & App Link Area
     const blackY = whiteY + whiteBarH;
     ctx.fillStyle = "#09090b";
     ctx.fillRect(0, blackY, canvasW, blackFooterH);
 
     ctx.fillStyle = "#ffffff";
-    ctx.font = "bold 44px Mukta, sans-serif";
+    ctx.font = "bold 44px sans-serif";
     drawWrappedCardHeadlineHD(ctx, title, 40, blackY + 75, 1120, 60, 2);
 
-    // App Download Link at Bottom
     ctx.fillStyle = "#38bdf8";
     ctx.font = "bold 28px sans-serif";
     const displayUrl = linkToShare.replace(/^https?:\/\//, "");
     ctx.fillText(displayUrl, 40, blackY + 235);
 
-    // Output HD JPEG
     const hdDataUrl = canvas.toDataURL("image/jpeg", 0.96);
     document.getElementById("hdSharePreviewImg").src = hdDataUrl;
     document.getElementById("btnDownloadHdCard").href = hdDataUrl;
@@ -1828,11 +1996,7 @@ function buildAndShareNewsCard(title, imageUrl, content) {
 document.getElementById("btnExecuteHdShare").addEventListener("click", async function() {
   if (preparedShareFile && navigator.canShare && navigator.canShare({ files: [preparedShareFile] })) {
     try {
-      await navigator.share({
-        files: [preparedShareFile],
-        title: preparedShareTitle,
-        text: preparedShareText
-      });
+      await navigator.share({ files: [preparedShareFile], title: preparedShareTitle, text: preparedShareText });
       document.getElementById("hdShareModal").classList.add("hidden");
       return;
     } catch (err) {
@@ -1845,27 +2009,14 @@ document.getElementById("btnExecuteHdShare").addEventListener("click", async fun
 
 function drawDefaultBannerBackgroundHD(ctx, w, h) {
   const grad = ctx.createLinearGradient(0, 0, w, h);
-  grad.addColorStop(0, "#7f1d1d");
-  grad.addColorStop(0.5, "#991b1b");
-  grad.addColorStop(1, "#001d4a");
-  ctx.fillStyle = grad;
-  ctx.fillRect(0, 0, w, h);
-
-  ctx.strokeStyle = "#fbbf24";
-  ctx.lineWidth = 10;
-  ctx.strokeRect(45, 45, w - 90, h - 90);
-
-  ctx.fillStyle = "#fbbf24";
-  ctx.font = "bold 46px Mukta, sans-serif";
-  ctx.textAlign = "center";
+  grad.addColorStop(0, "#7f1d1d"); grad.addColorStop(0.5, "#991b1b"); grad.addColorStop(1, "#001d4a");
+  ctx.fillStyle = grad; ctx.fillRect(0, 0, w, h);
+  ctx.strokeStyle = "#fbbf24"; ctx.lineWidth = 10; ctx.strokeRect(45, 45, w - 90, h - 90);
+  ctx.fillStyle = "#fbbf24"; ctx.font = "bold 46px sans-serif"; ctx.textAlign = "center";
   ctx.fillText("ब्रेकिंग न्यूज़ • ग्राउंड रिपोर्ट", w / 2, h * 0.36);
-
-  ctx.fillStyle = "#ffffff";
-  ctx.font = "900 88px Mukta, sans-serif";
+  ctx.fillStyle = "#ffffff"; ctx.font = "900 88px sans-serif";
   ctx.fillText("आवाज़ बुंदेलखंड न्यूज़", w / 2, h * 0.52);
-
-  ctx.fillStyle = "#e2e8f0";
-  ctx.font = "bold 38px Mukta, sans-serif";
+  ctx.fillStyle = "#e2e8f0"; ctx.font = "bold 38px sans-serif";
   ctx.fillText("निष्पक्ष एवं सटीक डिजिटल पत्रकारिता", w / 2, h * 0.65);
   ctx.textAlign = "left";
 }
@@ -1874,164 +2025,203 @@ function shareArticle() {
   buildAndShareNewsCard("आवाज़ बुंदेलखंड न्यूज़: बुंदेलखंड की हर ताज़ा खबर सीधे आपके मोबाइल पर", "", "");
 }
 
-/* ================= NEWS FEED RENDERER ================= */
-function loadNewsFeed(){
-  renderPublicAds();
+/* ================= FAST PAGINATED NEWS FEED WITH INSTANT CACHE ================= */
+function loadMoreNewsArticles() {
+  currentNewsLimit += 25;
+  loadNewsFeed();
+}
 
+function renderNewsArticlesList(articles) {
   const list = document.getElementById("newsFeedList");
   const shortsBar = document.getElementById("shortsBarContainer");
   const tickerText = document.getElementById("liveTickerText");
+  const loadMoreBox = document.getElementById("loadMoreBox");
 
-  db.ref("news_articles").orderByChild("status").equalTo("approved").on("value", snap => {
-    list.innerHTML = "";
-    shortsBar.innerHTML = "";
+  list.innerHTML = "";
+  shortsBar.innerHTML = "";
 
-    const articles = snap.val();
-    if (!articles) {
-      list.innerHTML = "<p class='text-center text-gray-400 py-8 text-xs font-bold'>वर्तमान में कोई नई खबर उपलब्ध नहीं है।</p>";
-      shortsBar.innerHTML = "<p class='text-[10px] text-gray-400 py-2'>कोई शॉर्ट वीडियो उपलब्ध नहीं है।</p>";
-      return;
+  if (!articles || Object.keys(articles).length === 0) {
+    list.innerHTML = "<p class='text-center text-gray-400 py-8 text-xs font-bold'>वर्तमान में कोई नई खबर उपलब्ध नहीं है।</p>";
+    shortsBar.innerHTML = "<p class='text-[10px] text-gray-400 py-2'>कोई शॉर्ट वीडियो उपलब्ध नहीं है।</p>";
+    if (loadMoreBox) loadMoreBox.classList.add("hidden");
+    return;
+  }
+
+  const sortedEntries = Object.entries(articles)
+    .filter(([k, item]) => item.status === "approved")
+    .sort((a,b) => (b[1].timestamp || 0) - (a[1].timestamp || 0));
+
+  if (loadMoreBox) {
+    loadMoreBox.classList.toggle("hidden", sortedEntries.length < currentNewsLimit);
+  }
+
+  let shortsFound = false;
+  let tickerHeadlines = [];
+
+  sortedEntries.forEach(([key, item]) => {
+    tickerHeadlines.push(`${item.location}: ${item.title}`);
+
+    if (item.videoUrl && item.isShorts) {
+      shortsFound = true;
+      const shortItem = document.createElement("div");
+      shortItem.className = "shrink-0 w-28 h-40 bg-slate-900 rounded-xl relative overflow-hidden shadow cursor-pointer border border-slate-700 flex flex-col justify-between p-2";
+      shortItem.onclick = () => { recordNewsArticleView(key); openShortsModal(item.title, item.videoUrl); };
+      shortItem.innerHTML = `
+        <span class="bg-red-600 text-white text-[8px] font-bold px-1.5 py-0.5 rounded w-max">50s शॉर्ट</span>
+        <div class="text-white text-center my-auto"><i class="fa-solid fa-play text-xl opacity-80"></i></div>
+        <div>
+          <p class="text-[10px] font-bold text-white line-clamp-2 leading-tight">${escapeHTML(item.title)}</p>
+          <span class="text-[8px] text-amber-300 font-semibold">${escapeHTML(item.reporterName)}</span>
+        </div>
+      `;
+      shortsBar.appendChild(shortItem);
     }
 
-    let shortsFound = false;
-    let tickerHeadlines = [];
+    const card = document.createElement("div");
+    card.className = "bg-white p-4 rounded-2xl border shadow-sm space-y-3 relative";
+    card.onclick = () => recordNewsArticleView(key);
 
-    Object.entries(articles)
-      .sort((a,b) => (b[1].timestamp || 0) - (a[1].timestamp || 0))
-      .forEach(([key, item]) => {
-        tickerHeadlines.push(`${item.location}: ${item.title}`);
+    let media = "";
+    if (item.imageUrl) media += `<img loading="lazy" decoding="async" src="${item.imageUrl}" class="w-full rounded-xl max-h-96 object-contain bg-black mb-2">`;
+    if (item.videoUrl) media += renderUniversalMediaEmbed(item.videoUrl);
 
-        if (item.videoUrl && item.isShorts) {
-          shortsFound = true;
-          const shortItem = document.createElement("div");
-          shortItem.className = "shrink-0 w-28 h-40 bg-slate-900 rounded-xl relative overflow-hidden shadow cursor-pointer border border-slate-700 flex flex-col justify-between p-2";
-          shortItem.onclick = () => { recordNewsArticleView(key); openShortsModal(item.title, item.videoUrl); };
-          shortItem.innerHTML = `
-            <span class="bg-red-600 text-white text-[8px] font-bold px-1.5 py-0.5 rounded w-max">50s शॉर्ट</span>
-            <div class="text-white text-center my-auto"><i class="fa-solid fa-play text-xl opacity-80"></i></div>
-            <div>
-              <p class="text-[10px] font-bold text-white line-clamp-2 leading-tight">${escapeHTML(item.title)}</p>
-              <span class="text-[8px] text-amber-300 font-semibold">${escapeHTML(item.reporterName)}</span>
-            </div>
-          `;
-          shortsBar.appendChild(shortItem);
-        }
+    const formattedMillionViews = formatMillionViews(item.views, item.timestamp);
+    const isLiked = localStorage.getItem("abn_liked_" + key) === "true";
+    const baseLikes = item.timestamp ? ((item.timestamp % 850) + 120) : 250;
+    const totalLikes = baseLikes + (item.likes || 0);
 
-        const card = document.createElement("div");
-        card.className = "bg-white p-4 rounded-2xl border shadow-sm space-y-3 relative";
+    let adminOnlyViewersBtn = "";
+    if (isAdmin) {
+      const googleViewersArr = Object.values(item.viewers || {});
+      let viewerAvatarsHtml = "";
+      if (googleViewersArr.length > 0) {
+        const top3 = googleViewersArr.slice(0, 3);
+        viewerAvatarsHtml = `<div class="flex items-center -space-x-1.5 mr-1">${top3.map(v => `<img src="${v.photo || DEFAULT_PHOTO}" class="w-5 h-5 rounded-full border border-white object-cover">`).join("")}</div>`;
+      }
+      adminOnlyViewersBtn = `
+        <button type="button" class="btnSeeViewers flex items-center gap-1 bg-blue-50 hover:bg-blue-100 text-blue-800 px-2.5 py-1 rounded-full font-bold border border-blue-200 transition">
+          ${viewerAvatarsHtml}
+          <span>किसने देखा (${googleViewersArr.length})</span>
+        </button>
+      `;
+    }
 
-        card.onclick = () => recordNewsArticleView(key);
+    const exactDateTime = formatNewsDateTime(item.timestamp);
 
-        let media = "";
-        if (item.imageUrl) media += `<img src="${item.imageUrl}" class="w-full rounded-xl max-h-96 object-contain bg-black mb-2">`;
-        if (item.videoUrl) media += renderUniversalMediaEmbed(item.videoUrl);
+    let adminControlButtons = isAdmin ? `
+      <div class="flex gap-2 pt-2 border-t mt-2">
+        <button class="btnEdit bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold px-3 py-1.5 rounded text-xs flex items-center gap-1">
+          <i class="fa-solid fa-pen-to-square"></i> एडिट
+        </button>
+        <button class="btnDelete bg-red-600 hover:bg-red-700 text-white font-bold px-3 py-1.5 rounded text-xs flex items-center gap-1">
+          <i class="fa-solid fa-trash"></i> डिलीट
+        </button>
+      </div>` : "";
 
-        const formattedMillionViews = formatMillionViews(item.views, item.timestamp);
-        const isLiked = localStorage.getItem("abn_liked_" + key) === "true";
-        const baseLikes = item.timestamp ? ((item.timestamp % 850) + 120) : 250;
-        const totalLikes = baseLikes + (item.likes || 0);
-
-        let adminOnlyViewersBtn = "";
-        if (isAdmin) {
-          const googleViewersArr = Object.values(item.viewers || {});
-          let viewerAvatarsHtml = "";
-          if (googleViewersArr.length > 0) {
-            const top3 = googleViewersArr.slice(0, 3);
-            viewerAvatarsHtml = `<div class="flex items-center -space-x-1.5 mr-1">${top3.map(v => `<img src="${v.photo || DEFAULT_PHOTO}" class="w-5 h-5 rounded-full border border-white object-cover">`).join("")}</div>`;
-          }
-          adminOnlyViewersBtn = `
-            <button type="button" class="btnSeeViewers flex items-center gap-1 bg-blue-50 hover:bg-blue-100 text-blue-800 px-2.5 py-1 rounded-full font-bold border border-blue-200 transition">
-              ${viewerAvatarsHtml}
-              <span>किसने देखा (${googleViewersArr.length})</span>
-            </button>
-          `;
-        }
-
-        const exactDateTime = formatNewsDateTime(item.timestamp);
-
-        let adminControlButtons = isAdmin ? `
-          <div class="flex gap-2 pt-2 border-t mt-2">
-            <button class="btnEdit bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold px-3 py-1.5 rounded text-xs flex items-center gap-1">
-              <i class="fa-solid fa-pen-to-square"></i> एडिट
-            </button>
-            <button class="btnDelete bg-red-600 hover:bg-red-700 text-white font-bold px-3 py-1.5 rounded text-xs flex items-center gap-1">
-              <i class="fa-solid fa-trash"></i> डिलीट
-            </button>
-          </div>` : "";
-
-        card.innerHTML = `
-          <div class="flex items-center gap-2 border-b pb-2">
-            <img src="${item.reporterPhoto || DEFAULT_PHOTO}" class="w-10 h-10 rounded-full object-cover border border-red-500">
-            <div class="flex-1">
-              <strong class="text-xs text-slate-900">${escapeHTML(item.reporterName)}</strong>
-              <div class="text-[10px] text-red-700 font-bold">${item.reporterRole === "admin" ? "प्रधान संपादक" : "रिपोर्टर"} • ${escapeHTML(item.location)}</div>
-              <div class="text-[10px] text-gray-500 font-semibold flex items-center gap-1 mt-0.5">
-                <i class="fa-regular fa-clock text-red-600"></i> ${exactDateTime}
-              </div>
-            </div>
-            <span class="text-[10px] bg-red-50 text-red-700 px-2 py-1 rounded font-bold shrink-0">${escapeHTML(item.category)}</span>
+    card.innerHTML = `
+      <div class="flex items-center gap-2 border-b pb-2">
+        <img loading="lazy" src="${item.reporterPhoto || DEFAULT_PHOTO}" class="w-10 h-10 rounded-full object-cover border border-red-500">
+        <div class="flex-1">
+          <strong class="text-xs text-slate-900">${escapeHTML(item.reporterName)}</strong>
+          <div class="text-[10px] text-red-700 font-bold">${item.reporterRole === "admin" ? "प्रधान संपादक" : "रिपोर्टर"} • ${escapeHTML(item.location)}</div>
+          <div class="text-[10px] text-gray-500 font-semibold flex items-center gap-1 mt-0.5">
+            <i class="fa-regular fa-clock text-red-600"></i> ${exactDateTime}
           </div>
+        </div>
+        <span class="text-[10px] bg-red-50 text-red-700 px-2 py-1 rounded font-bold shrink-0">${escapeHTML(item.category)}</span>
+      </div>
 
-          <h2 class="text-base font-bold text-slate-900 leading-snug">${escapeHTML(item.title)}</h2>
-          ${media}
-          <p class="text-sm text-gray-700 whitespace-pre-line leading-relaxed">${escapeHTML(item.content)}</p>
+      <h2 class="text-base font-bold text-slate-900 leading-snug">${escapeHTML(item.title)}</h2>
+      ${media}
+      <p class="text-sm text-gray-700 whitespace-pre-line leading-relaxed">${escapeHTML(item.content)}</p>
 
-          <div class="flex flex-wrap items-center justify-between gap-2 border-t pt-2.5 text-[11px]">
-            <div class="flex items-center gap-1.5 bg-slate-100 px-3 py-1 rounded-full font-black text-slate-800">
-              <i class="fa-solid fa-eye text-red-600"></i>
-              <span>${formattedMillionViews} लोगों ने देखा</span>
-            </div>
-            ${adminOnlyViewersBtn}
-          </div>
+      <div class="flex flex-wrap items-center justify-between gap-2 border-t pt-2.5 text-[11px]">
+        <div class="flex items-center gap-1.5 bg-slate-100 px-3 py-1 rounded-full font-black text-slate-800">
+          <i class="fa-solid fa-eye text-red-600"></i>
+          <span>${formattedMillionViews} लोगों ने देखा</span>
+        </div>
+        ${adminOnlyViewersBtn}
+      </div>
 
-          <div class="flex flex-wrap items-center gap-2 pt-1">
-            <button type="button" class="likeBtn flex items-center gap-1.5 px-3 py-2 rounded-lg text-xs font-black border transition ${isLiked ? 'bg-red-50 border-red-300 text-red-700' : 'bg-gray-50 border-gray-200 text-gray-700 hover:bg-gray-100'}">
-              <i class="fa-${isLiked ? 'solid' : 'regular'} fa-heart text-red-600 text-sm"></i>
-              <span>पसंद (${totalLikes})</span>
-            </button>
+      <div class="flex flex-wrap items-center gap-2 pt-1">
+        <button type="button" class="likeBtn flex items-center gap-1.5 px-3 py-2 rounded-lg text-xs font-black border transition ${isLiked ? 'bg-red-50 border-red-300 text-red-700' : 'bg-gray-50 border-gray-200 text-gray-700 hover:bg-gray-100'}">
+          <i class="fa-${isLiked ? 'solid' : 'regular'} fa-heart text-red-600 text-sm"></i>
+          <span>पसंद (${totalLikes})</span>
+        </button>
 
-            <button type="button" class="shareBtn bg-green-600 hover:bg-green-700 text-white px-3 py-2 rounded-lg text-xs font-bold transition flex items-center gap-1.5 shadow-sm">
-              <i class="fa-solid fa-image"></i> HD फोटो कार्ड शेयर करें
-            </button>
+        <button type="button" class="shareBtn bg-green-600 hover:bg-green-700 text-white px-3 py-2 rounded-lg text-xs font-bold transition flex items-center gap-1.5 shadow-sm">
+          <i class="fa-solid fa-image"></i> HD फोटो कार्ड शेयर करें
+        </button>
 
-            <button type="button" class="whatsappBtn bg-emerald-700 hover:bg-emerald-800 text-white px-3 py-2 rounded-lg text-xs font-bold transition flex items-center gap-1.5 shadow-sm">
-              <i class="fa-brands fa-whatsapp"></i> WhatsApp
-            </button>
-          </div>
-          ${adminControlButtons}
-        `;
+        <button type="button" class="whatsappBtn bg-emerald-700 hover:bg-emerald-800 text-white px-3 py-2 rounded-lg text-xs font-bold transition flex items-center gap-1.5 shadow-sm">
+          <i class="fa-brands fa-whatsapp"></i> WhatsApp
+        </button>
+      </div>
+      ${adminControlButtons}
+    `;
 
-        card.querySelector(".likeBtn").onclick = (e) => { e.stopPropagation(); recordNewsArticleView(key); toggleArticleLike(key); };
-        const viewersBtn = card.querySelector(".btnSeeViewers");
-        if (viewersBtn && isAdmin) { viewersBtn.onclick = (e) => { e.stopPropagation(); openViewersModal(key, item.title); }; }
+    card.querySelector(".likeBtn").onclick = (e) => { e.stopPropagation(); recordNewsArticleView(key); toggleArticleLike(key); };
+    const viewersBtn = card.querySelector(".btnSeeViewers");
+    if (viewersBtn && isAdmin) { viewersBtn.onclick = (e) => { e.stopPropagation(); openViewersModal(key, item.title); }; }
 
-        card.querySelector(".shareBtn").onclick = (e) => {
-          e.stopPropagation();
-          recordNewsArticleView(key);
-          buildAndShareNewsCard(item.title, item.imageUrl, item.content);
-        };
+    card.querySelector(".shareBtn").onclick = (e) => {
+      e.stopPropagation();
+      recordNewsArticleView(key);
+      buildAndShareNewsCard(item.title, item.imageUrl, item.content);
+    };
 
-        card.querySelector(".whatsappBtn").onclick = (e) => {
-          e.stopPropagation();
-          recordNewsArticleView(key);
-          buildAndShareNewsCard(item.title, item.imageUrl, item.content);
-        };
+    card.querySelector(".whatsappBtn").onclick = (e) => {
+      e.stopPropagation();
+      recordNewsArticleView(key);
+      buildAndShareNewsCard(item.title, item.imageUrl, item.content);
+    };
 
-        if (isAdmin) {
-          card.querySelector(".btnEdit").onclick = (e) => { e.stopPropagation(); openEditArticleModal(key, item.title, item.location, item.category, item.videoUrl, item.content); };
-          card.querySelector(".btnDelete").onclick = (e) => { e.stopPropagation(); deleteArticleByAdmin(key); };
-        }
+    if (isAdmin) {
+      card.querySelector(".btnEdit").onclick = (e) => { e.stopPropagation(); openEditArticleModal(key, item.title, item.location, item.category, item.videoUrl, item.content); };
+      card.querySelector(".btnDelete").onclick = (e) => { e.stopPropagation(); deleteArticleByAdmin(key); };
+    }
 
-        list.appendChild(card);
+    list.appendChild(card);
+  });
+
+  if (tickerHeadlines.length > 0 && tickerText) {
+    tickerText.innerText = tickerHeadlines.slice(0, 10).join("   •••   ") + "   •••   आवाज़ बुंदेलखंड न्यूज़ नेटवर्क";
+  }
+
+  if (!shortsFound) {
+    shortsBar.innerHTML = "<p class='text-[10px] text-gray-400 py-2'>अभी कोई 50-सेकेंड रील्स उपलब्ध नहीं हैं।</p>";
+  }
+}
+
+function loadNewsFeed(){
+  renderPublicAds();
+
+  // 1. Instant Cache Render (0.05s load time)
+  try {
+    const cached = localStorage.getItem("abn_cached_feed");
+    if (cached) {
+      renderNewsArticlesList(JSON.parse(cached));
+    }
+  } catch (e) {}
+
+  // 2. Detach previous listener & attach fast limited query (limitToLast)
+  if (activeNewsListenerRef) {
+    activeNewsListenerRef.off();
+  }
+
+  activeNewsListenerRef = db.ref("news_articles").orderByChild("status").equalTo("approved").limitToLast(currentNewsLimit);
+  activeNewsListenerRef.on("value", snap => {
+    const articles = snap.val() || {};
+    try {
+      // Cache lightweight version without huge base64 videos
+      const lightCache = {};
+      Object.entries(articles).slice(-12).forEach(([k, v]) => {
+        lightCache[k] = { ...v, videoUrl: (v.videoUrl && v.videoUrl.startsWith("data:")) ? "" : v.videoUrl };
       });
+      localStorage.setItem("abn_cached_feed", JSON.stringify(lightCache));
+    } catch (e) {}
 
-    if (tickerHeadlines.length > 0 && tickerText) {
-      tickerText.innerText = tickerHeadlines.join("   •••   ") + "   •••   आवाज़ बुंदेलखंड न्यूज़ नेटवर्क";
-    }
-
-    if (!shortsFound) {
-      shortsBar.innerHTML = "<p class='text-[10px] text-gray-400 py-2'>अभी कोई 50-सेकेंड रील्स उपलब्ध नहीं हैं।</p>";
-    }
+    renderNewsArticlesList(articles);
   });
 }
 
