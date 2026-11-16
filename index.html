@@ -10,7 +10,7 @@
 <meta property="og:title" content="आवाज़ बुंदेलखंड न्यूज़ - निष्पक्ष डिजिटल पत्रकारिता">
 <meta property="og:description" content="बुंदेलखंड की हर ताज़ा खबर और ग्राउंड रिपोर्ट सीधे अपने मोबाइल पर पढ़ें।">
 <meta property="og:image" content="https://awajbundelkhandnews.in/assets/logo.png">
-<meta property="og:url" content="https://awajbundelkhandnews.in">
+<meta property="og:url" content="https://mayankmanish112-design.github.io">
 
 <script src="https://cdn.tailwindcss.com"></script>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -123,7 +123,7 @@ body { font-family: 'Mukta', sans-serif; }
 <button onclick="switchTab('shortsPost')" id="tabShortsPost" class="navtab py-3 px-2 border-b-2 border-transparent text-gray-500 whitespace-nowrap"><i class="fa-solid fa-bolt text-amber-500"></i> शॉर्ट वीडियो</button>
 <button onclick="switchTab('wallet')" id="tabWallet" class="navtab py-3 px-2 border-b-2 border-transparent text-gray-500 whitespace-nowrap">मेरा पर्स (₹30)</button>
 <button onclick="switchTab('admin')" id="tabAdmin" class="navtab hidden py-3 px-2 border-b-2 border-transparent text-gray-500 whitespace-nowrap">ख़बर समीक्षा</button>
-<button onclick="switchTab('manageAds')" id="tabManageAds" class="navtab hidden py-3 px-2 border-b-2 border-transparent text-gray-500 whitespace-nowrap"><i class="fa-solid fa-rectangle-ad text-blue-600"></i> विज्ञापन खाता</button>
+<button onclick="switchTab('manageAds')" id="tabManageAds" class="navtab hidden py-3 px-2 border-b-2 border-transparent text-gray-500 whitespace-nowrap"><i class="fa-solid fa-rectangle-ad text-blue-600"></i> विज्ञापन व ऐप लिंक</button>
 <button onclick="switchTab('manageReporters')" id="tabManageReporters" class="navtab hidden py-3 px-2 border-b-2 border-transparent text-gray-500 whitespace-nowrap">रिपोर्टर व कार्ड</button>
 </div>
 </nav>
@@ -345,9 +345,8 @@ body { font-family: 'Mukta', sans-serif; }
   </button>
 </div>
 
-<!-- PUBLIC LIVE BROADCAST CARD IN MAIN NEWS FEED (VISIBLE TO ALL USERS WHEN LIVE IS ON) -->
+<!-- PUBLIC LIVE BROADCAST CARD IN MAIN NEWS FEED -->
 <div id="publicLiveStreamCard" class="hidden bg-slate-950 rounded-2xl overflow-hidden border-2 border-red-600 shadow-2xl">
-  <!-- Live Header Strip -->
   <div class="bg-red-700 text-white px-3 py-1.5 flex items-center justify-between text-xs font-black">
     <span class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full bg-white animate-ping"></span> सीधा प्रसारण (LIVE COVERAGE)</span>
     <span class="text-[10px] bg-black/30 px-2 py-0.5 rounded-full">आवाज़ बुंदेलखंड टी.वी.</span>
@@ -550,11 +549,11 @@ body { font-family: 'Mukta', sans-serif; }
 <div id="pendingNewsList" class="space-y-3">कोई खबर लंबित नहीं है।</div>
 </section>
 
-<!-- MANAGE ADS & REVENUE -->
+<!-- MANAGE ADS & APP DOWNLOAD LINK SETTINGS -->
 <section id="manageAdsSection" class="hidden bg-white p-5 rounded-2xl border space-y-5">
 <div class="border-b pb-2 flex justify-between items-center">
 <div>
-<h3 class="text-sm font-bold text-blue-900 flex items-center gap-1.5"><i class="fa-solid fa-rectangle-ad text-blue-600"></i> विज्ञापन अप्रूवल एवं UPI कमाई डेस्क</h3>
+<h3 class="text-sm font-bold text-blue-900 flex items-center gap-1.5"><i class="fa-solid fa-rectangle-ad text-blue-600"></i> विज्ञापन अप्रूवल, ऐप लिंक व कमाई डेस्क</h3>
 <p class="text-[10px] text-gray-500">QR कोड पेमेंट खाता: <strong>8853252811@apl</strong></p>
 </div>
 <div class="text-right">
@@ -562,6 +561,23 @@ body { font-family: 'Mukta', sans-serif; }
 <span id="totalAdEarnings" class="text-base font-black text-emerald-700 block">₹0</span>
 </div>
 </div>
+
+<!-- APP DOWNLOAD LINK SETTINGS FOR SHARE CARDS -->
+<div class="bg-blue-50 border-2 border-blue-300 p-4 rounded-2xl space-y-2.5">
+  <h4 class="text-xs font-black text-blue-950 flex items-center gap-1.5">
+    <i class="fa-brands fa-google-play text-blue-700"></i> शेयर कार्ड पर दिखने वाला ऐप डाउनलोड लिंक (App Download Link)
+  </h4>
+  <p class="text-[10px] text-slate-600">
+    जब कोई यूज़र खबर शेयर करेगा, तो फोटो कार्ड और WhatsApp संदेश में नीचे दिया गया लिंक छपेगा:
+  </p>
+  <div class="flex gap-2">
+    <input id="adminAppDownloadLinkInput" type="url" class="flex-1 border rounded-xl px-3 py-2 text-xs font-bold bg-white outline-none focus:border-blue-700" placeholder="https://mayankmanish112-design.github.io">
+    <button type="button" onclick="saveAppDownloadLink()" class="bg-blue-800 hover:bg-blue-900 text-white font-black px-4 py-2 rounded-xl text-xs shadow">
+      लिंक सेव करें
+    </button>
+  </div>
+</div>
+
 <div class="bg-gradient-to-r from-amber-50 to-red-50 border-2 border-amber-400 p-4 rounded-2xl space-y-3">
 <div class="flex items-center justify-between border-b border-amber-300 pb-1.5">
   <h4 class="text-xs font-black text-slate-900 flex items-center gap-1.5"><i class="fa-solid fa-crown text-amber-600"></i> एडमिन स्पेशल वीडियो Ad (ऑटो-प्ले + आवाज़)</h4>
@@ -920,6 +936,7 @@ let currentUserPhone = null;
 let isAdmin = false;
 let isReporter = false;
 let currentGoogleReader = null;
+let appDownloadUrl = "https://mayankmanish112-design.github.io";
 
 let adminPhoto = "";
 let compressedNewsImage = "";
@@ -952,9 +969,31 @@ return String(value || "").replace(/[&<>"']/g, char => ({
 })[char]);
 }
 
+/* LOAD & SAVE APP DOWNLOAD LINK FOR SHARE CARDS */
+function loadAppDownloadLink() {
+  db.ref("settings/appDownloadLink").on("value", snap => {
+    if (snap.exists() && snap.val()) {
+      appDownloadUrl = snap.val();
+    } else {
+      appDownloadUrl = location.href.split("#")[0];
+    }
+    const inp = document.getElementById("adminAppDownloadLinkInput");
+    if (inp) inp.value = appDownloadUrl;
+  });
+}
+
+function saveAppDownloadLink() {
+  if (!isAdmin) return;
+  const val = document.getElementById("adminAppDownloadLinkInput").value.trim();
+  if (!val) return alert("कृपया सही ऐप या वेबसाइट लिंक दर्ज करें।");
+  db.ref("settings/appDownloadLink").set(val).then(() => {
+    appDownloadUrl = val;
+    alert("ऐप डाउनलोड लिंक सेव हो गया है! अब हर शेयर कार्ड पर यही लिंक दिखेगा।");
+  });
+}
+
 /* FORMAT 1 MILLION+ VIEWS */
 function formatMillionViews(rawViews, timestamp) {
-  // Base boost over 1,000,000 + unique variance per article + real clicks
   const seed = timestamp ? (timestamp % 285000) : 45000;
   const total = 1012450 + seed + (rawViews || 0);
   return (total / 1000000).toFixed(2) + "M";
@@ -1050,7 +1089,7 @@ function toggleArticleLike(articleKey) {
 
 /* ADMIN-ONLY VIEWERS MODAL */
 function openViewersModal(articleKey, newsTitle) {
-  if (!isAdmin) return; // Strict Admin-Only check
+  if (!isAdmin) return;
   document.getElementById("viewerModalNewsTitle").innerText = newsTitle;
   const container = document.getElementById("newsViewersListContainer");
   container.innerHTML = "<p class='text-xs text-gray-400 text-center py-4'>पाठकों की सूची लोड हो रही है...</p>";
@@ -1708,13 +1747,184 @@ function closeEditModal() { document.getElementById("editNewsModal").classList.a
 function saveEditedArticle() { db.ref("news_articles/" + document.getElementById("editArticleKey").value).update({ title: document.getElementById("editNewsTitle").value.trim(), location: document.getElementById("editNewsLocation").value.trim(), category: document.getElementById("editNewsCategory").value, videoUrl: document.getElementById("editNewsVideoUrl").value.trim(), content: document.getElementById("editNewsContent").value.trim() }).then(() => { alert("अपडेट हो गया!"); closeEditModal(); }); }
 function deleteArticleByAdmin(key) { if (isAdmin && confirm("डिलीट करना चाहते हैं?")) db.ref("news_articles/" + key).remove(); }
 
-async function shareArticleDainikBhaskarStyle(title, imageUrl, content) {
-  const currentUrl = location.href.split("#")[0];
-  const shareText = `*${title}*\n\n📲 पूरी खबर पढ़ने व लाइव वीडियो देखने के लिए आवाज़ बुंदेलखंड ऐप डाउनलोड करें:\n${currentUrl}`;
-  if (navigator.share) await navigator.share({ title, text: shareText, url: currentUrl }).catch(()=>{});
-  else window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(shareText)}`, "_blank");
+/* ================= DAINIK BHASKAR STYLE PHOTO CARD SHARE ENGINE ================= */
+function drawWrappedCardHeadline(ctx, text, x, y, maxWidth, lineHeight, maxLines) {
+  const words = text.split(" ");
+  let line = "";
+  let lineCount = 0;
+  for (let n = 0; n < words.length; n++) {
+    const testLine = line + words[n] + " ";
+    const metrics = ctx.measureText(testLine);
+    if (metrics.width > maxWidth && n > 0) {
+      ctx.fillText(line.trim(), x, y);
+      line = words[n] + " ";
+      y += lineHeight;
+      lineCount++;
+      if (lineCount >= maxLines - 1) {
+        let remaining = words.slice(n).join(" ");
+        while (ctx.measureText(remaining + "...").width > maxWidth && remaining.length > 0) {
+          remaining = remaining.slice(0, -1);
+        }
+        ctx.fillText(remaining.trim() + "...", x, y);
+        return;
+      }
+    } else {
+      line = testLine;
+    }
+  }
+  ctx.fillText(line.trim(), x, y);
 }
-function shareArticle() { shareArticleDainikBhaskarStyle("आवाज़ बुंदेलखंड न्यूज़", "", ""); }
+
+function buildAndShareNewsCard(title, imageUrl, content) {
+  const linkToShare = appDownloadUrl || location.href.split("#")[0];
+  const shareText = `*${title}*\n\n📲 पूरी खबर पढ़ने व ताज़ा बुंदेलखंड न्यूज़ देखने के लिए ऐप इंस्टॉल करें:\n${linkToShare}`;
+
+  const canvas = document.createElement("canvas");
+  const ctx = canvas.getContext("2d");
+  canvas.width = 800;
+  canvas.height = 1020;
+
+  const finalizeCanvasShare = () => {
+    // 2. White App Promotion Ribbon (Dainik Bhaskar Style)
+    ctx.fillStyle = "#ffffff";
+    ctx.fillRect(0, 720, 800, 105);
+
+    // Red-Blue mini logo badge on white bar
+    ctx.fillStyle = "#991b1b";
+    ctx.fillRect(24, 738, 68, 44);
+    ctx.fillStyle = "#002244";
+    ctx.fillRect(24, 782, 68, 24);
+
+    ctx.fillStyle = "#ffffff";
+    ctx.font = "bold 14px Mukta, sans-serif";
+    ctx.fillText("आवाज़", 36, 756);
+    ctx.font = "bold 12px Mukta, sans-serif";
+    ctx.fillText("बुंदेलखंड", 32, 774);
+    ctx.font = "bold 13px sans-serif";
+    ctx.fillText("NEWS", 37, 799);
+
+    // App Tagline on White Bar
+    ctx.fillStyle = "#111827";
+    ctx.font = "bold 23px Mukta, sans-serif";
+    ctx.fillText("बुंदेलखंड का सबसे विश्वसनीय न्यूज़ ऐप", 108, 765);
+
+    ctx.fillStyle = "#4b5563";
+    ctx.font = "600 18px Mukta, sans-serif";
+    ctx.fillText("इंस्टॉल करें आवाज़ बुंदेलखंड न्यूज़ और पाएं लोकल अपडेट", 108, 796);
+
+    // Google Play Badge (Right side of white bar)
+    ctx.fillStyle = "#000000";
+    ctx.beginPath();
+    ctx.roundRect(625, 742, 152, 60, 10);
+    ctx.fill();
+
+    // Play triangle icon
+    ctx.fillStyle = "#38bdf8";
+    ctx.beginPath();
+    ctx.moveTo(642, 756);
+    ctx.lineTo(662, 772);
+    ctx.lineTo(642, 788);
+    ctx.closePath();
+    ctx.fill();
+
+    ctx.fillStyle = "#d1d5db";
+    ctx.font = "bold 11px sans-serif";
+    ctx.fillText("GET IT ON", 672, 763);
+    ctx.fillStyle = "#ffffff";
+    ctx.font = "bold 17px sans-serif";
+    ctx.fillText("Google Play", 670, 786);
+
+    // 3. Bottom Black Headline & App Link Area
+    ctx.fillStyle = "#09090b";
+    ctx.fillRect(0, 825, 800, 195);
+
+    ctx.fillStyle = "#ffffff";
+    ctx.font = "bold 30px Mukta, sans-serif";
+    drawWrappedCardHeadline(ctx, title, 30, 875, 740, 42, 2);
+
+    // App Download Link at Bottom
+    ctx.fillStyle = "#38bdf8";
+    ctx.font = "bold 20px sans-serif";
+    const displayUrl = linkToShare.replace(/^https?:\/\//, "");
+    ctx.fillText(displayUrl, 30, 985);
+
+    canvas.toBlob(async blob => {
+      if (!blob) {
+        window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(shareText)}`, "_blank");
+        return;
+      }
+      const file = new File([blob], "Awaj_Bundelkhand_News.jpg", { type: "image/jpeg" });
+      if (navigator.canShare && navigator.canShare({ files: [file] })) {
+        try {
+          await navigator.share({
+            files: [file],
+            title: title,
+            text: shareText
+          });
+        } catch (err) {
+          console.log("Share cancelled:", err);
+        }
+      } else {
+        window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(shareText)}`, "_blank");
+      }
+    }, "image/jpeg", 0.92);
+  };
+
+  // 1. Top News Image or Default Branded Banner
+  if (imageUrl && !imageUrl.includes("youtube.com")) {
+    const img = new Image();
+    img.crossOrigin = "anonymous";
+    img.onload = () => {
+      ctx.fillStyle = "#000000";
+      ctx.fillRect(0, 0, 800, 720);
+      // Cover-fit image cleanly
+      const scale = Math.max(800 / img.width, 720 / img.height);
+      const w = img.width * scale;
+      const h = img.height * scale;
+      ctx.drawImage(img, (800 - w) / 2, (720 - h) / 2, w, h);
+      finalizeCanvasShare();
+    };
+    img.onerror = () => {
+      drawDefaultBannerBackground(ctx);
+      finalizeCanvasShare();
+    };
+    img.src = imageUrl;
+  } else {
+    drawDefaultBannerBackground(ctx);
+    finalizeCanvasShare();
+  }
+}
+
+function drawDefaultBannerBackground(ctx) {
+  const grad = ctx.createLinearGradient(0, 0, 800, 720);
+  grad.addColorStop(0, "#7f1d1d");
+  grad.addColorStop(0.5, "#991b1b");
+  grad.addColorStop(1, "#001d4a");
+  ctx.fillStyle = grad;
+  ctx.fillRect(0, 0, 800, 720);
+
+  ctx.strokeStyle = "#fbbf24";
+  ctx.lineWidth = 8;
+  ctx.strokeRect(40, 40, 720, 640);
+
+  ctx.fillStyle = "#fbbf24";
+  ctx.font = "bold 34px Mukta, sans-serif";
+  ctx.textAlign = "center";
+  ctx.fillText("ब्रेकिंग न्यूज़ • ग्राउंड रिपोर्ट", 400, 260);
+
+  ctx.fillStyle = "#ffffff";
+  ctx.font = "900 64px Mukta, sans-serif";
+  ctx.fillText("आवाज़ बुंदेलखंड न्यूज़", 400, 360);
+
+  ctx.fillStyle = "#e2e8f0";
+  ctx.font = "bold 28px Mukta, sans-serif";
+  ctx.fillText("निष्पक्ष एवं सटीक डिजिटल पत्रकारिता", 400, 430);
+  ctx.textAlign = "left";
+}
+
+function shareArticle() {
+  buildAndShareNewsCard("आवाज़ बुंदेलखंड न्यूज़: बुंदेलखंड की हर ताज़ा खबर सीधे आपके मोबाइल पर", "", "");
+}
 
 /* ================= NEWS FEED RENDERER (1M+ VIEWS, LIKES, & ADMIN-ONLY VIEWERS) ================= */
 function loadNewsFeed(){
@@ -1831,18 +2041,18 @@ function loadNewsFeed(){
             ${adminOnlyViewersBtn}
           </div>
 
-          <!-- LIKE, SHARE & WHATSAPP ACTION BUTTONS -->
+          <!-- LIKE, PHOTO CARD SHARE & WHATSAPP ACTION BUTTONS -->
           <div class="flex flex-wrap items-center gap-2 pt-1">
             <button type="button" class="likeBtn flex items-center gap-1.5 px-3 py-2 rounded-lg text-xs font-black border transition ${isLiked ? 'bg-red-50 border-red-300 text-red-700' : 'bg-gray-50 border-gray-200 text-gray-700 hover:bg-gray-100'}">
               <i class="fa-${isLiked ? 'solid' : 'regular'} fa-heart text-red-600 text-sm"></i>
               <span>पसंद (${totalLikes})</span>
             </button>
 
-            <button type="button" class="shareBtn bg-green-600 hover:bg-green-700 text-white px-3 py-2 rounded-lg text-xs font-bold transition flex items-center gap-1.5">
-              <i class="fa-solid fa-share-nodes"></i> शेयर करें
+            <button type="button" class="shareBtn bg-green-600 hover:bg-green-700 text-white px-3 py-2 rounded-lg text-xs font-bold transition flex items-center gap-1.5 shadow-sm">
+              <i class="fa-solid fa-share-nodes"></i> फोटो कार्ड शेयर करें
             </button>
 
-            <button type="button" class="whatsappBtn bg-green-700 hover:bg-green-800 text-white px-3 py-2 rounded-lg text-xs font-bold transition flex items-center gap-1.5">
+            <button type="button" class="whatsappBtn bg-emerald-700 hover:bg-emerald-800 text-white px-3 py-2 rounded-lg text-xs font-bold transition flex items-center gap-1.5 shadow-sm">
               <i class="fa-brands fa-whatsapp"></i> WhatsApp
             </button>
           </div>
@@ -1865,16 +2075,17 @@ function loadNewsFeed(){
           };
         }
 
+        // Dainik Bhaskar Style Photo Card Share
         card.querySelector(".shareBtn").onclick = (e) => {
           e.stopPropagation();
           recordNewsArticleView(key);
-          shareArticleDainikBhaskarStyle(item.title, item.imageUrl, item.content);
+          buildAndShareNewsCard(item.title, item.imageUrl, item.content);
         };
 
         card.querySelector(".whatsappBtn").onclick = (e) => {
           e.stopPropagation();
           recordNewsArticleView(key);
-          shareArticleDainikBhaskarStyle(item.title, item.imageUrl, item.content);
+          buildAndShareNewsCard(item.title, item.imageUrl, item.content);
         };
 
         if (isAdmin) {
@@ -1948,6 +2159,7 @@ auth.onAuthStateChanged(user => {
 });
 
 /* INITIALIZE */
+loadAppDownloadLink();
 loadNewsFeed();
 loadAdminSpecialAd();
 loadPublicLiveBroadcast();
