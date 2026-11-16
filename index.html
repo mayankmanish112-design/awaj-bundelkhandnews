@@ -469,7 +469,7 @@ body { font-family: 'Mukta', sans-serif; }
 </div>
 </div>
 <div>
-<label class="text-xs font-semibold block mb-1">खबर की फोटो</label>
+<label class="text-xs font-semibold block mb-1">खबर की फोटो (HD क्वालिटी में अपलोड होगी)</label>
 <input type="file" id="newsImageFileInput" accept="image/*" class="w-full text-xs border p-1 rounded">
 <div id="imagePreviewContainer" class="hidden mt-2 relative">
 <img id="newsPreviewImg" class="h-28 w-full object-cover rounded-lg border">
@@ -568,7 +568,7 @@ body { font-family: 'Mukta', sans-serif; }
     <i class="fa-brands fa-google-play text-blue-700"></i> शेयर कार्ड पर दिखने वाला ऐप डाउनलोड लिंक (App Download Link)
   </h4>
   <p class="text-[10px] text-slate-600">
-    जब कोई यूज़र खबर शेयर करेगा, तो फोटो कार्ड और WhatsApp संदेश में नीचे दिया गया लिंक छपेगा:
+    जब कोई यूज़र खबर शेयर करेगा, तो HD फोटो कार्ड और WhatsApp संदेश में नीचे दिया गया लिंक छपेगा:
   </p>
   <div class="flex gap-2">
     <input id="adminAppDownloadLinkInput" type="url" class="flex-1 border rounded-xl px-3 py-2 text-xs font-bold bg-white outline-none focus:border-blue-700" placeholder="https://mayankmanish112-design.github.io">
@@ -667,6 +667,37 @@ body { font-family: 'Mukta', sans-serif; }
 </section>
 
 </main>
+
+<!-- ================= HD SHARE PHOTO CARD MODAL (GUARANTEED PHOTO + LINK SHARE) ================= -->
+<div id="hdShareModal" class="fixed inset-0 bg-black/90 z-[1000010] flex items-center justify-center p-3 overflow-y-auto hidden">
+  <div class="bg-white rounded-3xl p-4 max-w-sm w-full space-y-3 my-auto shadow-2xl border-2 border-amber-400">
+    <div class="flex justify-between items-center border-b pb-2">
+      <h3 class="text-xs font-black text-slate-900 flex items-center gap-1.5">
+        <i class="fa-solid fa-image text-emerald-600"></i> HD न्यूज़ कार्ड तैयार है
+      </h3>
+      <button onclick="document.getElementById('hdShareModal').classList.add('hidden')" class="text-lg font-bold text-gray-400 hover:text-black">✕</button>
+    </div>
+
+    <!-- HD Preview Image -->
+    <div class="bg-slate-950 rounded-2xl p-1.5 flex items-center justify-center overflow-hidden border">
+      <img id="hdSharePreviewImg" src="" class="max-h-[380px] w-auto object-contain rounded-xl shadow">
+    </div>
+
+    <p class="text-[10px] text-gray-600 text-center font-semibold">
+      नीचे दिए गए हरे बटन से सीधे WhatsApp पर <strong>HD फोटो + ऐप लिंक</strong> भेजें:
+    </p>
+
+    <div class="space-y-2">
+      <button type="button" id="btnExecuteHdShare" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-black py-3 rounded-xl text-xs shadow-lg flex items-center justify-center gap-2 transition">
+        <i class="fa-brands fa-whatsapp text-base"></i> WhatsApp / शेयर करें (HD फोटो सहित)
+      </button>
+
+      <a id="btnDownloadHdCard" href="#" download="Awaj_Bundelkhand_News_HD.jpg" class="block w-full text-center bg-slate-900 hover:bg-black text-amber-300 font-bold py-2.5 rounded-xl text-xs shadow transition">
+        <i class="fa-solid fa-download"></i> गैलरी में HD फोटो सेव करें
+      </a>
+    </div>
+  </div>
+</div>
 
 <!-- ================= ADMIN-ONLY VIEWERS LIST MODAL ================= -->
 <div id="newsViewersModal" class="fixed inset-0 bg-black/80 z-[1000005] flex items-center justify-center p-4 hidden">
@@ -952,6 +983,9 @@ let customLiveLogoBase64 = DEFAULT_TV_LOGO;
 let audioEnabledByUser = false;
 let activeCamStream = null;
 let sessionCountedViews = new Set();
+let preparedShareFile = null;
+let preparedShareTitle = "";
+let preparedShareText = "";
 
 let myProfile = {
 name:"संवाददाता",
@@ -969,7 +1003,6 @@ return String(value || "").replace(/[&<>"']/g, char => ({
 })[char]);
 }
 
-/* LOAD & SAVE APP DOWNLOAD LINK FOR SHARE CARDS */
 function loadAppDownloadLink() {
   db.ref("settings/appDownloadLink").on("value", snap => {
     if (snap.exists() && snap.val()) {
@@ -988,18 +1021,16 @@ function saveAppDownloadLink() {
   if (!val) return alert("कृपया सही ऐप या वेबसाइट लिंक दर्ज करें।");
   db.ref("settings/appDownloadLink").set(val).then(() => {
     appDownloadUrl = val;
-    alert("ऐप डाउनलोड लिंक सेव हो गया है! अब हर शेयर कार्ड पर यही लिंक दिखेगा।");
+    alert("ऐप डाउनलोड लिंक सेव हो गया है! अब हर HD शेयर कार्ड पर यही लिंक दिखेगा।");
   });
 }
 
-/* FORMAT 1 MILLION+ VIEWS */
 function formatMillionViews(rawViews, timestamp) {
   const seed = timestamp ? (timestamp % 285000) : 45000;
   const total = 1012450 + seed + (rawViews || 0);
   return (total / 1000000).toFixed(2) + "M";
 }
 
-/* FORMAT EXACT DATE & TIME FOR NEWS CARDS */
 function formatNewsDateTime(ts) {
   if (!ts) return "";
   const d = new Date(ts);
@@ -1008,7 +1039,6 @@ function formatNewsDateTime(ts) {
   return `${datePart} • ${timePart}`;
 }
 
-/* ================= GOOGLE READER AUTH & VIEW TRACKING ================= */
 function loginReaderWithGoogle() {
   const provider = new firebase.auth.GoogleAuthProvider();
   auth.signInWithPopup(provider)
@@ -1018,16 +1048,11 @@ function loginReaderWithGoogle() {
       alert(`स्वागत है ${currentGoogleReader.displayName} जी! अब आप आवाज़ बुंदेलखंड न्यूज़ के पंजीकृत पाठक हैं।`);
       loadNewsFeed();
     })
-    .catch(err => {
-      alert("Google लॉगिन में त्रुटि:\n" + err.message);
-    });
+    .catch(err => alert("Google लॉगिन में त्रुटि:\n" + err.message));
 }
 
 function logoutReaderGoogle() {
-  auth.signOut().then(() => {
-    currentGoogleReader = null;
-    updateReaderGoogleUI(null);
-  });
+  auth.signOut().then(() => { currentGoogleReader = null; updateReaderGoogleUI(null); });
 }
 
 function updateReaderGoogleUI(user) {
@@ -1039,28 +1064,22 @@ function updateReaderGoogleUI(user) {
     if (btn) btn.classList.add("hidden");
     if (banner) banner.classList.add("hidden");
     if (badge) {
-      badge.classList.remove("hidden");
-      badge.classList.add("flex");
+      badge.classList.remove("hidden"); badge.classList.add("flex");
       document.getElementById("readerGooglePhoto").src = user.photoURL || DEFAULT_PHOTO;
       document.getElementById("readerGoogleName").innerText = user.displayName || "पाठक";
     }
   } else {
     if (btn) btn.classList.remove("hidden");
     if (banner) banner.classList.remove("hidden");
-    if (badge) {
-      badge.classList.add("hidden");
-      badge.classList.remove("flex");
-    }
+    if (badge) { badge.classList.add("hidden"); badge.classList.remove("flex"); }
   }
 }
 
-/* RECORD NEWS VIEW */
 function recordNewsArticleView(articleKey) {
   if (!articleKey || sessionCountedViews.has(articleKey)) return;
   sessionCountedViews.add(articleKey);
 
-  const viewsRef = db.ref(`news_articles/${articleKey}/views`);
-  viewsRef.transaction(currentViews => (currentViews || 0) + 1);
+  db.ref(`news_articles/${articleKey}/views`).transaction(currentViews => (currentViews || 0) + 1);
 
   if (currentGoogleReader) {
     db.ref(`news_articles/${articleKey}/viewers/${currentGoogleReader.uid}`).set({
@@ -1072,7 +1091,6 @@ function recordNewsArticleView(articleKey) {
   }
 }
 
-/* LIKE / UNLIKE ARTICLE HANDLER */
 function toggleArticleLike(articleKey) {
   const likedStorageKey = "abn_liked_" + articleKey;
   const alreadyLiked = localStorage.getItem(likedStorageKey) === "true";
@@ -1087,7 +1105,6 @@ function toggleArticleLike(articleKey) {
   }
 }
 
-/* ADMIN-ONLY VIEWERS MODAL */
 function openViewersModal(articleKey, newsTitle) {
   if (!isAdmin) return;
   document.getElementById("viewerModalNewsTitle").innerText = newsTitle;
@@ -1099,35 +1116,18 @@ function openViewersModal(articleKey, newsTitle) {
     container.innerHTML = "";
     const viewers = snap.val();
     if (!viewers) {
-      container.innerHTML = `
-        <div class="text-center py-6 space-y-1">
-          <i class="fa-solid fa-user-slash text-2xl text-gray-300"></i>
-          <p class="text-xs font-bold text-gray-500">अभी तक किसी Google लॉगिन पाठक ने यह खबर नहीं देखी है।</p>
-        </div>`;
+      container.innerHTML = `<div class="text-center py-6 space-y-1"><i class="fa-solid fa-user-slash text-2xl text-gray-300"></i><p class="text-xs font-bold text-gray-500">अभी तक किसी Google लॉगिन पाठक ने यह खबर नहीं देखी है।</p></div>`;
       return;
     }
-
-    Object.values(viewers)
-      .sort((a,b) => (b.viewedAt || 0) - (a.viewedAt || 0))
-      .forEach(v => {
-        const row = document.createElement("div");
-        row.className = "flex items-center justify-between p-2 bg-slate-50 border rounded-xl";
-        row.innerHTML = `
-          <div class="flex items-center gap-2.5">
-            <img src="${v.photo || DEFAULT_PHOTO}" class="w-9 h-9 rounded-full object-cover border border-blue-700">
-            <div>
-              <strong class="text-xs text-slate-900 block">${escapeHTML(v.name)}</strong>
-              <span class="text-[9px] text-gray-500">${formatNewsDateTime(v.viewedAt)}</span>
-            </div>
-          </div>
-          <span class="text-[9px] bg-emerald-100 text-emerald-800 font-bold px-2 py-0.5 rounded-full">देखा गया</span>
-        `;
-        container.appendChild(row);
-      });
+    Object.values(viewers).sort((a,b) => (b.viewedAt || 0) - (a.viewedAt || 0)).forEach(v => {
+      const row = document.createElement("div");
+      row.className = "flex items-center justify-between p-2 bg-slate-50 border rounded-xl";
+      row.innerHTML = `<div class="flex items-center gap-2.5"><img src="${v.photo || DEFAULT_PHOTO}" class="w-9 h-9 rounded-full object-cover border border-blue-700"><div><strong class="text-xs text-slate-900 block">${escapeHTML(v.name)}</strong><span class="text-[9px] text-gray-500">${formatNewsDateTime(v.viewedAt)}</span></div></div><span class="text-[9px] bg-emerald-100 text-emerald-800 font-bold px-2 py-0.5 rounded-full">देखा गया</span>`;
+      container.appendChild(row);
+    });
   });
 }
 
-/* REAL-TIME CLOCK */
 setInterval(()=>{
   const now = new Date();
   const el = document.getElementById("liveTime");
@@ -1147,25 +1147,13 @@ setInterval(()=>{
 
 /* ================= LIVE TV BROADCAST ENGINE ================= */
 document.getElementById("liveLogoFileInput").addEventListener("change", function(e) {
-  const file = e.target.files[0];
-  if (!file) return;
-  compressImage(file, 300, 300, 0.85, b64 => {
-    customLiveLogoBase64 = b64;
-    updateLiveLogoImagesUI(b64);
-  });
+  const file = e.target.files[0]; if (!file) return;
+  compressImage(file, 300, 300, 0.85, b64 => { customLiveLogoBase64 = b64; updateLiveLogoImagesUI(b64); });
 });
 
-function resetChannelLogo() {
-  customLiveLogoBase64 = DEFAULT_TV_LOGO;
-  document.getElementById("liveLogoFileInput").value = "";
-  updateLiveLogoImagesUI(DEFAULT_TV_LOGO);
-}
-
+function resetChannelLogo() { customLiveLogoBase64 = DEFAULT_TV_LOGO; document.getElementById("liveLogoFileInput").value = ""; updateLiveLogoImagesUI(DEFAULT_TV_LOGO); }
 function updateLiveLogoImagesUI(logoSrc) {
-  ["editLogoPreviewThumb", "studioTopLogoImg", "studioBottomLogoImg", "publicTopLogoImg", "publicBottomLogoImg"].forEach(id => {
-    const el = document.getElementById(id);
-    if (el) el.src = logoSrc;
-  });
+  ["editLogoPreviewThumb", "studioTopLogoImg", "studioBottomLogoImg", "publicTopLogoImg", "publicBottomLogoImg"].forEach(id => { const el = document.getElementById(id); if (el) el.src = logoSrc; });
 }
 
 function syncLiveStudioInputsToPreview() {
@@ -1182,18 +1170,12 @@ async function startLiveCamera(facingMode = 'environment') {
     activeCamStream = stream;
     document.getElementById("studioLocalCamVideo").srcObject = stream;
     document.getElementById("studioNoCamMsg").classList.add("hidden");
-  } catch (err) {
-    alert("कैमरा एक्सेस नहीं हो पाया: " + err.message);
-  }
+  } catch (err) { alert("कैमरा एक्सेस नहीं हो पाया: " + err.message); }
 }
 
 function stopLiveCamera() {
-  if (activeCamStream) {
-    activeCamStream.getTracks().forEach(track => track.stop());
-    activeCamStream = null;
-  }
-  const vid = document.getElementById("studioLocalCamVideo");
-  if (vid) vid.srcObject = null;
+  if (activeCamStream) { activeCamStream.getTracks().forEach(track => track.stop()); activeCamStream = null; }
+  const vid = document.getElementById("studioLocalCamVideo"); if (vid) vid.srcObject = null;
   document.getElementById("studioNoCamMsg").classList.remove("hidden");
 }
 
@@ -1206,31 +1188,18 @@ function publishOrUpdateLiveStream() {
   const streamUrl = document.getElementById("liveStreamUrlInput").value.trim();
 
   if (!mainHeadline || !bottomTicker) return alert("कृपया मुख्य बड़ी हेडलाइन और टिकर टेक्स्ट भरें।");
-  if (!streamUrl) return alert("कृपया YouTube Live / Facebook Live लिंक डालें ताकि सभी यूज़र्स मुख्य समाचार पेज पर लाइव देख सकें!");
+  if (!streamUrl) return alert("कृपया YouTube Live / Facebook Live लिंक डालें!");
 
   db.ref("settings/live_broadcast").set({
-    isLive: true,
-    logoUrl: customLiveLogoBase64 || DEFAULT_TV_LOGO,
-    topBadge: topBadge,
-    blueTag: blueTag,
-    mainHeadline: mainHeadline,
-    tickerText: bottomTicker,
-    streamUrl: streamUrl,
-    reporterName: myProfile.name,
-    updatedAt: Date.now()
-  }).then(() => {
-    alert("लाइव प्रसारण मुख्य समाचार पेज पर लाइव हो गया है! अब सभी यूज़र्स इसे देख सकते हैं।");
-    switchTab("feed");
-  });
+    isLive: true, logoUrl: customLiveLogoBase64 || DEFAULT_TV_LOGO, topBadge: topBadge, blueTag: blueTag,
+    mainHeadline: mainHeadline, tickerText: bottomTicker, streamUrl: streamUrl, reporterName: myProfile.name, updatedAt: Date.now()
+  }).then(() => { alert("लाइव प्रसारण मुख्य समाचार पेज पर लाइव हो गया है!"); switchTab("feed"); });
 }
 
 function endLiveStream() {
   if (!currentUserPhone || (!isAdmin && !isReporter)) return;
   if (confirm("क्या आप लाइव प्रसारण बंद करना चाहते हैं?")) {
-    db.ref("settings/live_broadcast").set({ isLive: false }).then(() => {
-      stopLiveCamera();
-      switchTab("feed");
-    });
+    db.ref("settings/live_broadcast").set({ isLive: false }).then(() => { stopLiveCamera(); switchTab("feed"); });
   }
 }
 
@@ -1269,17 +1238,10 @@ function loadPublicLiveBroadcast() {
 }
 
 /* ================= STAFF DUAL-OPTION LOGIN ================= */
-function openStaffLoginModal(defaultTab = 'admin') {
-  document.getElementById("authModal").classList.remove("hidden");
-  switchLoginRoleTab(defaultTab);
-}
-
+function openStaffLoginModal(defaultTab = 'admin') { document.getElementById("authModal").classList.remove("hidden"); switchLoginRoleTab(defaultTab); }
 function switchLoginRoleTab(type) {
-  const adminForm = document.getElementById("adminLoginFormBox");
-  const repForm = document.getElementById("reporterLoginFormBox");
-  const btnAdmin = document.getElementById("btnSwitchAdminLogin");
-  const btnRep = document.getElementById("btnSwitchReporterLogin");
-
+  const adminForm = document.getElementById("adminLoginFormBox"), repForm = document.getElementById("reporterLoginFormBox");
+  const btnAdmin = document.getElementById("btnSwitchAdminLogin"), btnRep = document.getElementById("btnSwitchReporterLogin");
   if (type === "admin") {
     adminForm.classList.remove("hidden"); repForm.classList.add("hidden");
     btnAdmin.className = "py-2 rounded-xl text-xs font-black bg-red-700 text-white shadow transition";
@@ -1292,48 +1254,32 @@ function switchLoginRoleTab(type) {
 }
 
 function loginAdminWithPassword() {
-  const rawPhone = document.getElementById("adminLoginPhoneInput").value.trim();
-  const enteredPass = document.getElementById("adminLoginPassInput").value.trim();
-  if (!/^\d{10}$/.test(rawPhone)) return alert("10 अंकों का एडमिन मोबाइल नंबर दर्ज करें।");
-  if (!enteredPass) return alert("एडमिन पासवर्ड दर्ज करें।");
-
+  const rawPhone = document.getElementById("adminLoginPhoneInput").value.trim(), enteredPass = document.getElementById("adminLoginPassInput").value.trim();
+  if (!/^\d{10}$/.test(rawPhone) || !enteredPass) return alert("सही नंबर और पासवर्ड भरें।");
   const fullPhone = "+91" + rawPhone;
   if (fullPhone !== ADMIN_PHONE) return alert("यह नंबर एडमिन के रूप में पंजीकृत नहीं है!");
 
   db.ref("settings/adminPin").once("value").then(snap => {
     const savedPass = snap.exists() ? String(snap.val()) : DEFAULT_ADMIN_PASS;
     if (enteredPass === savedPass) {
-      localStorage.setItem("abn_staff_role", "admin");
-      localStorage.setItem("abn_staff_phone", fullPhone);
-      localStorage.setItem("abn_staff_pass", enteredPass);
-      document.getElementById("authModal").classList.add("hidden");
-      setupAdminSession();
-    } else {
-      alert("गलत एडमिन पासवर्ड दर्ज किया गया है!");
-    }
+      localStorage.setItem("abn_staff_role", "admin"); localStorage.setItem("abn_staff_phone", fullPhone); localStorage.setItem("abn_staff_pass", enteredPass);
+      document.getElementById("authModal").classList.add("hidden"); setupAdminSession();
+    } else alert("गलत एडमिन पासवर्ड!");
   });
 }
 
 function loginReporterWithPassword() {
-  const rawPhone = document.getElementById("repLoginPhoneInput").value.trim();
-  const enteredPass = document.getElementById("repLoginPassInput").value.trim();
-  if (!/^\d{10}$/.test(rawPhone)) return alert("10 अंकों का रिपोर्टर मोबाइल नंबर दर्ज करें।");
-  if (!enteredPass) return alert("अपना रिपोर्टर पासवर्ड दर्ज करें।");
-
+  const rawPhone = document.getElementById("repLoginPhoneInput").value.trim(), enteredPass = document.getElementById("repLoginPassInput").value.trim();
+  if (!/^\d{10}$/.test(rawPhone) || !enteredPass) return alert("सही नंबर और पासवर्ड भरें।");
   const fullPhone = "+91" + rawPhone;
   db.ref("authorized_reporters").orderByChild("phone").equalTo(fullPhone).once("value").then(snap => {
     if (!snap.exists()) return alert("यह मोबाइल नंबर पंजीकृत नहीं है।");
     const repData = Object.values(snap.val())[0];
     if (repData.status !== "approved") return alert("आपका अकाउंट स्वीकृत नहीं है।");
     if (String(repData.pin) === enteredPass) {
-      localStorage.setItem("abn_staff_role", "reporter");
-      localStorage.setItem("abn_staff_phone", fullPhone);
-      localStorage.setItem("abn_staff_pass", enteredPass);
-      document.getElementById("authModal").classList.add("hidden");
-      setupReporterSession(repData);
-    } else {
-      alert("गलत पासवर्ड दर्ज किया गया है!");
-    }
+      localStorage.setItem("abn_staff_role", "reporter"); localStorage.setItem("abn_staff_phone", fullPhone); localStorage.setItem("abn_staff_pass", enteredPass);
+      document.getElementById("authModal").classList.add("hidden"); setupReporterSession(repData);
+    } else alert("गलत पासवर्ड!");
   });
 }
 
@@ -1354,46 +1300,27 @@ function setupReporterSession(repData) {
 function updateAdminPin() {
   if (!isAdmin) return;
   const newPass = document.getElementById("adminNewPinInput").value.trim();
-  if (newPass.length < 4) return alert("कम से कम 4 अक्षर या अंकों का पासवर्ड डालें।");
-  db.ref("settings/adminPin").set(newPass).then(() => {
-    localStorage.setItem("abn_staff_pass", newPass);
-    document.getElementById("adminNewPinInput").value = "";
-    alert("नया Admin पासवर्ड सेव हो गया है!");
-  });
+  if (newPass.length < 4) return alert("कम से कम 4 अंकों का पासवर्ड डालें।");
+  db.ref("settings/adminPin").set(newPass).then(() => { localStorage.setItem("abn_staff_pass", newPass); document.getElementById("adminNewPinInput").value = ""; alert("नया Admin पासवर्ड सेव हो गया!"); });
 }
 
-function logoutDirect() {
-  localStorage.removeItem("abn_staff_role");
-  localStorage.removeItem("abn_staff_phone");
-  localStorage.removeItem("abn_staff_pass");
-  location.reload();
-}
+function logoutDirect() { localStorage.removeItem("abn_staff_role"); localStorage.removeItem("abn_staff_phone"); localStorage.removeItem("abn_staff_pass"); location.reload(); }
 
 function checkSavedSession() {
-  const savedRole = localStorage.getItem("abn_staff_role");
-  const savedPhone = localStorage.getItem("abn_staff_phone");
-  const savedPass = localStorage.getItem("abn_staff_pass");
+  const savedRole = localStorage.getItem("abn_staff_role"), savedPhone = localStorage.getItem("abn_staff_phone"), savedPass = localStorage.getItem("abn_staff_pass");
   if (!savedPhone || !savedPass) return;
-
   if (savedRole === "admin" && savedPhone === ADMIN_PHONE) {
-    db.ref("settings/adminPin").once("value").then(snap => {
-      const currentPass = snap.exists() ? String(snap.val()) : DEFAULT_ADMIN_PASS;
-      if (savedPass === currentPass) setupAdminSession();
-    });
+    db.ref("settings/adminPin").once("value").then(snap => { const currentPass = snap.exists() ? String(snap.val()) : DEFAULT_ADMIN_PASS; if (savedPass === currentPass) setupAdminSession(); });
   } else if (savedRole === "reporter") {
     db.ref("authorized_reporters").orderByChild("phone").equalTo(savedPhone).once("value").then(snap => {
-      if (snap.exists()) {
-        const repData = Object.values(snap.val())[0];
-        if (repData.status === "approved" && String(repData.pin) === savedPass) setupReporterSession(repData);
-      }
+      if (snap.exists()) { const repData = Object.values(snap.val())[0]; if (repData.status === "approved" && String(repData.pin) === savedPass) setupReporterSession(repData); }
     });
   }
 }
 
 function activateDashboard(role, admin) {
   document.getElementById("btnLoginOpen").classList.add("hidden");
-  document.getElementById("userProfileBadge").classList.remove("hidden");
-  document.getElementById("userProfileBadge").classList.add("flex");
+  document.getElementById("userProfileBadge").classList.remove("hidden"); document.getElementById("userProfileBadge").classList.add("flex");
   document.getElementById("userRoleBadge").innerText = role;
   document.getElementById("staffNavigation").classList.remove("hidden");
 
@@ -1401,8 +1328,7 @@ function activateDashboard(role, admin) {
   document.getElementById("tabManageAds").classList.toggle("hidden", !admin);
   document.getElementById("tabManageReporters").classList.toggle("hidden", !admin);
 
-  switchTab("feed");
-  loadReporterWallet();
+  switchTab("feed"); loadReporterWallet();
   if (admin) { loadPendingNews(); loadReportersForAdmin(); loadAdsForAdmin(); }
   loadNewsFeed();
 }
@@ -1419,24 +1345,16 @@ function openIcard(rep){
 function enableAudioOnFirstTouch() {
   if (audioEnabledByUser) return;
   const vid = document.getElementById("adminAutoplayVideo");
-  if (vid && vid.src && !vid.src.endsWith("/")) {
-    vid.muted = false;
-    vid.play().then(() => { audioEnabledByUser = true; updateSoundButtonUI(true); }).catch(e => {});
-  }
+  if (vid && vid.src && !vid.src.endsWith("/")) { vid.muted = false; vid.play().then(() => { audioEnabledByUser = true; updateSoundButtonUI(true); }).catch(e => {}); }
 }
 
 function toggleAdSound() {
-  const vid = document.getElementById("adminAutoplayVideo");
-  if (!vid) return;
-  vid.muted = !vid.muted;
-  if (!vid.muted) vid.play();
-  audioEnabledByUser = !vid.muted;
-  updateSoundButtonUI(!vid.muted);
+  const vid = document.getElementById("adminAutoplayVideo"); if (!vid) return;
+  vid.muted = !vid.muted; if (!vid.muted) vid.play(); audioEnabledByUser = !vid.muted; updateSoundButtonUI(!vid.muted);
 }
 
 function updateSoundButtonUI(isAudible) {
-  const icon = document.getElementById("soundIcon");
-  const text = document.getElementById("soundText");
+  const icon = document.getElementById("soundIcon"), text = document.getElementById("soundText");
   if (!icon || !text) return;
   if (isAudible) { icon.className = "fa-solid fa-volume-high text-emerald-400"; text.innerText = "आवाज़ चालू है"; }
   else { icon.className = "fa-solid fa-volume-xmark text-red-400"; text.innerText = "आवाज़ चालू करें"; }
@@ -1444,23 +1362,12 @@ function updateSoundButtonUI(isAudible) {
 
 function loadAdminSpecialAd() {
   db.ref("settings/admin_special_ad").on("value", snap => {
-    const data = snap.val();
-    const adCard = document.getElementById("adminHouseAdCard");
-    const vid = document.getElementById("adminAutoplayVideo");
-    const title = document.getElementById("adminAdTitleShow");
-    const sub = document.getElementById("adminAdSubtitleShow");
-    const btn = document.getElementById("adminAdActionBtn");
-
-    if (!data || !data.videoUrl) {
-      if (adCard) adCard.classList.add("hidden");
-      if (vid) { vid.pause(); vid.src = ""; }
-      return;
-    }
-
+    const data = snap.val(), adCard = document.getElementById("adminHouseAdCard"), vid = document.getElementById("adminAutoplayVideo");
+    if (!data || !data.videoUrl) { if (adCard) adCard.classList.add("hidden"); if (vid) { vid.pause(); vid.src = ""; } return; }
     if (adCard) adCard.classList.remove("hidden");
-    if (title) title.innerText = data.title || "आवाज़ बुंदेलखंड न्यूज़ • स्पेशल विज्ञापन";
-    if (sub) sub.innerText = data.sub || "प्रधान संपादक मयंक सिंह द्वारा विशेष रूप से प्रस्तुत";
-    if (btn) btn.href = data.actionLink || "javascript:shareArticle()";
+    document.getElementById("adminAdTitleShow").innerText = data.title || "आवाज़ बुंदेलखंड न्यूज़ • स्पेशल विज्ञापन";
+    document.getElementById("adminAdSubtitleShow").innerText = data.sub || "प्रधान संपादक मयंक सिंह द्वारा विशेष रूप से प्रस्तुत";
+    document.getElementById("adminAdActionBtn").href = data.actionLink || "javascript:shareArticle()";
     if (vid && vid.src !== data.videoUrl) { vid.src = data.videoUrl; vid.load(); vid.play().catch(() => { vid.muted = true; vid.play(); }); }
   });
 }
@@ -1477,9 +1384,7 @@ function saveAdminSpecialAd() {
   db.ref("settings/admin_special_ad").set({
     title: document.getElementById("adminAdTitleInput").value.trim() || "आवाज़ बुंदेलखंड न्यूज़ • स्पेशल विज्ञापन",
     sub: document.getElementById("adminAdSubInput").value.trim() || "प्रधान संपादक मयंक सिंह द्वारा विशेष रूप से प्रस्तुत",
-    videoUrl: finalVideo,
-    actionLink: document.getElementById("adminAdActionLinkInput").value.trim() || "javascript:shareArticle()",
-    updatedAt: Date.now()
+    videoUrl: finalVideo, actionLink: document.getElementById("adminAdActionLinkInput").value.trim() || "javascript:shareArticle()", updatedAt: Date.now()
   }).then(() => alert("स्पेशल वीडियो Ad सेव हो गया!"));
 }
 
@@ -1512,10 +1417,7 @@ function openShortsModal(title, url) {
   document.getElementById("shortsModal").classList.remove("hidden");
 }
 
-function closeShortsModal() {
-  document.getElementById("shortsPlayerContainer").innerHTML = "";
-  document.getElementById("shortsModal").classList.add("hidden");
-}
+function closeShortsModal() { document.getElementById("shortsPlayerContainer").innerHTML = ""; document.getElementById("shortsModal").classList.add("hidden"); }
 
 function compressImage(file,maxWidth,maxHeight,quality,callback){
   if(!file || !file.type.startsWith("image/")) return alert("कृपया सही फोटो चुनें।");
@@ -1572,7 +1474,7 @@ function updateUpiPayAmount() {
 
 document.getElementById("uAdPhotoFile").addEventListener("change", function(e) {
   const file = e.target.files[0]; if (!file) return;
-  compressImage(file, 1200, 1200, 0.80, b64 => { userAdPhotoBase64 = b64; document.getElementById("uAdPhotoPrevImg").src = b64; document.getElementById("uAdPhotoPrevBox").classList.remove("hidden"); });
+  compressImage(file, 1440, 1440, 0.85, b64 => { userAdPhotoBase64 = b64; document.getElementById("uAdPhotoPrevImg").src = b64; document.getElementById("uAdPhotoPrevBox").classList.remove("hidden"); });
 });
 document.getElementById("uAdVideoFile").addEventListener("change", function(e) {
   const file = e.target.files[0]; if (!file) return;
@@ -1584,10 +1486,8 @@ document.getElementById("uAdReceiptFile").addEventListener("change", function(e)
 });
 
 function submitUserAd() {
-  const name = document.getElementById("uAdName").value.trim();
-  const phone = document.getElementById("uAdPhone").value.trim();
-  const type = document.getElementById("uAdType").value;
-  const amount = document.getElementById("uAdPlan").value;
+  const name = document.getElementById("uAdName").value.trim(), phone = document.getElementById("uAdPhone").value.trim();
+  const type = document.getElementById("uAdType").value, amount = document.getElementById("uAdPlan").value;
   const finalVideo = userAdVideoBase64 || document.getElementById("uAdVideoUrl").value.trim();
 
   if (!name || !/^\d{10}$/.test(phone)) return alert("कृपया नाम और 10 अंकों का मोबाइल नंबर भरें।");
@@ -1605,10 +1505,8 @@ function submitUserAd() {
 
 function loadAdsForAdmin() {
   db.ref("user_advertisements").on("value", snap => {
-    const pendingBox = document.getElementById("pendingAdsListContainer");
-    const activeBox = document.getElementById("activeAdsListContainer");
-    const countBadge = document.getElementById("pendingAdsCountBadge");
-    const earningsBox = document.getElementById("totalAdEarnings");
+    const pendingBox = document.getElementById("pendingAdsListContainer"), activeBox = document.getElementById("activeAdsListContainer");
+    const countBadge = document.getElementById("pendingAdsCountBadge"), earningsBox = document.getElementById("totalAdEarnings");
     pendingBox.innerHTML = ""; activeBox.innerHTML = "";
     const ads = snap.val() || {};
     let pendingCount = 0, totalEarned = 0;
@@ -1616,15 +1514,13 @@ function loadAdsForAdmin() {
     Object.entries(ads).forEach(([key, ad]) => {
       if (ad.status === "approved") {
         totalEarned += (ad.amount || 0);
-        const item = document.createElement("div");
-        item.className = "p-3 bg-gray-50 border rounded-xl flex items-center justify-between text-xs";
+        const item = document.createElement("div"); item.className = "p-3 bg-gray-50 border rounded-xl flex items-center justify-between text-xs";
         item.innerHTML = `<div><strong class="text-blue-900">${escapeHTML(ad.client)}</strong> (${escapeHTML(ad.phone)})<span class="text-[10px] text-gray-500 block">राशि: ₹${ad.amount}</span></div>
           <div class="flex items-center gap-1.5"><button class="bg-amber-500 px-2.5 py-1 rounded text-xs font-bold" onclick="openEditAdModal('${key}', '${escapeHTML(ad.client)}', '${escapeHTML(ad.phone)}', '${escapeHTML(ad.actionLink || '')}', '${escapeHTML(ad.videoUrl || '')}')">एडिट</button><button class="bg-red-600 text-white px-2.5 py-1 rounded text-xs font-bold" onclick="removeAdvertisement('${key}')">हटाएं</button></div>`;
         activeBox.appendChild(item);
       } else if (ad.status === "pending") {
         pendingCount++;
-        const item = document.createElement("div");
-        item.className = "p-3 bg-amber-50/70 border border-amber-300 rounded-xl space-y-2 text-xs";
+        const item = document.createElement("div"); item.className = "p-3 bg-amber-50/70 border border-amber-300 rounded-xl space-y-2 text-xs";
         item.innerHTML = `<div class="flex justify-between items-center"><strong class="text-slate-900 text-sm">${escapeHTML(ad.client)}</strong><span class="bg-emerald-700 text-white px-2 py-0.5 rounded font-black">₹${ad.amount} भेजा गया</span></div>
           ${ad.receiptPhoto ? `<a href="${ad.receiptPhoto}" target="_blank"><img src="${ad.receiptPhoto}" class="max-h-40 rounded border mx-auto bg-white"></a>` : ''}
           <div class="flex gap-2 pt-1 border-t"><button onclick="approveAd('${key}')" class="flex-1 bg-emerald-600 text-white font-bold py-1.5 rounded-lg text-xs">✓ लाइव करें</button><button onclick="removeAdvertisement('${key}')" class="bg-red-600 text-white font-bold px-3 py-1.5 rounded-lg text-xs">हटाएं</button></div>`;
@@ -1667,21 +1563,22 @@ function renderPublicAds() {
   });
 }
 
+/* HIGH-DEFINITION (1440px) NEWS IMAGE UPLOAD COMPRESSION */
 document.getElementById("newsImageFileInput").addEventListener("change",function(e){
   const file=e.target.files[0]; if(!file)return;
-  compressImage(file,900,900,0.65,b64=>{ compressedNewsImage=b64; document.getElementById("newsPreviewImg").src=b64; document.getElementById("imagePreviewContainer").classList.remove("hidden"); });
+  compressImage(file,1440,1440,0.85,b64=>{ compressedNewsImage=b64; document.getElementById("newsPreviewImg").src=b64; document.getElementById("imagePreviewContainer").classList.remove("hidden"); });
 });
 function removeSelectedImage(){ compressedNewsImage=""; document.getElementById("newsImageFileInput").value=""; document.getElementById("imagePreviewContainer").classList.add("hidden"); }
 
 document.getElementById("adminPhotoInput").addEventListener("change",function(e){
   const file=e.target.files[0]; if(!file)return;
-  compressImage(file,400,400,0.75,b64=>{ adminPhoto=b64; document.getElementById("adminPhotoPreview").src=b64; });
+  compressImage(file,400,400,0.80,b64=>{ adminPhoto=b64; document.getElementById("adminPhotoPreview").src=b64; });
 });
 function saveAdminPhoto(){ if(isAdmin && adminPhoto) db.ref("settings/adminPhoto").set(adminPhoto).then(()=>alert("फोटो सेव हो गई।")); }
 
 document.getElementById("repPhotoFileInput").addEventListener("change",function(e){
   const file=e.target.files[0]; if(!file)return;
-  compressImage(file,300,300,0.75,b64=>{ compressedRepPhoto=b64; document.getElementById("repPhotoPreview").src=b64; document.getElementById("repPhotoPreviewBox").classList.remove("hidden"); });
+  compressImage(file,400,400,0.80,b64=>{ compressedRepPhoto=b64; document.getElementById("repPhotoPreview").src=b64; document.getElementById("repPhotoPreviewBox").classList.remove("hidden"); });
 });
 
 function addNewReporterByAdmin(){
@@ -1747,8 +1644,8 @@ function closeEditModal() { document.getElementById("editNewsModal").classList.a
 function saveEditedArticle() { db.ref("news_articles/" + document.getElementById("editArticleKey").value).update({ title: document.getElementById("editNewsTitle").value.trim(), location: document.getElementById("editNewsLocation").value.trim(), category: document.getElementById("editNewsCategory").value, videoUrl: document.getElementById("editNewsVideoUrl").value.trim(), content: document.getElementById("editNewsContent").value.trim() }).then(() => { alert("अपडेट हो गया!"); closeEditModal(); }); }
 function deleteArticleByAdmin(key) { if (isAdmin && confirm("डिलीट करना चाहते हैं?")) db.ref("news_articles/" + key).remove(); }
 
-/* ================= DAINIK BHASKAR STYLE PHOTO CARD SHARE ENGINE ================= */
-function drawWrappedCardHeadline(ctx, text, x, y, maxWidth, lineHeight, maxLines) {
+/* ================= FULL HD (1200x1530) DAINIK BHASKAR CARD SHARE ENGINE ================= */
+function drawWrappedCardHeadlineHD(ctx, text, x, y, maxWidth, lineHeight, maxLines) {
   const words = text.split(" ");
   let line = "";
   let lineCount = 0;
@@ -1777,97 +1674,94 @@ function drawWrappedCardHeadline(ctx, text, x, y, maxWidth, lineHeight, maxLines
 
 function buildAndShareNewsCard(title, imageUrl, content) {
   const linkToShare = appDownloadUrl || location.href.split("#")[0];
-  const shareText = `*${title}*\n\n📲 पूरी खबर पढ़ने व ताज़ा बुंदेलखंड न्यूज़ देखने के लिए ऐप इंस्टॉल करें:\n${linkToShare}`;
+  preparedShareTitle = title;
+  preparedShareText = `*${title}*\n\n📲 पूरी खबर पढ़ने व ताज़ा बुंदेलखंड न्यूज़ देखने के लिए ऐप इंस्टॉल करें:\n${linkToShare}`;
 
+  // FULL HD Resolution (1200 x 1530)
   const canvas = document.createElement("canvas");
   const ctx = canvas.getContext("2d");
-  canvas.width = 800;
-  canvas.height = 1020;
+  canvas.width = 1200;
+  canvas.height = 1530;
 
-  const finalizeCanvasShare = () => {
-    // 2. White App Promotion Ribbon (Dainik Bhaskar Style)
+  ctx.imageSmoothingEnabled = true;
+  ctx.imageSmoothingQuality = "high";
+
+  const finalizeCanvasHD = () => {
+    // 2. White App Promotion Ribbon (HD Scaled)
     ctx.fillStyle = "#ffffff";
-    ctx.fillRect(0, 720, 800, 105);
+    ctx.fillRect(0, 1080, 1200, 155);
 
     // Red-Blue mini logo badge on white bar
     ctx.fillStyle = "#991b1b";
-    ctx.fillRect(24, 738, 68, 44);
+    ctx.fillRect(36, 1106, 102, 66);
     ctx.fillStyle = "#002244";
-    ctx.fillRect(24, 782, 68, 24);
+    ctx.fillRect(36, 1172, 102, 36);
 
     ctx.fillStyle = "#ffffff";
-    ctx.font = "bold 14px Mukta, sans-serif";
-    ctx.fillText("आवाज़", 36, 756);
-    ctx.font = "bold 12px Mukta, sans-serif";
-    ctx.fillText("बुंदेलखंड", 32, 774);
-    ctx.font = "bold 13px sans-serif";
-    ctx.fillText("NEWS", 37, 799);
+    ctx.font = "bold 21px Mukta, sans-serif";
+    ctx.fillText("आवाज़", 54, 1134);
+    ctx.font = "bold 18px Mukta, sans-serif";
+    ctx.fillText("बुंदेलखंड", 48, 1161);
+    ctx.font = "bold 20px sans-serif";
+    ctx.fillText("NEWS", 56, 1198);
 
     // App Tagline on White Bar
     ctx.fillStyle = "#111827";
-    ctx.font = "bold 23px Mukta, sans-serif";
-    ctx.fillText("बुंदेलखंड का सबसे विश्वसनीय न्यूज़ ऐप", 108, 765);
+    ctx.font = "bold 35px Mukta, sans-serif";
+    ctx.fillText("बुंदेलखंड का सबसे विश्वसनीय न्यूज़ ऐप", 162, 1148);
 
     ctx.fillStyle = "#4b5563";
-    ctx.font = "600 18px Mukta, sans-serif";
-    ctx.fillText("इंस्टॉल करें आवाज़ बुंदेलखंड न्यूज़ और पाएं लोकल अपडेट", 108, 796);
+    ctx.font = "600 26px Mukta, sans-serif";
+    ctx.fillText("इंस्टॉल करें आवाज़ बुंदेलखंड न्यूज़ और पाएं लोकल अपडेट", 162, 1194);
 
     // Google Play Badge (Right side of white bar)
     ctx.fillStyle = "#000000";
     ctx.beginPath();
-    ctx.roundRect(625, 742, 152, 60, 10);
+    if (ctx.roundRect) ctx.roundRect(935, 1112, 228, 90, 15);
+    else ctx.fillRect(935, 1112, 228, 90);
     ctx.fill();
 
     // Play triangle icon
     ctx.fillStyle = "#38bdf8";
     ctx.beginPath();
-    ctx.moveTo(642, 756);
-    ctx.lineTo(662, 772);
-    ctx.lineTo(642, 788);
+    ctx.moveTo(962, 1132);
+    ctx.lineTo(992, 1157);
+    ctx.lineTo(962, 1182);
     ctx.closePath();
     ctx.fill();
 
     ctx.fillStyle = "#d1d5db";
-    ctx.font = "bold 11px sans-serif";
-    ctx.fillText("GET IT ON", 672, 763);
-    ctx.fillStyle = "#ffffff";
     ctx.font = "bold 17px sans-serif";
-    ctx.fillText("Google Play", 670, 786);
+    ctx.fillText("GET IT ON", 1008, 1144);
+    ctx.fillStyle = "#ffffff";
+    ctx.font = "bold 26px sans-serif";
+    ctx.fillText("Google Play", 1005, 1178);
 
     // 3. Bottom Black Headline & App Link Area
     ctx.fillStyle = "#09090b";
-    ctx.fillRect(0, 825, 800, 195);
+    ctx.fillRect(0, 1235, 1200, 295);
 
     ctx.fillStyle = "#ffffff";
-    ctx.font = "bold 30px Mukta, sans-serif";
-    drawWrappedCardHeadline(ctx, title, 30, 875, 740, 42, 2);
+    ctx.font = "bold 45px Mukta, sans-serif";
+    drawWrappedCardHeadlineHD(ctx, title, 45, 1312, 1110, 62, 2);
 
     // App Download Link at Bottom
     ctx.fillStyle = "#38bdf8";
-    ctx.font = "bold 20px sans-serif";
+    ctx.font = "bold 29px sans-serif";
     const displayUrl = linkToShare.replace(/^https?:\/\//, "");
-    ctx.fillText(displayUrl, 30, 985);
+    ctx.fillText(displayUrl, 45, 1480);
 
-    canvas.toBlob(async blob => {
-      if (!blob) {
-        window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(shareText)}`, "_blank");
-        return;
+    // Generate High-Quality JPEG (0.96 quality)
+    const hdDataUrl = canvas.toDataURL("image/jpeg", 0.96);
+    document.getElementById("hdSharePreviewImg").src = hdDataUrl;
+    document.getElementById("btnDownloadHdCard").href = hdDataUrl;
+
+    canvas.toBlob(blob => {
+      if (blob) {
+        preparedShareFile = new File([blob], `Awaj_Bundelkhand_HD_${Date.now()}.jpg`, { type: "image/jpeg" });
       }
-      const file = new File([blob], "Awaj_Bundelkhand_News.jpg", { type: "image/jpeg" });
-      if (navigator.canShare && navigator.canShare({ files: [file] })) {
-        try {
-          await navigator.share({
-            files: [file],
-            title: title,
-            text: shareText
-          });
-        } catch (err) {
-          console.log("Share cancelled:", err);
-        }
-      } else {
-        window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(shareText)}`, "_blank");
-      }
-    }, "image/jpeg", 0.92);
+      document.getElementById("hdShareModal").classList.remove("hidden");
+    }, "image/jpeg", 0.96);
   };
 
   // 1. Top News Image or Default Branded Banner
@@ -1876,49 +1770,68 @@ function buildAndShareNewsCard(title, imageUrl, content) {
     img.crossOrigin = "anonymous";
     img.onload = () => {
       ctx.fillStyle = "#000000";
-      ctx.fillRect(0, 0, 800, 720);
-      // Cover-fit image cleanly
-      const scale = Math.max(800 / img.width, 720 / img.height);
+      ctx.fillRect(0, 0, 1200, 1080);
+      const scale = Math.max(1200 / img.width, 1080 / img.height);
       const w = img.width * scale;
       const h = img.height * scale;
-      ctx.drawImage(img, (800 - w) / 2, (720 - h) / 2, w, h);
-      finalizeCanvasShare();
+      ctx.drawImage(img, (1200 - w) / 2, (1080 - h) / 2, w, h);
+      finalizeCanvasHD();
     };
     img.onerror = () => {
-      drawDefaultBannerBackground(ctx);
-      finalizeCanvasShare();
+      drawDefaultBannerBackgroundHD(ctx);
+      finalizeCanvasHD();
     };
     img.src = imageUrl;
   } else {
-    drawDefaultBannerBackground(ctx);
-    finalizeCanvasShare();
+    drawDefaultBannerBackgroundHD(ctx);
+    finalizeCanvasHD();
   }
 }
 
-function drawDefaultBannerBackground(ctx) {
-  const grad = ctx.createLinearGradient(0, 0, 800, 720);
+/* DIRECT SHARE EXECUTION ON FRESH USER CLICK (GUARANTEES IMAGE ATTACHMENT) */
+document.getElementById("btnExecuteHdShare").addEventListener("click", async function() {
+  if (preparedShareFile && navigator.canShare && navigator.canShare({ files: [preparedShareFile] })) {
+    try {
+      await navigator.share({
+        files: [preparedShareFile],
+        title: preparedShareTitle,
+        text: preparedShareText
+      });
+      document.getElementById("hdShareModal").classList.add("hidden");
+      return;
+    } catch (err) {
+      if (err.name === "AbortError") return;
+    }
+  }
+  // Fallback if device browser blocks file share
+  alert("आपके ब्राउज़र में डायरेक्ट फ़ाइल शेयरिंग समर्थित नहीं है। ऊपर 'गैलरी में HD फोटो सेव करें' बटन दबाकर फोटो सेव करें या WhatsApp लिंक भेजें।");
+  window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(preparedShareText)}`, "_blank");
+});
+
+function drawDefaultBannerBackgroundHD(ctx) {
+  const grad = ctx.createLinearGradient(0, 0, 1200, 1080);
   grad.addColorStop(0, "#7f1d1d");
   grad.addColorStop(0.5, "#991b1b");
   grad.addColorStop(1, "#001d4a");
   ctx.fillStyle = grad;
-  ctx.fillRect(0, 0, 800, 720);
+  ctx.fillRect(0, 0, 1200, 1080);
 
   ctx.strokeStyle = "#fbbf24";
-  ctx.lineWidth = 8;
-  ctx.strokeRect(40, 40, 720, 640);
+  ctx.lineWidth = 12;
+  ctx.strokeRect(60, 60, 1080, 960);
 
   ctx.fillStyle = "#fbbf24";
-  ctx.font = "bold 34px Mukta, sans-serif";
+  ctx.font = "bold 50px Mukta, sans-serif";
   ctx.textAlign = "center";
-  ctx.fillText("ब्रेकिंग न्यूज़ • ग्राउंड रिपोर्ट", 400, 260);
+  ctx.fillText("ब्रेकिंग न्यूज़ • ग्राउंड रिपोर्ट", 600, 390);
 
   ctx.fillStyle = "#ffffff";
-  ctx.font = "900 64px Mukta, sans-serif";
-  ctx.fillText("आवाज़ बुंदेलखंड न्यूज़", 400, 360);
+  ctx.font = "900 94px Mukta, sans-serif";
+  ctx.fillText("आवाज़ बुंदेलखंड न्यूज़", 600, 540);
 
   ctx.fillStyle = "#e2e8f0";
-  ctx.font = "bold 28px Mukta, sans-serif";
-  ctx.fillText("निष्पक्ष एवं सटीक डिजिटल पत्रकारिता", 400, 430);
+  ctx.font = "bold 42px Mukta, sans-serif";
+  ctx.fillText("निष्पक्ष एवं सटीक डिजिटल पत्रकारिता", 600, 645);
   ctx.textAlign = "left";
 }
 
@@ -1926,7 +1839,7 @@ function shareArticle() {
   buildAndShareNewsCard("आवाज़ बुंदेलखंड न्यूज़: बुंदेलखंड की हर ताज़ा खबर सीधे आपके मोबाइल पर", "", "");
 }
 
-/* ================= NEWS FEED RENDERER (1M+ VIEWS, LIKES, & ADMIN-ONLY VIEWERS) ================= */
+/* ================= NEWS FEED RENDERER ================= */
 function loadNewsFeed(){
   renderPublicAds();
 
@@ -1978,15 +1891,11 @@ function loadNewsFeed(){
         if (item.imageUrl) media += `<img src="${item.imageUrl}" class="w-full rounded-xl max-h-96 object-cover mb-2">`;
         if (item.videoUrl) media += renderUniversalMediaEmbed(item.videoUrl);
 
-        // 1 Million+ Formatted Views
         const formattedMillionViews = formatMillionViews(item.views, item.timestamp);
-
-        // Likes state
         const isLiked = localStorage.getItem("abn_liked_" + key) === "true";
         const baseLikes = item.timestamp ? ((item.timestamp % 850) + 120) : 250;
         const totalLikes = baseLikes + (item.likes || 0);
 
-        // Admin-Only "Who Viewed" Button (Strictly hidden from normal users & reporters)
         let adminOnlyViewersBtn = "";
         if (isAdmin) {
           const googleViewersArr = Object.values(item.viewers || {});
@@ -2032,7 +1941,6 @@ function loadNewsFeed(){
           ${media}
           <p class="text-sm text-gray-700 whitespace-pre-line leading-relaxed">${escapeHTML(item.content)}</p>
 
-          <!-- 1M+ VIEWS COUNTER & ADMIN-ONLY VIEWERS LIST -->
           <div class="flex flex-wrap items-center justify-between gap-2 border-t pt-2.5 text-[11px]">
             <div class="flex items-center gap-1.5 bg-slate-100 px-3 py-1 rounded-full font-black text-slate-800">
               <i class="fa-solid fa-eye text-red-600"></i>
@@ -2041,7 +1949,6 @@ function loadNewsFeed(){
             ${adminOnlyViewersBtn}
           </div>
 
-          <!-- LIKE, PHOTO CARD SHARE & WHATSAPP ACTION BUTTONS -->
           <div class="flex flex-wrap items-center gap-2 pt-1">
             <button type="button" class="likeBtn flex items-center gap-1.5 px-3 py-2 rounded-lg text-xs font-black border transition ${isLiked ? 'bg-red-50 border-red-300 text-red-700' : 'bg-gray-50 border-gray-200 text-gray-700 hover:bg-gray-100'}">
               <i class="fa-${isLiked ? 'solid' : 'regular'} fa-heart text-red-600 text-sm"></i>
@@ -2049,7 +1956,7 @@ function loadNewsFeed(){
             </button>
 
             <button type="button" class="shareBtn bg-green-600 hover:bg-green-700 text-white px-3 py-2 rounded-lg text-xs font-bold transition flex items-center gap-1.5 shadow-sm">
-              <i class="fa-solid fa-share-nodes"></i> फोटो कार्ड शेयर करें
+              <i class="fa-solid fa-image"></i> HD फोटो कार्ड शेयर करें
             </button>
 
             <button type="button" class="whatsappBtn bg-emerald-700 hover:bg-emerald-800 text-white px-3 py-2 rounded-lg text-xs font-bold transition flex items-center gap-1.5 shadow-sm">
@@ -2059,23 +1966,10 @@ function loadNewsFeed(){
           ${adminControlButtons}
         `;
 
-        // Like button click handler
-        card.querySelector(".likeBtn").onclick = (e) => {
-          e.stopPropagation();
-          recordNewsArticleView(key);
-          toggleArticleLike(key);
-        };
-
-        // Admin-only Viewers List handler
+        card.querySelector(".likeBtn").onclick = (e) => { e.stopPropagation(); recordNewsArticleView(key); toggleArticleLike(key); };
         const viewersBtn = card.querySelector(".btnSeeViewers");
-        if (viewersBtn && isAdmin) {
-          viewersBtn.onclick = (e) => {
-            e.stopPropagation();
-            openViewersModal(key, item.title);
-          };
-        }
+        if (viewersBtn && isAdmin) { viewersBtn.onclick = (e) => { e.stopPropagation(); openViewersModal(key, item.title); }; }
 
-        // Dainik Bhaskar Style Photo Card Share
         card.querySelector(".shareBtn").onclick = (e) => {
           e.stopPropagation();
           recordNewsArticleView(key);
@@ -2089,14 +1983,8 @@ function loadNewsFeed(){
         };
 
         if (isAdmin) {
-          card.querySelector(".btnEdit").onclick = (e) => {
-            e.stopPropagation();
-            openEditArticleModal(key, item.title, item.location, item.category, item.videoUrl, item.content);
-          };
-          card.querySelector(".btnDelete").onclick = (e) => {
-            e.stopPropagation();
-            deleteArticleByAdmin(key);
-          };
+          card.querySelector(".btnEdit").onclick = (e) => { e.stopPropagation(); openEditArticleModal(key, item.title, item.location, item.category, item.videoUrl, item.content); };
+          card.querySelector(".btnDelete").onclick = (e) => { e.stopPropagation(); deleteArticleByAdmin(key); };
         }
 
         list.appendChild(card);
@@ -2150,15 +2038,10 @@ function switchTab(tab){
   if (targetBtn) { targetBtn.classList.add("border-red-700", "text-red-700"); targetBtn.classList.remove("border-transparent", "text-gray-500"); }
 }
 
-/* MONITOR GOOGLE READER AUTH STATE */
 auth.onAuthStateChanged(user => {
-  if (user) {
-    currentGoogleReader = user;
-    updateReaderGoogleUI(user);
-  }
+  if (user) { currentGoogleReader = user; updateReaderGoogleUI(user); }
 });
 
-/* INITIALIZE */
 loadAppDownloadLink();
 loadNewsFeed();
 loadAdminSpecialAd();
