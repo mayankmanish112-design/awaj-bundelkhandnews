@@ -70,24 +70,20 @@ body { font-family: 'Mukta', sans-serif; }
 </div>
 
 <div id="authHeaderArea" class="flex items-center gap-1.5">
-<!-- Reader Google Sign-In Button -->
 <button type="button" id="btnReaderGoogleLogin" onclick="loginReaderWithGoogle()" class="text-[11px] bg-white hover:bg-gray-100 text-slate-900 font-black px-2.5 py-1.5 rounded-full shadow-sm flex items-center gap-1 transition">
   <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" class="w-3.5 h-3.5"> <span class="hidden sm:inline">पाठक</span> लॉगिन
 </button>
 
-<!-- Reader Google Logged-In Badge -->
 <div id="readerGoogleBadge" class="hidden items-center gap-1.5 bg-white/15 px-2 py-1 rounded-full border border-white/30">
   <img id="readerGooglePhoto" src="" class="w-5 h-5 rounded-full object-cover border border-amber-300">
   <span id="readerGoogleName" class="text-[10px] font-bold text-white max-w-[70px] truncate"></span>
   <button type="button" onclick="logoutReaderGoogle()" title="Google लॉगआउट" class="text-[10px] text-amber-300 hover:text-white ml-0.5">✕</button>
 </div>
 
-<!-- User Ad Button -->
 <button type="button" onclick="openUserAdSection()" class="text-[11px] bg-amber-400 hover:bg-amber-500 text-slate-950 font-black px-2.5 py-1.5 rounded-full shadow-sm flex items-center gap-1 active:scale-95 transition">
   <i class="fa-solid fa-bullhorn text-red-700"></i> प्रचार
 </button>
 
-<!-- Staff Login Button -->
 <button type="button" id="btnLoginOpen" onclick="openStaffLoginModal('admin')" class="text-[11px] bg-slate-900 text-white font-bold px-2.5 py-1.5 rounded-full shadow-sm hover:bg-black">
   <i class="fa-solid fa-user-lock text-amber-400"></i> स्टाफ़
 </button>
@@ -668,19 +664,18 @@ body { font-family: 'Mukta', sans-serif; }
 
 </main>
 
-<!-- ================= HD SHARE PHOTO CARD MODAL (GUARANTEED PHOTO + LINK SHARE) ================= -->
+<!-- ================= HD SHARE PHOTO CARD MODAL (ZERO CROPPING + FULL LOGO) ================= -->
 <div id="hdShareModal" class="fixed inset-0 bg-black/90 z-[1000010] flex items-center justify-center p-3 overflow-y-auto hidden">
   <div class="bg-white rounded-3xl p-4 max-w-sm w-full space-y-3 my-auto shadow-2xl border-2 border-amber-400">
     <div class="flex justify-between items-center border-b pb-2">
       <h3 class="text-xs font-black text-slate-900 flex items-center gap-1.5">
-        <i class="fa-solid fa-image text-emerald-600"></i> HD न्यूज़ कार्ड तैयार है
+        <i class="fa-solid fa-image text-emerald-600"></i> HD न्यूज़ कार्ड तैयार है (बिना कटे)
       </h3>
       <button onclick="document.getElementById('hdShareModal').classList.add('hidden')" class="text-lg font-bold text-gray-400 hover:text-black">✕</button>
     </div>
 
-    <!-- HD Preview Image -->
     <div class="bg-slate-950 rounded-2xl p-1.5 flex items-center justify-center overflow-hidden border">
-      <img id="hdSharePreviewImg" src="" class="max-h-[380px] w-auto object-contain rounded-xl shadow">
+      <img id="hdSharePreviewImg" src="" class="max-h-[400px] w-auto object-contain rounded-xl shadow">
     </div>
 
     <p class="text-[10px] text-gray-600 text-center font-semibold">
@@ -699,7 +694,7 @@ body { font-family: 'Mukta', sans-serif; }
   </div>
 </div>
 
-<!-- ================= ADMIN-ONLY VIEWERS LIST MODAL ================= -->
+<!-- ADMIN-ONLY VIEWERS LIST MODAL -->
 <div id="newsViewersModal" class="fixed inset-0 bg-black/80 z-[1000005] flex items-center justify-center p-4 hidden">
   <div class="bg-white rounded-3xl p-5 max-w-sm w-full space-y-3 shadow-2xl border-2 border-blue-800">
     <div class="flex justify-between items-center border-b pb-2">
@@ -1563,7 +1558,6 @@ function renderPublicAds() {
   });
 }
 
-/* HIGH-DEFINITION (1440px) NEWS IMAGE UPLOAD COMPRESSION */
 document.getElementById("newsImageFileInput").addEventListener("change",function(e){
   const file=e.target.files[0]; if(!file)return;
   compressImage(file,1440,1440,0.85,b64=>{ compressedNewsImage=b64; document.getElementById("newsPreviewImg").src=b64; document.getElementById("imagePreviewContainer").classList.remove("hidden"); });
@@ -1644,7 +1638,7 @@ function closeEditModal() { document.getElementById("editNewsModal").classList.a
 function saveEditedArticle() { db.ref("news_articles/" + document.getElementById("editArticleKey").value).update({ title: document.getElementById("editNewsTitle").value.trim(), location: document.getElementById("editNewsLocation").value.trim(), category: document.getElementById("editNewsCategory").value, videoUrl: document.getElementById("editNewsVideoUrl").value.trim(), content: document.getElementById("editNewsContent").value.trim() }).then(() => { alert("अपडेट हो गया!"); closeEditModal(); }); }
 function deleteArticleByAdmin(key) { if (isAdmin && confirm("डिलीट करना चाहते हैं?")) db.ref("news_articles/" + key).remove(); }
 
-/* ================= FULL HD (1200x1530) DAINIK BHASKAR CARD SHARE ENGINE ================= */
+/* ================= ZERO-CROP FULL HD DAINIK BHASKAR CARD SHARE ENGINE ================= */
 function drawWrappedCardHeadlineHD(ctx, text, x, y, maxWidth, lineHeight, maxLines) {
   const words = text.split(" ");
   let line = "";
@@ -1677,81 +1671,137 @@ function buildAndShareNewsCard(title, imageUrl, content) {
   preparedShareTitle = title;
   preparedShareText = `*${title}*\n\n📲 पूरी खबर पढ़ने व ताज़ा बुंदेलखंड न्यूज़ देखने के लिए ऐप इंस्टॉल करें:\n${linkToShare}`;
 
-  // FULL HD Resolution (1200 x 1530)
-  const canvas = document.createElement("canvas");
-  const ctx = canvas.getContext("2d");
-  canvas.width = 1200;
-  canvas.height = 1530;
+  const renderFullCardCanvas = (loadedImg) => {
+    const canvasW = 1200;
+    // Dynamic image height so ZERO cropping ever happens!
+    let imgDrawH = 750;
+    if (loadedImg && loadedImg.width > 0 && loadedImg.height > 0) {
+      imgDrawH = Math.round((loadedImg.height / loadedImg.width) * canvasW);
+      // Keep within sensible bounds (min 500px, max 1300px) while keeping 100% aspect ratio
+      if (imgDrawH < 500) imgDrawH = 500;
+      if (imgDrawH > 1300) imgDrawH = 1300;
+    }
 
-  ctx.imageSmoothingEnabled = true;
-  ctx.imageSmoothingQuality = "high";
+    const whiteBarH = 165;
+    const blackFooterH = 285;
+    const totalCanvasH = imgDrawH + whiteBarH + blackFooterH;
 
-  const finalizeCanvasHD = () => {
-    // 2. White App Promotion Ribbon (HD Scaled)
+    const canvas = document.createElement("canvas");
+    const ctx = canvas.getContext("2d");
+    canvas.width = canvasW;
+    canvas.height = totalCanvasH;
+
+    ctx.imageSmoothingEnabled = true;
+    ctx.imageSmoothingQuality = "high";
+
+    // 1. Draw Full Uncropped Photo (Contain-Fit with dark studio backdrop if needed)
+    if (loadedImg && loadedImg.width > 0) {
+      ctx.fillStyle = "#09090b";
+      ctx.fillRect(0, 0, canvasW, imgDrawH);
+      const scale = Math.min(canvasW / loadedImg.width, imgDrawH / loadedImg.height);
+      const drawW = loadedImg.width * scale;
+      const drawH = loadedImg.height * scale;
+      const offsetX = (canvasW - drawW) / 2;
+      const offsetY = (imgDrawH - drawH) / 2;
+      ctx.drawImage(loadedImg, offsetX, offsetY, drawW, drawH);
+    } else {
+      drawDefaultBannerBackgroundHD(ctx, canvasW, imgDrawH);
+    }
+
+    // 2. White App Promotion Ribbon (Properly padded so Logo NEVER cuts)
+    const whiteY = imgDrawH;
     ctx.fillStyle = "#ffffff";
-    ctx.fillRect(0, 1080, 1200, 155);
+    ctx.fillRect(0, whiteY, canvasW, whiteBarH);
 
-    // Red-Blue mini logo badge on white bar
+    // Top subtle border
+    ctx.fillStyle = "#e5e7eb";
+    ctx.fillRect(0, whiteY, canvasW, 3);
+
+    // Left 3D Branded Logo Box (Fully visible with clean margins)
+    const logoX = 32;
+    const logoY = whiteY + 22;
+    const logoW = 124;
+    const logoH = 120;
+
+    // Gold outer border
+    ctx.fillStyle = "#f59e0b";
+    ctx.fillRect(logoX - 4, logoY - 4, logoW + 8, logoH + 8);
+
+    // Red top half of logo
     ctx.fillStyle = "#991b1b";
-    ctx.fillRect(36, 1106, 102, 66);
+    ctx.fillRect(logoX, logoY, logoW, 82);
+
+    // Navy blue bottom half of logo
     ctx.fillStyle = "#002244";
-    ctx.fillRect(36, 1172, 102, 36);
+    ctx.fillRect(logoX, logoY + 82, logoW, 38);
 
+    ctx.textAlign = "center";
     ctx.fillStyle = "#ffffff";
-    ctx.font = "bold 21px Mukta, sans-serif";
-    ctx.fillText("आवाज़", 54, 1134);
-    ctx.font = "bold 18px Mukta, sans-serif";
-    ctx.fillText("बुंदेलखंड", 48, 1161);
-    ctx.font = "bold 20px sans-serif";
-    ctx.fillText("NEWS", 56, 1198);
+    ctx.font = "900 26px Mukta, sans-serif";
+    ctx.fillText("आवाज़", logoX + logoW / 2, logoY + 34);
 
-    // App Tagline on White Bar
-    ctx.fillStyle = "#111827";
-    ctx.font = "bold 35px Mukta, sans-serif";
-    ctx.fillText("बुंदेलखंड का सबसे विश्वसनीय न्यूज़ ऐप", 162, 1148);
+    ctx.font = "800 22px Mukta, sans-serif";
+    ctx.fillText("बुंदेलखंड", logoX + logoW / 2, logoY + 66);
 
-    ctx.fillStyle = "#4b5563";
-    ctx.font = "600 26px Mukta, sans-serif";
-    ctx.fillText("इंस्टॉल करें आवाज़ बुंदेलखंड न्यूज़ और पाएं लोकल अपडेट", 162, 1194);
+    ctx.fillStyle = "#fbbf24";
+    ctx.font = "900 22px sans-serif";
+    ctx.fillText("NEWS", logoX + logoW / 2, logoY + 109);
+    ctx.textAlign = "left";
 
-    // Google Play Badge (Right side of white bar)
+    // App Tagline Text (Between Logo and Google Play Badge)
+    const textX = 182;
+    ctx.fillStyle = "#0f172a";
+    ctx.font = "900 34px Mukta, sans-serif";
+    ctx.fillText("बुंदेलखंड का सबसे विश्वसनीय न्यूज़ ऐप", textX, whiteY + 68);
+
+    ctx.fillStyle = "#475569";
+    ctx.font = "700 24px Mukta, sans-serif";
+    ctx.fillText("इंस्टॉल करें आवाज़ बुंदेलखंड न्यूज़ और पाएं लोकल अपडेट", textX, whiteY + 114);
+
+    // Right Google Play Badge (Well within 1200px bounds)
+    const gpX = 935;
+    const gpY = whiteY + 38;
+    const gpW = 232;
+    const gpH = 88;
+
     ctx.fillStyle = "#000000";
     ctx.beginPath();
-    if (ctx.roundRect) ctx.roundRect(935, 1112, 228, 90, 15);
-    else ctx.fillRect(935, 1112, 228, 90);
+    if (ctx.roundRect) ctx.roundRect(gpX, gpY, gpW, gpH, 14);
+    else ctx.fillRect(gpX, gpY, gpW, gpH);
     ctx.fill();
 
-    // Play triangle icon
+    // Play Triangle
     ctx.fillStyle = "#38bdf8";
     ctx.beginPath();
-    ctx.moveTo(962, 1132);
-    ctx.lineTo(992, 1157);
-    ctx.lineTo(962, 1182);
+    ctx.moveTo(gpX + 24, gpY + 20);
+    ctx.lineTo(gpX + 54, gpY + 44);
+    ctx.lineTo(gpX + 24, gpY + 68);
     ctx.closePath();
     ctx.fill();
 
     ctx.fillStyle = "#d1d5db";
-    ctx.font = "bold 17px sans-serif";
-    ctx.fillText("GET IT ON", 1008, 1144);
+    ctx.font = "bold 16px sans-serif";
+    ctx.fillText("GET IT ON", gpX + 70, gpY + 34);
     ctx.fillStyle = "#ffffff";
     ctx.font = "bold 26px sans-serif";
-    ctx.fillText("Google Play", 1005, 1178);
+    ctx.fillText("Google Play", gpX + 68, gpY + 68);
 
     // 3. Bottom Black Headline & App Link Area
+    const blackY = whiteY + whiteBarH;
     ctx.fillStyle = "#09090b";
-    ctx.fillRect(0, 1235, 1200, 295);
+    ctx.fillRect(0, blackY, canvasW, blackFooterH);
 
     ctx.fillStyle = "#ffffff";
-    ctx.font = "bold 45px Mukta, sans-serif";
-    drawWrappedCardHeadlineHD(ctx, title, 45, 1312, 1110, 62, 2);
+    ctx.font = "bold 44px Mukta, sans-serif";
+    drawWrappedCardHeadlineHD(ctx, title, 40, blackY + 75, 1120, 60, 2);
 
     // App Download Link at Bottom
     ctx.fillStyle = "#38bdf8";
-    ctx.font = "bold 29px sans-serif";
+    ctx.font = "bold 28px sans-serif";
     const displayUrl = linkToShare.replace(/^https?:\/\//, "");
-    ctx.fillText(displayUrl, 45, 1480);
+    ctx.fillText(displayUrl, 40, blackY + 235);
 
-    // Generate High-Quality JPEG (0.96 quality)
+    // Output HD JPEG
     const hdDataUrl = canvas.toDataURL("image/jpeg", 0.96);
     document.getElementById("hdSharePreviewImg").src = hdDataUrl;
     document.getElementById("btnDownloadHdCard").href = hdDataUrl;
@@ -1764,31 +1814,17 @@ function buildAndShareNewsCard(title, imageUrl, content) {
     }, "image/jpeg", 0.96);
   };
 
-  // 1. Top News Image or Default Branded Banner
   if (imageUrl && !imageUrl.includes("youtube.com")) {
     const img = new Image();
     img.crossOrigin = "anonymous";
-    img.onload = () => {
-      ctx.fillStyle = "#000000";
-      ctx.fillRect(0, 0, 1200, 1080);
-      const scale = Math.max(1200 / img.width, 1080 / img.height);
-      const w = img.width * scale;
-      const h = img.height * scale;
-      ctx.drawImage(img, (1200 - w) / 2, (1080 - h) / 2, w, h);
-      finalizeCanvasHD();
-    };
-    img.onerror = () => {
-      drawDefaultBannerBackgroundHD(ctx);
-      finalizeCanvasHD();
-    };
+    img.onload = () => renderFullCardCanvas(img);
+    img.onerror = () => renderFullCardCanvas(null);
     img.src = imageUrl;
   } else {
-    drawDefaultBannerBackgroundHD(ctx);
-    finalizeCanvasHD();
+    renderFullCardCanvas(null);
   }
 }
 
-/* DIRECT SHARE EXECUTION ON FRESH USER CLICK (GUARANTEES IMAGE ATTACHMENT) */
 document.getElementById("btnExecuteHdShare").addEventListener("click", async function() {
   if (preparedShareFile && navigator.canShare && navigator.canShare({ files: [preparedShareFile] })) {
     try {
@@ -1803,35 +1839,34 @@ document.getElementById("btnExecuteHdShare").addEventListener("click", async fun
       if (err.name === "AbortError") return;
     }
   }
-  // Fallback if device browser blocks file share
   alert("आपके ब्राउज़र में डायरेक्ट फ़ाइल शेयरिंग समर्थित नहीं है। ऊपर 'गैलरी में HD फोटो सेव करें' बटन दबाकर फोटो सेव करें या WhatsApp लिंक भेजें।");
   window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(preparedShareText)}`, "_blank");
 });
 
-function drawDefaultBannerBackgroundHD(ctx) {
-  const grad = ctx.createLinearGradient(0, 0, 1200, 1080);
+function drawDefaultBannerBackgroundHD(ctx, w, h) {
+  const grad = ctx.createLinearGradient(0, 0, w, h);
   grad.addColorStop(0, "#7f1d1d");
   grad.addColorStop(0.5, "#991b1b");
   grad.addColorStop(1, "#001d4a");
   ctx.fillStyle = grad;
-  ctx.fillRect(0, 0, 1200, 1080);
+  ctx.fillRect(0, 0, w, h);
 
   ctx.strokeStyle = "#fbbf24";
-  ctx.lineWidth = 12;
-  ctx.strokeRect(60, 60, 1080, 960);
+  ctx.lineWidth = 10;
+  ctx.strokeRect(45, 45, w - 90, h - 90);
 
   ctx.fillStyle = "#fbbf24";
-  ctx.font = "bold 50px Mukta, sans-serif";
+  ctx.font = "bold 46px Mukta, sans-serif";
   ctx.textAlign = "center";
-  ctx.fillText("ब्रेकिंग न्यूज़ • ग्राउंड रिपोर्ट", 600, 390);
+  ctx.fillText("ब्रेकिंग न्यूज़ • ग्राउंड रिपोर्ट", w / 2, h * 0.36);
 
   ctx.fillStyle = "#ffffff";
-  ctx.font = "900 94px Mukta, sans-serif";
-  ctx.fillText("आवाज़ बुंदेलखंड न्यूज़", 600, 540);
+  ctx.font = "900 88px Mukta, sans-serif";
+  ctx.fillText("आवाज़ बुंदेलखंड न्यूज़", w / 2, h * 0.52);
 
   ctx.fillStyle = "#e2e8f0";
-  ctx.font = "bold 42px Mukta, sans-serif";
-  ctx.fillText("निष्पक्ष एवं सटीक डिजिटल पत्रकारिता", 600, 645);
+  ctx.font = "bold 38px Mukta, sans-serif";
+  ctx.fillText("निष्पक्ष एवं सटीक डिजिटल पत्रकारिता", w / 2, h * 0.65);
   ctx.textAlign = "left";
 }
 
@@ -1888,7 +1923,7 @@ function loadNewsFeed(){
         card.onclick = () => recordNewsArticleView(key);
 
         let media = "";
-        if (item.imageUrl) media += `<img src="${item.imageUrl}" class="w-full rounded-xl max-h-96 object-cover mb-2">`;
+        if (item.imageUrl) media += `<img src="${item.imageUrl}" class="w-full rounded-xl max-h-96 object-contain bg-black mb-2">`;
         if (item.videoUrl) media += renderUniversalMediaEmbed(item.videoUrl);
 
         const formattedMillionViews = formatMillionViews(item.views, item.timestamp);
