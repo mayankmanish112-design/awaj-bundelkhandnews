@@ -71,14 +71,18 @@ body { font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif; }
 </div>
 
 <div id="authHeaderArea" class="flex items-center gap-1.5">
-<button type="button" id="btnReaderGoogleLogin" onclick="loginReaderWithGoogle()" class="text-[11px] bg-white hover:bg-gray-100 text-slate-900 font-black px-2.5 py-1.5 rounded-full shadow-sm flex items-center gap-1 transition">
-  <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" class="w-3.5 h-3.5"> <span class="hidden sm:inline">पाठक</span> लॉगिन
+<!-- READER MOBILE + PASSWORD LOGIN / REGISTER BUTTON -->
+<button type="button" id="btnReaderMobileLogin" onclick="openReaderAuthModal('login')" class="text-[11px] bg-white hover:bg-gray-100 text-slate-900 font-black px-2.5 py-1.5 rounded-full shadow-sm flex items-center gap-1 transition">
+  <i class="fa-solid fa-mobile-screen-button text-red-700"></i> <span class="hidden sm:inline">पाठक</span> लॉगिन / रजिस्टर
 </button>
 
-<div id="readerGoogleBadge" class="hidden items-center gap-1.5 bg-white/15 px-2 py-1 rounded-full border border-white/30">
-  <img id="readerGooglePhoto" src="" class="w-5 h-5 rounded-full object-cover border border-amber-300">
-  <span id="readerGoogleName" class="text-[10px] font-bold text-white max-w-[70px] truncate"></span>
-  <button type="button" onclick="logoutReaderGoogle()" title="Google लॉगआउट" class="text-[10px] text-amber-300 hover:text-white ml-0.5">✕</button>
+<!-- LOGGED-IN READER BADGE -->
+<div id="readerMobileBadge" class="hidden items-center gap-1.5 bg-white/15 px-2 py-1 rounded-full border border-white/30">
+  <div class="w-5 h-5 rounded-full bg-amber-400 text-slate-950 font-black text-[10px] flex items-center justify-center shrink-0">
+    <i class="fa-solid fa-user"></i>
+  </div>
+  <span id="readerMobileName" class="text-[10px] font-bold text-white max-w-[85px] truncate"></span>
+  <button type="button" onclick="logoutReaderMobile()" title="लॉगआउट" class="text-[10px] text-amber-300 hover:text-white ml-0.5">✕</button>
 </div>
 
 <button type="button" onclick="openUserAdSection()" class="text-[11px] bg-amber-400 hover:bg-amber-500 text-slate-950 font-black px-2.5 py-1.5 rounded-full shadow-sm flex items-center gap-1 active:scale-95 transition">
@@ -328,18 +332,25 @@ body { font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif; }
 <!-- ================= MAIN FEED SECTION ================= -->
 <section id="feedSection" class="space-y-4">
 
-<!-- GOOGLE SIGN-IN PROMPT BAR FOR READERS -->
-<div id="readerGoogleBanner" class="bg-blue-50 border border-blue-200 p-2.5 rounded-2xl flex items-center justify-between gap-2">
+<!-- MOBILE + PASSWORD READER BAR -->
+<div id="readerMobileBanner" class="bg-white border border-red-200 p-2.5 rounded-2xl flex items-center justify-between gap-2 shadow-xs">
   <div class="flex items-center gap-2">
-    <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" class="w-5 h-5 shrink-0">
+    <div class="w-8 h-8 rounded-full bg-red-50 text-red-700 flex items-center justify-center shrink-0 border border-red-200">
+      <i class="fa-solid fa-mobile-screen-button text-sm"></i>
+    </div>
     <div>
-      <h4 class="text-[11px] font-black text-blue-950 leading-tight">अपने Google अकाउंट से जुड़ें</h4>
-      <p class="text-[9px] text-blue-700">ताज़ा खबरों को लाइक करें और लोकल अपडेट पाएं</p>
+      <h4 class="text-[11px] font-black text-slate-900 leading-tight">मोबाइल नंबर और पासवर्ड से जुड़ें</h4>
+      <p class="text-[9px] text-gray-600">नया रजिस्ट्रेशन करें या लॉगिन करके खबरें लाइक व शेयर करें</p>
     </div>
   </div>
-  <button onclick="loginReaderWithGoogle()" class="bg-blue-700 hover:bg-blue-800 text-white text-[10px] font-black px-3 py-1.5 rounded-full shadow-sm shrink-0">
-    Google से जुड़ें
-  </button>
+  <div class="flex items-center gap-1.5 shrink-0">
+    <button type="button" onclick="openReaderAuthModal('register')" class="bg-emerald-600 hover:bg-emerald-700 text-white text-[10px] font-black px-2.5 py-1.5 rounded-full shadow-sm">
+      रजिस्टर
+    </button>
+    <button type="button" onclick="openReaderAuthModal('login')" class="bg-red-700 hover:bg-red-800 text-white text-[10px] font-black px-2.5 py-1.5 rounded-full shadow-sm">
+      लॉगिन
+    </button>
+  </div>
 </div>
 
 <!-- PUBLIC LIVE BROADCAST CARD IN MAIN NEWS FEED -->
@@ -627,11 +638,10 @@ body { font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif; }
 </div>
 </section>
 
-<!-- ================= MANAGE REPORTERS (COMPLETE LIST, EDIT DETAILS, ID CARD, PASSWORD & DELETE) ================= -->
+<!-- ================= MANAGE REPORTERS ================= -->
 <section id="manageReportersSection" class="hidden bg-white p-5 rounded-2xl border space-y-5">
 <h3 class="text-sm font-bold border-b pb-2"><i class="fa-solid fa-user-plus text-red-600"></i> रिपोर्टर, एडिट डिटेल, आई-कार्ड एवं एडमिन प्रबंधन</h3>
 
-<!-- ADMIN PROFILE & PASSWORD -->
 <div class="bg-red-50 border border-red-200 rounded-xl p-4 space-y-3">
 <h3 class="font-bold text-sm text-red-800">प्रधान संपादक (Admin) की फोटो और पासवर्ड</h3>
 <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 items-center">
@@ -649,7 +659,6 @@ body { font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif; }
 </div>
 </div>
 
-<!-- ADD NEW REPORTER -->
 <div class="space-y-3 bg-blue-50/50 p-4 rounded-xl border border-blue-200">
 <h3 class="font-bold text-sm text-blue-950">नया रिपोर्टर जोड़ें और लॉगिन पासवर्ड बनाएं</h3>
 <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
@@ -669,7 +678,6 @@ body { font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif; }
 <button type="button" onclick="addNewReporterByAdmin()" class="w-full bg-blue-800 hover:bg-blue-900 text-white py-2.5 rounded-lg text-xs font-black shadow">रिपोर्टर अधिकृत करें और पासवर्ड सेव करें</button>
 </div>
 
-<!-- ALL REGISTERED REPORTERS DIRECTORY (WITH EDIT DETAIL, ID CARD, PASSWORD & DELETE) -->
 <div class="pt-2 space-y-2">
   <div class="flex items-center justify-between bg-slate-900 text-white px-3.5 py-2.5 rounded-xl">
     <h4 class="text-xs font-black flex items-center gap-1.5">
@@ -684,6 +692,74 @@ body { font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif; }
 </section>
 
 </main>
+
+<!-- ================= READER MOBILE + PASSWORD LOGIN / REGISTER MODAL ================= -->
+<div id="readerAuthModal" class="fixed inset-0 bg-black/80 z-[999998] flex items-center justify-center p-4 hidden">
+  <div class="bg-white max-w-sm w-full p-5 rounded-3xl relative shadow-2xl border-2 border-red-700 space-y-4">
+    <button type="button" onclick="closeReaderAuthModal()" class="absolute top-3 right-4 text-xl font-bold text-gray-400 hover:text-black">✕</button>
+    <div class="text-center">
+      <h2 class="font-black text-base text-slate-900">आवाज़ बुंदेलखंड पाठक खाता</h2>
+      <p class="text-[11px] text-gray-500">मोबाइल नंबर और पासवर्ड से लॉगिन या रजिस्टर करें</p>
+    </div>
+
+    <div class="grid grid-cols-2 gap-2 bg-gray-100 p-1 rounded-2xl">
+      <button type="button" id="btnSwitchReaderLogin" onclick="switchReaderAuthTab('login')" class="py-2 rounded-xl text-xs font-black bg-red-700 text-white shadow transition">
+        लॉगिन करें
+      </button>
+      <button type="button" id="btnSwitchReaderRegister" onclick="switchReaderAuthTab('register')" class="py-2 rounded-xl text-xs font-black text-gray-600 hover:text-slate-900 transition">
+        नया रजिस्टर
+      </button>
+    </div>
+
+    <!-- READER LOGIN FORM -->
+    <div id="readerLoginBox" class="space-y-3">
+      <div>
+        <label class="text-xs font-bold text-gray-700 block mb-1">मोबाइल नंबर (10 अंक) *</label>
+        <div class="flex border rounded-xl overflow-hidden bg-slate-50 focus-within:border-red-600">
+          <span class="bg-gray-200 px-3 py-2 text-xs font-bold text-gray-700">+91</span>
+          <input type="tel" id="readerLoginMobile" maxlength="10" placeholder="10 अंकों का मोबाइल नंबर" class="w-full px-3 py-2 text-sm outline-none bg-transparent font-bold">
+        </div>
+      </div>
+      <div>
+        <label class="text-xs font-bold text-gray-700 block mb-1">पासवर्ड *</label>
+        <input type="password" id="readerLoginPassword" placeholder="अपना पासवर्ड डालें" class="w-full border rounded-xl p-2.5 text-sm bg-slate-50 outline-none focus:border-red-600 font-bold">
+      </div>
+      <button type="button" onclick="loginReaderWithMobilePassword()" class="w-full bg-red-700 hover:bg-red-800 text-white py-3 rounded-xl text-sm font-black shadow-lg transition">
+        <i class="fa-solid fa-right-to-bracket"></i> लॉगिन करें
+      </button>
+      <p class="text-[11px] text-center text-gray-600">
+        नया अकाउंट बनाना है?
+        <button type="button" onclick="switchReaderAuthTab('register')" class="text-red-700 font-black underline">यहाँ रजिस्टर करें</button>
+      </p>
+    </div>
+
+    <!-- READER REGISTER FORM -->
+    <div id="readerRegisterBox" class="hidden space-y-3">
+      <div>
+        <label class="text-xs font-bold text-gray-700 block mb-1">पूरा नाम *</label>
+        <input type="text" id="readerRegName" placeholder="अपना पूरा नाम लिखें" class="w-full border rounded-xl p-2.5 text-sm bg-slate-50 outline-none focus:border-emerald-600 font-bold">
+      </div>
+      <div>
+        <label class="text-xs font-bold text-gray-700 block mb-1">मोबाइल नंबर (10 अंक) *</label>
+        <div class="flex border rounded-xl overflow-hidden bg-slate-50 focus-within:border-emerald-600">
+          <span class="bg-gray-200 px-3 py-2 text-xs font-bold text-gray-700">+91</span>
+          <input type="tel" id="readerRegMobile" maxlength="10" placeholder="10 अंकों का मोबाइल नंबर" class="w-full px-3 py-2 text-sm outline-none bg-transparent font-bold">
+        </div>
+      </div>
+      <div>
+        <label class="text-xs font-bold text-gray-700 block mb-1">नया पासवर्ड बनाएं (कम से कम 4 अक्षर) *</label>
+        <input type="password" id="readerRegPassword" placeholder="नया पासवर्ड दर्ज करें" class="w-full border rounded-xl p-2.5 text-sm bg-slate-50 outline-none focus:border-emerald-600 font-bold">
+      </div>
+      <button type="button" onclick="registerReaderWithMobilePassword()" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white py-3 rounded-xl text-sm font-black shadow-lg transition">
+        <i class="fa-solid fa-user-plus"></i> रजिस्टर करें
+      </button>
+      <p class="text-[11px] text-center text-gray-600">
+        पहले से अकाउंट बना है?
+        <button type="button" onclick="switchReaderAuthTab('login')" class="text-red-700 font-black underline">लॉगिन करें</button>
+      </p>
+    </div>
+  </div>
+</div>
 
 <!-- ================= EDIT FULL REPORTER DETAILS MODAL (ADMIN ONLY) ================= -->
 <div id="editReporterDetailsModal" class="fixed inset-0 bg-black/85 z-[1000002] flex items-center justify-center p-4 overflow-y-auto hidden">
@@ -1033,7 +1109,6 @@ appId: "1:105958974098:web:40ac74cdac62368120bc4b"
 };
 
 firebase.initializeApp(firebaseConfig);
-const auth = firebase.auth();
 const db = firebase.database();
 
 const ADMIN_PHONE = "+918853252811";
@@ -1045,9 +1120,9 @@ const PAYOUT_PER_NEWS = 30;
 let currentUserPhone = null;
 let isAdmin = false;
 let isReporter = false;
-let currentGoogleReader = null;
+let currentMobileReader = null;
 let appDownloadUrl = "https://mayankmanish112-design.github.io";
-let currentNewsLimit = 25; // Fast initial pagination limit
+let currentNewsLimit = 25;
 
 let adminPhoto = "";
 let compressedNewsImage = "";
@@ -1115,47 +1190,162 @@ function formatNewsDateTime(ts) {
   return `${datePart} • ${timePart}`;
 }
 
-function loginReaderWithGoogle() {
-  const provider = new firebase.auth.GoogleAuthProvider();
-  auth.signInWithPopup(provider)
-    .then(result => {
-      currentGoogleReader = result.user;
-      updateReaderGoogleUI(currentGoogleReader);
-      alert(`स्वागत है ${currentGoogleReader.displayName} जी!`);
+/* ================= READER MOBILE + PASSWORD LOGIN & REGISTER ================= */
+function openReaderAuthModal(mode = 'login') {
+  document.getElementById("readerAuthModal").classList.remove("hidden");
+  switchReaderAuthTab(mode);
+}
+
+function closeReaderAuthModal() {
+  document.getElementById("readerAuthModal").classList.add("hidden");
+}
+
+function switchReaderAuthTab(mode) {
+  const loginBox = document.getElementById("readerLoginBox");
+  const regBox = document.getElementById("readerRegisterBox");
+  const btnLogin = document.getElementById("btnSwitchReaderLogin");
+  const btnReg = document.getElementById("btnSwitchReaderRegister");
+
+  if (mode === "register") {
+    loginBox.classList.add("hidden");
+    regBox.classList.remove("hidden");
+    btnReg.className = "py-2 rounded-xl text-xs font-black bg-emerald-600 text-white shadow transition";
+    btnLogin.className = "py-2 rounded-xl text-xs font-black text-gray-600 hover:text-slate-900 transition";
+  } else {
+    regBox.classList.add("hidden");
+    loginBox.classList.remove("hidden");
+    btnLogin.className = "py-2 rounded-xl text-xs font-black bg-red-700 text-white shadow transition";
+    btnReg.className = "py-2 rounded-xl text-xs font-black text-gray-600 hover:text-slate-900 transition";
+  }
+}
+
+function registerReaderWithMobilePassword() {
+  const name = document.getElementById("readerRegName").value.trim();
+  const rawMobile = document.getElementById("readerRegMobile").value.trim();
+  const password = document.getElementById("readerRegPassword").value.trim();
+
+  if (!name || !/^\d{10}$/.test(rawMobile) || password.length < 4) {
+    return alert("कृपया पूरा नाम, 10 अंकों का सही मोबाइल नंबर और कम से कम 4 अक्षरों का पासवर्ड डालें!");
+  }
+
+  const fullPhone = "+91" + rawMobile;
+  const userKey = "91" + rawMobile;
+  const readerRef = db.ref("reader_accounts/" + userKey);
+
+  readerRef.once("value").then(snap => {
+    if (snap.exists()) {
+      alert("यह मोबाइल नंबर पहले से रजिस्टर है! कृपया लॉगिन करें।");
+      document.getElementById("readerLoginMobile").value = rawMobile;
+      switchReaderAuthTab("login");
+      return;
+    }
+
+    const newReader = {
+      uid: "reader_" + userKey,
+      name: name,
+      mobile: rawMobile,
+      phone: fullPhone,
+      password: password,
+      photo: DEFAULT_PHOTO,
+      createdAt: Date.now()
+    };
+
+    return readerRef.set(newReader).then(() => {
+      currentMobileReader = newReader;
+      localStorage.setItem("abn_reader_session", JSON.stringify(newReader));
+      updateReaderMobileUI(newReader);
+      closeReaderAuthModal();
+      document.getElementById("readerRegName").value = "";
+      document.getElementById("readerRegMobile").value = "";
+      document.getElementById("readerRegPassword").value = "";
+      alert(`रजिस्ट्रेशन सफल रहा! स्वागत है, ${name} जी।`);
       loadNewsFeed();
-    })
-    .catch(err => alert("Google लॉगिन में त्रुटि:\n" + err.message));
+    });
+  }).catch(err => alert("रजिस्ट्रेशन में त्रुटि: " + err.message));
 }
 
-function logoutReaderGoogle() {
-  auth.signOut().then(() => { currentGoogleReader = null; updateReaderGoogleUI(null); });
+function loginReaderWithMobilePassword() {
+  const rawMobile = document.getElementById("readerLoginMobile").value.trim();
+  const password = document.getElementById("readerLoginPassword").value.trim();
+
+  if (!/^\d{10}$/.test(rawMobile) || !password) {
+    return alert("कृपया 10 अंकों का मोबाइल नंबर और पासवर्ड डालें!");
+  }
+
+  const userKey = "91" + rawMobile;
+  db.ref("reader_accounts/" + userKey).once("value").then(snap => {
+    if (!snap.exists()) {
+      return alert("यह मोबाइल नंबर रजिस्टर नहीं है। कृपया पहले 'नया रजिस्टर' करें।");
+    }
+
+    const readerData = snap.val();
+    if (String(readerData.password) !== password) {
+      return alert("गलत पासवर्ड! कृपया सही पासवर्ड डालें।");
+    }
+
+    currentMobileReader = readerData;
+    localStorage.setItem("abn_reader_session", JSON.stringify(readerData));
+    updateReaderMobileUI(readerData);
+    closeReaderAuthModal();
+    document.getElementById("readerLoginMobile").value = "";
+    document.getElementById("readerLoginPassword").value = "";
+    alert(`स्वागत है ${readerData.name} जी!`);
+    loadNewsFeed();
+  }).catch(err => alert("लॉगिन में त्रुटि: " + err.message));
 }
 
-function updateReaderGoogleUI(user) {
-  const btn = document.getElementById("btnReaderGoogleLogin"), badge = document.getElementById("readerGoogleBadge"), banner = document.getElementById("readerGoogleBanner");
-  if (user) {
+function logoutReaderMobile() {
+  localStorage.removeItem("abn_reader_session");
+  currentMobileReader = null;
+  updateReaderMobileUI(null);
+}
+
+function updateReaderMobileUI(reader) {
+  const btn = document.getElementById("btnReaderMobileLogin");
+  const badge = document.getElementById("readerMobileBadge");
+  const banner = document.getElementById("readerMobileBanner");
+
+  if (reader) {
     if (btn) btn.classList.add("hidden");
     if (banner) banner.classList.add("hidden");
     if (badge) {
-      badge.classList.remove("hidden"); badge.classList.add("flex");
-      document.getElementById("readerGooglePhoto").src = user.photoURL || DEFAULT_PHOTO;
-      document.getElementById("readerGoogleName").innerText = user.displayName || "पाठक";
+      badge.classList.remove("hidden");
+      badge.classList.add("flex");
+      document.getElementById("readerMobileName").innerText = reader.name || reader.mobile || "पाठक";
     }
   } else {
     if (btn) btn.classList.remove("hidden");
     if (banner) banner.classList.remove("hidden");
-    if (badge) { badge.classList.add("hidden"); badge.classList.remove("flex"); }
+    if (badge) {
+      badge.classList.add("hidden");
+      badge.classList.remove("flex");
+    }
   }
+}
+
+function restoreSavedReaderSession() {
+  try {
+    const saved = localStorage.getItem("abn_reader_session");
+    if (saved) {
+      const parsed = JSON.parse(saved);
+      if (parsed && parsed.mobile && parsed.password) {
+        currentMobileReader = parsed;
+        updateReaderMobileUI(parsed);
+      }
+    }
+  } catch (e) {}
 }
 
 function recordNewsArticleView(articleKey) {
   if (!articleKey || sessionCountedViews.has(articleKey)) return;
   sessionCountedViews.add(articleKey);
   db.ref(`news_articles/${articleKey}/views`).transaction(currentViews => (currentViews || 0) + 1);
-  if (currentGoogleReader) {
-    db.ref(`news_articles/${articleKey}/viewers/${currentGoogleReader.uid}`).set({
-      uid: currentGoogleReader.uid, name: currentGoogleReader.displayName || "Google पाठक",
-      photo: currentGoogleReader.photoURL || DEFAULT_PHOTO, viewedAt: Date.now()
+  if (currentMobileReader) {
+    db.ref(`news_articles/${articleKey}/viewers/${currentMobileReader.uid}`).set({
+      uid: currentMobileReader.uid,
+      name: (currentMobileReader.name || "पाठक") + (currentMobileReader.mobile ? ` (${currentMobileReader.mobile})` : ""),
+      photo: currentMobileReader.photo || DEFAULT_PHOTO,
+      viewedAt: Date.now()
     });
   }
 }
@@ -1179,7 +1369,7 @@ function openViewersModal(articleKey, newsTitle) {
     container.innerHTML = "";
     const viewers = snap.val();
     if (!viewers) {
-      container.innerHTML = `<div class="text-center py-6 space-y-1"><i class="fa-solid fa-user-slash text-2xl text-gray-300"></i><p class="text-xs font-bold text-gray-500">अभी तक किसी Google लॉगिन पाठक ने यह खबर नहीं देखी है।</p></div>`;
+      container.innerHTML = `<div class="text-center py-6 space-y-1"><i class="fa-solid fa-user-slash text-2xl text-gray-300"></i><p class="text-xs font-bold text-gray-500">अभी तक किसी लॉगिन पाठक ने यह खबर नहीं देखी है।</p></div>`;
       return;
     }
     Object.values(viewers).sort((a,b) => (b.viewedAt || 0) - (a.viewedAt || 0)).forEach(v => {
@@ -1642,7 +1832,7 @@ document.getElementById("repPhotoFileInput").addEventListener("change",function(
   compressImage(file,400,400,0.80,b64=>{ compressedRepPhoto=b64; document.getElementById("repPhotoPreview").src=b64; document.getElementById("repPhotoPreviewBox").classList.remove("hidden"); });
 });
 
-/* ================= COMPLETE REPORTER MANAGEMENT (LIST, FULL EDIT, ID CARD, PASSWORD, DELETE) ================= */
+/* ================= COMPLETE REPORTER MANAGEMENT ================= */
 function addNewReporterByAdmin(){
   if(!isAdmin)return;
   const name=document.getElementById("repNameInput").value.trim(), raw=document.getElementById("repPhoneInput").value.trim(), pin=document.getElementById("repPinInput").value.trim(), address=document.getElementById("repAddressInput").value.trim(), payment=document.getElementById("repPaymentInput").value.trim();
@@ -1736,7 +1926,6 @@ function loadReportersForAdmin(){
   });
 }
 
-/* FULL REPORTER DETAILS EDIT MODAL HANDLERS */
 document.getElementById("editRepPhotoInput").addEventListener("change", function(e) {
   const file = e.target.files[0]; if (!file) return;
   compressImage(file, 400, 400, 0.80, b64 => {
@@ -1834,7 +2023,7 @@ function closeEditModal() { document.getElementById("editNewsModal").classList.a
 function saveEditedArticle() { db.ref("news_articles/" + document.getElementById("editArticleKey").value).update({ title: document.getElementById("editNewsTitle").value.trim(), location: document.getElementById("editNewsLocation").value.trim(), category: document.getElementById("editNewsCategory").value, videoUrl: document.getElementById("editNewsVideoUrl").value.trim(), content: document.getElementById("editNewsContent").value.trim() }).then(() => { alert("अपडेट हो गया!"); closeEditModal(); }); }
 function deleteArticleByAdmin(key) { if (isAdmin && confirm("डिलीट करना चाहते हैं?")) db.ref("news_articles/" + key).remove(); }
 
-/* ================= ZERO-CROP FULL HD DAINIK BHASKAR CARD SHARE ENGINE ================= */
+/* ================= ZERO-CROP FULL HD CARD SHARE ENGINE ================= */
 function drawWrappedCardHeadlineHD(ctx, text, x, y, maxWidth, lineHeight, maxLines) {
   const words = text.split(" ");
   let line = "";
@@ -2092,16 +2281,16 @@ function renderNewsArticlesList(articles) {
 
     let adminOnlyViewersBtn = "";
     if (isAdmin) {
-      const googleViewersArr = Object.values(item.viewers || {});
+      const readerViewersArr = Object.values(item.viewers || {});
       let viewerAvatarsHtml = "";
-      if (googleViewersArr.length > 0) {
-        const top3 = googleViewersArr.slice(0, 3);
+      if (readerViewersArr.length > 0) {
+        const top3 = readerViewersArr.slice(0, 3);
         viewerAvatarsHtml = `<div class="flex items-center -space-x-1.5 mr-1">${top3.map(v => `<img src="${v.photo || DEFAULT_PHOTO}" class="w-5 h-5 rounded-full border border-white object-cover">`).join("")}</div>`;
       }
       adminOnlyViewersBtn = `
         <button type="button" class="btnSeeViewers flex items-center gap-1 bg-blue-50 hover:bg-blue-100 text-blue-800 px-2.5 py-1 rounded-full font-bold border border-blue-200 transition">
           ${viewerAvatarsHtml}
-          <span>किसने देखा (${googleViewersArr.length})</span>
+          <span>किसने देखा (${readerViewersArr.length})</span>
         </button>
       `;
     }
@@ -2196,7 +2385,6 @@ function renderNewsArticlesList(articles) {
 function loadNewsFeed(){
   renderPublicAds();
 
-  // 1. Instant Cache Render (0.05s load time)
   try {
     const cached = localStorage.getItem("abn_cached_feed");
     if (cached) {
@@ -2204,7 +2392,6 @@ function loadNewsFeed(){
     }
   } catch (e) {}
 
-  // 2. Detach previous listener & attach fast limited query (limitToLast)
   if (activeNewsListenerRef) {
     activeNewsListenerRef.off();
   }
@@ -2213,7 +2400,6 @@ function loadNewsFeed(){
   activeNewsListenerRef.on("value", snap => {
     const articles = snap.val() || {};
     try {
-      // Cache lightweight version without huge base64 videos
       const lightCache = {};
       Object.entries(articles).slice(-12).forEach(([k, v]) => {
         lightCache[k] = { ...v, videoUrl: (v.videoUrl && v.videoUrl.startsWith("data:")) ? "" : v.videoUrl };
@@ -2263,10 +2449,7 @@ function switchTab(tab){
   if (targetBtn) { targetBtn.classList.add("border-red-700", "text-red-700"); targetBtn.classList.remove("border-transparent", "text-gray-500"); }
 }
 
-auth.onAuthStateChanged(user => {
-  if (user) { currentGoogleReader = user; updateReaderGoogleUI(user); }
-});
-
+restoreSavedReaderSession();
 loadAppDownloadLink();
 loadNewsFeed();
 loadAdminSpecialAd();
