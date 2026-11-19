@@ -1212,38 +1212,76 @@ let preparedShareTitle = "";
 let preparedShareText = "";
 let activeNewsListenerRef = null;
 
-// Scroll-based video playback controller
-let scrollVideoObserver = null;
+// Scroll-based video playback controller (Center Zone + Immediate Pause on Exit)
 let observedVideosSet = new WeakSet();
+let scrollVideoRafId = null;
 
-function initScrollVideoController() {
-  if (!("IntersectionObserver" in window)) return;
+function isVideoInCenterZone(video) {
+  if (!video || !video.isConnected) return false;
+  const style = window.getComputedStyle(video);
+  if (style.display === "none" || style.visibility === "hidden") return false;
 
-  if (!scrollVideoObserver) {
-    scrollVideoObserver = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          const video = entry.target;
-          if (!(video instanceof HTMLVideoElement)) return;
-          if (video.id === "studioLocalCamVideo") return;
+  const hiddenParent = video.closest(".hidden");
+  if (hiddenParent) return false;
 
-          const visibleEnough = entry.isIntersecting && entry.intersectionRatio >= 0.6;
-          if (visibleEnough) {
-            document.querySelectorAll("video").forEach((otherVideo) => {
-              if (otherVideo !== video && otherVideo.id !== "studioLocalCamVideo") {
-                otherVideo.pause();
-              }
-            });
-            video.play().catch(() => {});
-          } else {
-            video.pause();
-          }
-        });
-      },
-      { threshold: [0, 0.6] }
-    );
+  const rect = video.getBoundingClientRect();
+  if (rect.width === 0 || rect.height === 0) return false;
+
+  const vh = window.innerHeight || document.documentElement.clientHeight;
+  const centerTop = vh * 0.25;
+  const centerBottom = vh * 0.75;
+  const videoCenter = rect.top + rect.height / 2;
+
+  const overlapsCenter = rect.bottom > centerTop && rect.top < centerBottom;
+  const centerPointInside = videoCenter >= centerTop && videoCenter <= centerBottom;
+
+  return overlapsCenter && centerPointInside;
+}
+
+function syncVideosWithScrollPosition() {
+  const allVideos = Array.from(document.querySelectorAll("video")).filter(
+    (v) => v.id !== "studioLocalCamVideo" && v.id !== "shortsActiveVideo"
+  );
+
+  let activeCandidate = null;
+
+  for (const vid of allVideos) {
+    vid.removeAttribute("autoplay");
+    vid.playsInline = true;
+
+    if (!activeCandidate && isVideoInCenterZone(vid)) {
+      activeCandidate = vid;
+    }
   }
 
+  allVideos.forEach((vid) => {
+    if (vid === activeCandidate) {
+      if (vid.paused && vid.readyState >= 1) {
+        vid.play().catch(() => {});
+      } else if (vid.paused) {
+        vid.addEventListener("loadedmetadata", () => {
+          if (isVideoInCenterZone(vid)) {
+            vid.play().catch(() => {});
+          }
+        }, { once: true });
+      }
+    } else {
+      if (!vid.paused) {
+        vid.pause();
+      }
+    }
+  });
+}
+
+function scheduleScrollVideoSync() {
+  if (scrollVideoRafId) return;
+  scrollVideoRafId = requestAnimationFrame(() => {
+    scrollVideoRafId = null;
+    syncVideosWithScrollPosition();
+  });
+}
+
+function initScrollVideoController() {
   document.querySelectorAll("video").forEach((vid) => {
     if (vid.id === "studioLocalCamVideo") return;
     vid.removeAttribute("autoplay");
@@ -1251,10 +1289,23 @@ function initScrollVideoController() {
     if (!observedVideosSet.has(vid)) {
       observedVideosSet.add(vid);
       vid.pause();
-      scrollVideoObserver.observe(vid);
     }
   });
+
+  scheduleScrollVideoSync();
 }
+
+window.addEventListener("scroll", scheduleScrollVideoSync, { passive: true });
+window.addEventListener("resize", scheduleScrollVideoSync, { passive: true });
+document.addEventListener("visibilitychange", () => {
+  if (document.hidden) {
+    document.querySelectorAll("video").forEach((v) => {
+      if (v.id !== "studioLocalCamVideo") v.pause();
+    });
+  } else {
+    scheduleScrollVideoSync();
+  }
+});
 
 // Notification state
 let readerNewsAlerts = [];
@@ -2094,9 +2145,7 @@ function enableAudioOnFirstTouch() {
   if (audioEnabledByUser) return;
   const vid = document.getElementById("adminAutoplayVideo");
   if (vid && vid.src && !vid.src.endsWith("/")) {
-    const rect = vid.getBoundingClientRect();
-    const inView = rect.top < window.innerHeight * 0.85 && rect.bottom > window.innerHeight * 0.15;
-    if (inView) {
+    if (isVideoInCenterZone(vid)) {
       vid.muted = false;
       vid.play().then(() => { audioEnabledByUser = true; updateSoundButtonUI(true); }).catch(() => {});
     }
