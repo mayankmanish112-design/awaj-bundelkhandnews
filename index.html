@@ -41,10 +41,12 @@ body { font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif; }
 .no-scrollbar::-webkit-scrollbar { display: none; }
 .ticker-wrap { overflow: hidden; white-space: nowrap; }
 .ticker-move { display: inline-block; animation: ticker 120s linear infinite; }
-.live-ticker-move { display: inline-block; animation: liveTicker 28s linear infinite; }
+.live-ticker-move { display: inline-block; animation: liveTicker 24s linear infinite; }
+.live-headline-move { display: inline-block; animation: liveHeadline 20s linear infinite; }
 .ticker-wrap:hover .ticker-move { animation-play-state: paused; }
 @keyframes ticker { 0% { transform: translate3d(100vw, 0, 0); } 100% { transform: translate3d(-100%, 0, 0); } }
 @keyframes liveTicker { 0% { transform: translate3d(100%, 0, 0); } 100% { transform: translate3d(-100%, 0, 0); } }
+@keyframes liveHeadline { 0% { transform: translate3d(100%, 0, 0); } 100% { transform: translate3d(-100%, 0, 0); } }
 .abp-slant-box { clip-path: polygon(0 0, 100% 0, 84% 100%, 0% 100%); }
 </style>
 </head>
@@ -253,7 +255,7 @@ body { font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif; }
   <div class="border-b pb-2.5 flex justify-between items-center">
     <div>
       <h3 class="text-sm font-black text-red-700 flex items-center gap-2"><span class="w-3 h-3 rounded-full bg-red-600 animate-ping"></span> टी.वी. ब्रॉडकास्ट लाइव स्टूडियो</h3>
-      <p class="text-[10px] text-gray-500">ऑन-स्क्रीन लोगो एडिट करें और लाइव हेडलाइन व टिकर चलाएं (मुख्य समाचार में भी लाइव दिखेगा)</p>
+      <p class="text-[10px] text-gray-500">ऑन-स्क्रीन लोगो एडिट करें और लाइव हेडलाइन व टिकर चलाएं</p>
     </div>
     <button onclick="switchTab('feed')" class="text-xs font-bold text-gray-400 hover:text-black">✕ बंद करें</button>
   </div>
@@ -266,7 +268,7 @@ body { font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif; }
     </div>
 
     <div class="absolute top-2 right-2 z-30 flex flex-col items-end pointer-events-none">
-      <span id="studioTopDownloadText" class="text-[7px] font-black text-slate-900 bg-white/95 px-1 rounded-t shadow-sm tracking-tight leading-none py-0.5">download</span>
+      <span id="studioTopDownloadText" class="text-[7px] font-black text-slate-900 bg-white/95 px-1 rounded-t shadow-sm tracking-tight leading-none py-0.5">आवाज़ बुंदेलखंड</span>
       <div class="flex items-stretch shadow border border-white/80 rounded-sm overflow-hidden bg-white">
         <div class="bg-white px-1 py-0.5 flex items-center justify-center"><img id="studioTopLogoImg" src="https://cdn-icons-png.flaticon.com/512/2965/2965879.png" class="h-4 w-auto object-contain"></div>
         <div class="bg-[#C8102E] text-white font-black text-[9px] px-1.5 flex items-center tracking-wider">LIVE</div>
@@ -286,11 +288,8 @@ body { font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif; }
           </div>
           <span class="text-[#C8102E] font-black text-xs -ml-1.5 pr-0.5">»</span>
         </div>
-        <div class="flex-1 flex items-center justify-between px-1.5 bg-gradient-to-r from-white via-slate-50 to-gray-100 overflow-hidden">
-          <h2 id="studioMainHeadlineShow" class="text-[11px] sm:text-xs font-black text-slate-950 leading-none truncate">सरीला, हमीरपुर: ग्राउंड जीरो से सबसे बड़ी और सटीक लाइव कवरेज</h2>
-          <div class="hidden sm:flex flex-col items-end shrink-0 border-l pl-1.5 ml-1.5 border-gray-300">
-            <span class="text-[8px] font-black text-blue-950 leading-none">आवाज़ बुंदेलखंड</span>
-          </div>
+        <div class="ticker-wrap flex-1 flex items-center px-1.5 bg-gradient-to-r from-white via-slate-50 to-gray-100 overflow-hidden">
+          <h2 id="studioMainHeadlineShow" class="live-headline-move text-[11px] sm:text-xs font-black text-slate-950 leading-none">सरीला, हमीरपुर: ग्राउंड जीरो से सबसे बड़ी और सटीक लाइव कवरेज</h2>
         </div>
       </div>
       <div class="flex items-stretch h-4 sm:h-5 bg-white border-t border-gray-300">
@@ -325,7 +324,7 @@ body { font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif; }
     <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
       <div>
         <label class="font-bold text-gray-700">ऊपरी बैज टेक्स्ट:</label>
-        <input id="liveTopBadgeInput" oninput="syncLiveStudioInputsToPreview()" value="download" class="w-full mt-1 border rounded-lg px-3 py-2 text-xs font-bold bg-white">
+        <input id="liveTopBadgeInput" oninput="syncLiveStudioInputsToPreview()" value="आवाज़ बुंदेलखंड" class="w-full mt-1 border rounded-lg px-3 py-2 text-xs font-bold bg-white">
       </div>
       <div>
         <label class="font-bold text-gray-700">नीले बॉक्स का टेक्स्ट:</label>
@@ -333,7 +332,7 @@ body { font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif; }
       </div>
     </div>
     <div>
-      <label class="font-bold text-gray-700">मुख्य बड़ी हेडलाइन *</label>
+      <label class="font-bold text-gray-700">मुख्य बड़ी हेडलाइन (चलती हुई) *</label>
       <input id="liveMainHeadlineInput" oninput="syncLiveStudioInputsToPreview()" value="सरीला, हमीरपुर: ग्राउंड जीरो से सबसे बड़ी और सटीक लाइव कवरेज" class="w-full mt-1 border border-red-300 rounded-lg px-3 py-2 text-xs font-black bg-white">
     </div>
     <div>
@@ -375,24 +374,32 @@ body { font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif; }
   </div>
 </div>
 
-<!-- PUBLIC LIVE BROADCAST CARD IN MAIN NEWS FEED -->
-<div id="publicLiveStreamCard" class="hidden bg-slate-950 rounded-2xl overflow-hidden border-2 border-red-600 shadow-2xl">
-  <div class="bg-red-700 text-white px-3 py-1.5 flex items-center justify-between text-xs font-black">
-    <span class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full bg-white animate-ping"></span> सीधा प्रसारण (LIVE COVERAGE)</span>
-    <span class="text-[10px] bg-black/30 px-2 py-0.5 rounded-full">आवाज़ बुंदेलखंड टी.वी.</span>
+<!-- SINGLE LIVE BROADCAST CARD WITH CUSTOM TV FRAME & SHARE -->
+<div id="publicLiveStreamCard" class="hidden bg-white rounded-2xl overflow-hidden border-2 border-red-700 shadow-2xl">
+  <div class="bg-gradient-to-r from-[#8B0000] via-[#C8102E] to-[#002244] text-white px-3 py-1.5 flex items-center justify-between text-xs font-black">
+    <span class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full bg-amber-300 animate-ping"></span> आवाज़ बुंदेलखंड LIVE</span>
+    <span class="text-[10px] bg-black/35 text-amber-300 px-2 py-0.5 rounded-full border border-amber-400/40">सीधा प्रसारण</span>
   </div>
 
-  <div class="relative w-full aspect-video bg-black">
+  <div class="relative w-full aspect-video bg-slate-950 overflow-hidden border-y-2 border-[#002244]">
     <div id="publicLiveIframeBox" class="w-full h-full"></div>
+
+    <!-- Top Channel Badge -->
+    <div class="absolute top-2 left-2 z-30 flex items-center gap-1.5 bg-[#002244]/90 border border-amber-400 px-2 py-0.5 rounded-md pointer-events-none shadow">
+      <img id="publicTopLogoImg" src="https://cdn-icons-png.flaticon.com/512/2965/2965879.png" class="h-3.5 w-auto object-contain bg-white rounded-xs px-0.5">
+      <span class="text-[8px] font-black text-amber-300 tracking-wide">आवाज़ बुंदेलखंड</span>
+    </div>
+
     <div class="absolute top-2 right-2 z-30 flex flex-col items-end pointer-events-none">
-      <span id="publicTopDownloadText" class="text-[7px] font-black text-slate-900 bg-white/95 px-1 rounded-t shadow-sm tracking-tight leading-none py-0.5">download</span>
+      <span id="publicTopDownloadText" class="text-[7px] font-black text-slate-900 bg-white/95 px-1.5 rounded-t shadow-sm tracking-tight leading-none py-0.5">आवाज़ बुंदेलखंड</span>
       <div class="flex items-stretch shadow border border-white/80 rounded-sm overflow-hidden bg-white">
-        <div class="bg-white px-1 py-0.5 flex items-center justify-center"><img id="publicTopLogoImg" src="https://cdn-icons-png.flaticon.com/512/2965/2965879.png" class="h-4 w-auto object-contain"></div>
-        <div class="bg-[#C8102E] text-white font-black text-[9px] px-1.5 flex items-center tracking-wider">LIVE</div>
+        <div class="bg-[#C8102E] text-white font-black text-[9px] px-2 py-0.5 flex items-center tracking-wider">LIVE</div>
       </div>
     </div>
+
+    <!-- Bottom TV Broadcast Frame with Scrolling Headline & Ticker -->
     <div class="absolute bottom-0 left-0 right-0 z-30 flex flex-col shadow-xl pointer-events-none">
-      <div class="flex items-stretch bg-white border-t border-red-700 h-7 sm:h-8">
+      <div class="flex items-stretch bg-white border-t-2 border-red-700 h-7 sm:h-8">
         <div class="bg-gradient-to-b from-[#D90429] to-[#9B0000] text-white px-1 py-0.5 flex flex-col items-center justify-center shrink-0 w-12 sm:w-14 border-r border-white/40">
           <img id="publicBottomLogoImg" src="https://cdn-icons-png.flaticon.com/512/2965/2965879.png" class="h-3 w-auto object-contain bg-white rounded-xs px-0.5">
           <span id="publicLiveClockSmall" class="text-[8px] font-black leading-none mt-0.5">08:00</span>
@@ -404,8 +411,8 @@ body { font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif; }
           </div>
           <span class="text-[#C8102E] font-black text-xs -ml-1.5 pr-0.5">»</span>
         </div>
-        <div class="flex-1 flex items-center justify-between px-1.5 bg-gradient-to-r from-white via-slate-50 to-gray-100 overflow-hidden">
-          <h2 id="publicMainHeadlineShow" class="text-[11px] sm:text-xs font-black text-slate-950 leading-none truncate">सरीला, हमीरपुर: ग्राउंड जीरो से लाइव कवरेज</h2>
+        <div class="ticker-wrap flex-1 flex items-center px-1.5 bg-gradient-to-r from-white via-slate-50 to-gray-100 overflow-hidden">
+          <h2 id="publicMainHeadlineShow" class="live-headline-move text-[11px] sm:text-xs font-black text-slate-950 leading-none">सरीला, हमीरपुर: ग्राउंड जीरो से लाइव कवरेज</h2>
         </div>
       </div>
       <div class="flex items-stretch h-4 sm:h-5 bg-white border-t border-gray-300">
@@ -415,6 +422,14 @@ body { font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif; }
         </div>
       </div>
     </div>
+  </div>
+
+  <!-- LIVE SHARE BAR -->
+  <div class="bg-slate-900 text-white px-3 py-2 flex items-center justify-between gap-2">
+    <span class="text-[10px] text-amber-200 font-semibold truncate">यह लाइव प्रसारण दोस्तों को भेजें:</span>
+    <button type="button" onclick="shareLiveStreamToFriends()" class="bg-emerald-600 hover:bg-emerald-700 text-white font-black px-3 py-1.5 rounded-xl text-[11px] flex items-center gap-1.5 shadow shrink-0 cursor-pointer">
+      <i class="fa-brands fa-whatsapp text-sm"></i> लाइव शेयर करें
+    </button>
   </div>
 </div>
 
@@ -472,29 +487,6 @@ body { font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif; }
 <div class="flex items-center justify-between pb-2 border-b">
 <h3 class="text-sm font-bold text-gray-800 flex items-center gap-2"><span class="inline-block w-2.5 h-2.5 bg-red-600 rounded-full animate-ping"></span> मुख्य बुलेटिन व ताज़ा ख़बरें</h3>
 <span class="text-[11px] text-gray-500" id="liveTime"></span>
-</div>
-
-<!-- LIVE VIDEO STREAM INSIDE MAIN NEWS SECTION -->
-<div id="feedLiveSpotlightCard" class="hidden bg-white p-3 rounded-2xl border-2 border-red-700 shadow-md space-y-2">
-  <div class="flex items-center justify-between border-b pb-1.5">
-    <div class="flex items-center gap-2">
-      <span class="bg-red-700 text-white text-[10px] font-black px-2.5 py-0.5 rounded-full flex items-center gap-1.5">
-        <span class="w-2 h-2 rounded-full bg-white animate-ping"></span> मुख्य समाचार • LIVE वीडियो
-      </span>
-      <span id="feedLiveReporterBadge" class="text-[10px] font-bold text-slate-600"></span>
-    </div>
-    <span class="text-[10px] font-black text-red-700">सीधा प्रसारण</span>
-  </div>
-  <h2 id="feedLiveHeadlineShow" class="text-sm sm:text-base font-black text-slate-950 leading-snug"></h2>
-  <div class="relative w-full aspect-video bg-slate-950 rounded-xl overflow-hidden border border-slate-900">
-    <div id="feedLiveIframeBox" class="w-full h-full"></div>
-  </div>
-  <div class="bg-[#001428] text-amber-200 rounded-lg px-2.5 py-1 flex items-center gap-2 text-[10px] font-bold overflow-hidden">
-    <span class="bg-red-600 text-white px-1.5 py-0.5 rounded text-[9px] font-black shrink-0">LIVE अपडेट</span>
-    <div class="ticker-wrap flex-1">
-      <div id="feedLiveTickerShow" class="live-ticker-move">आवाज़ बुंदेलखंड न्यूज़ पर सीधा प्रसारण जारी है...</div>
-    </div>
-  </div>
 </div>
 
 <div id="newsFeedList" class="space-y-4">
@@ -628,7 +620,7 @@ body { font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif; }
     <i class="fa-brands fa-google-play text-blue-700"></i> शेयर कार्ड पर दिखने वाला ऐप डाउनलोड लिंक (App Download Link)
   </h4>
   <p class="text-[10px] text-slate-600">
-    जब कोई यूज़र खबर शेयर करेगा, तो HD फोटो कार्ड और WhatsApp संदेश में नीचे दिया गया लिंक छपेगा:
+    जब कोई यूज़र खबर या लाइव वीडियो शेयर करेगा, तो HD फोटो कार्ड और WhatsApp संदेश में नीचे दिया गया लिंक छपेगा:
   </p>
   <div class="flex gap-2">
     <input id="adminAppDownloadLinkInput" type="url" class="flex-1 border rounded-xl px-3 py-2 text-xs font-bold bg-white outline-none focus:border-blue-700" placeholder="https://mayankmanish112-design.github.io">
@@ -1198,6 +1190,7 @@ let isReporter = false;
 let currentMobileReader = null;
 let appDownloadUrl = "https://mayankmanish112-design.github.io";
 let currentNewsLimit = 25;
+let latestLiveBroadcastData = null;
 
 let adminPhoto = "";
 let compressedNewsImage = "";
@@ -1819,7 +1812,7 @@ setInterval(()=>{
   ["studioLiveClockSmall", "publicLiveClockSmall"].forEach(id => { const e = document.getElementById(id); if (e) e.innerText = smallTimeStr; });
 }, 1000);
 
-/* ================= LIVE TV BROADCAST ENGINE (SYNCED WITH MAIN NEWS FEED) ================= */
+/* ================= LIVE TV BROADCAST ENGINE (SINGLE CARD + SHARE) ================= */
 document.getElementById("liveLogoFileInput").addEventListener("change", function(e) {
   const file = e.target.files[0]; if (!file) return;
   compressImage(file, 300, 300, 0.85, b64 => { customLiveLogoBase64 = b64; updateLiveLogoImagesUI(b64); });
@@ -1831,7 +1824,7 @@ function updateLiveLogoImagesUI(logoSrc) {
 }
 
 function syncLiveStudioInputsToPreview() {
-  document.getElementById("studioTopDownloadText").innerText = document.getElementById("liveTopBadgeInput").value.trim() || "download";
+  document.getElementById("studioTopDownloadText").innerText = document.getElementById("liveTopBadgeInput").value.trim() || "आवाज़ बुंदेलखंड";
   document.getElementById("studioBlueTagShow").innerText = document.getElementById("liveBlueTagInput").value.trim() || "TOP NEWS";
   document.getElementById("studioMainHeadlineShow").innerText = document.getElementById("liveMainHeadlineInput").value.trim() || "आवाज़ बुंदेलखंड न्यूज़: लाइव कवरेज";
   document.getElementById("studioBottomTickerShow").innerText = document.getElementById("liveBottomTickerInput").value.trim() || "आवाज़ बुंदेलखंड न्यूज़ पर सीधा प्रसारण जारी है...";
@@ -1840,12 +1833,37 @@ function syncLiveStudioInputsToPreview() {
 function buildLiveEmbedHtml(url) {
   const ytMatch = url.match(/(?:youtu\.be\/|youtube\.com\/(?:watch\?v=|embed\/|shorts\/|live\/))([^?&/]+)/);
   if (ytMatch) {
-    return `<iframe class="w-full h-full" src="https://www.youtube.com/embed/${encodeURIComponent(ytMatch[1])}?autoplay=1&rel=0" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>`;
+    return `<iframe class="w-full h-full" src="https://www.youtube.com/embed/${encodeURIComponent(ytMatch[1])}?autoplay=1&rel=0&modestbranding=1" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>`;
   }
   if (url.includes("facebook.com")) {
     return `<iframe src="https://www.facebook.com/plugins/video.php?href=${encodeURIComponent(url)}&autoplay=true&show_text=0" class="w-full h-full" frameborder="0" allow="autoplay" allowfullscreen></iframe>`;
   }
   return `<video class="w-full h-full object-contain bg-black" autoplay controls playsinline src="${url}"></video>`;
+}
+
+function shareLiveStreamToFriends() {
+  const linkToShare = appDownloadUrl || location.href.split("#")[0];
+  const headline = (latestLiveBroadcastData && latestLiveBroadcastData.mainHeadline)
+    ? latestLiveBroadcastData.mainHeadline
+    : "आवाज़ बुंदेलखंड न्यूज़ पर सीधा प्रसारण (LIVE)";
+  const streamLink = (latestLiveBroadcastData && latestLiveBroadcastData.streamUrl)
+    ? `\n🎥 लाइव लिंक: ${latestLiveBroadcastData.streamUrl}`
+    : "";
+  const shareText = `🔴 *LIVE • आवाज़ बुंदेलखंड न्यूज़*\n*${headline}*${streamLink}\n\n📲 आवाज़ बुंदेलखंड न्यूज़ ऐप / पोर्टल:\n${linkToShare}`;
+
+  if (navigator.share) {
+    navigator.share({
+      title: "आवाज़ बुंदेलखंड न्यूज़ - LIVE",
+      text: shareText,
+      url: linkToShare
+    }).catch(err => {
+      if (err.name !== "AbortError") {
+        window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(shareText)}`, "_blank");
+      }
+    });
+  } else {
+    window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(shareText)}`, "_blank");
+  }
 }
 
 async function startLiveCamera(facingMode = 'environment') {
@@ -1866,7 +1884,7 @@ function stopLiveCamera() {
 
 function publishOrUpdateLiveStream() {
   if (!currentUserPhone || (!isAdmin && !isReporter)) return alert("पहले स्टाफ़ लॉगिन करें।");
-  const topBadge = document.getElementById("liveTopBadgeInput").value.trim() || "download";
+  const topBadge = document.getElementById("liveTopBadgeInput").value.trim() || "आवाज़ बुंदेलखंड";
   const blueTag = document.getElementById("liveBlueTagInput").value.trim() || "TOP NEWS";
   const mainHeadline = document.getElementById("liveMainHeadlineInput").value.trim();
   const bottomTicker = document.getElementById("liveBottomTickerInput").value.trim();
@@ -1893,33 +1911,21 @@ function loadPublicLiveBroadcast() {
     const data = snap.val();
     const publicCard = document.getElementById("publicLiveStreamCard");
     const iframeBox = document.getElementById("publicLiveIframeBox");
-    const feedSpotlightCard = document.getElementById("feedLiveSpotlightCard");
-    const feedIframeBox = document.getElementById("feedLiveIframeBox");
 
     if (!data || !data.isLive || !data.streamUrl) {
+      latestLiveBroadcastData = null;
       if (publicCard) publicCard.classList.add("hidden");
       if (iframeBox) { iframeBox.innerHTML = ""; iframeBox.removeAttribute("data-current-url"); }
-      if (feedSpotlightCard) feedSpotlightCard.classList.add("hidden");
-      if (feedIframeBox) { feedIframeBox.innerHTML = ""; feedIframeBox.removeAttribute("data-current-url"); }
       return;
     }
 
+    latestLiveBroadcastData = data;
     if (publicCard) publicCard.classList.remove("hidden");
     updateLiveLogoImagesUI(data.logoUrl || DEFAULT_TV_LOGO);
-    document.getElementById("publicTopDownloadText").innerText = data.topBadge || "download";
+    document.getElementById("publicTopDownloadText").innerText = data.topBadge || "आवाज़ बुंदेलखंड";
     document.getElementById("publicBlueTagShow").innerText = data.blueTag || "TOP NEWS";
     document.getElementById("publicMainHeadlineShow").innerText = data.mainHeadline || "ग्राउंड जीरो से लाइव कवरेज";
     document.getElementById("publicBottomTickerShow").innerText = data.tickerText || "आवाज़ बुंदेलखंड न्यूज़ पर सीधा प्रसारण जारी है...";
-
-    if (feedSpotlightCard) {
-      feedSpotlightCard.classList.remove("hidden");
-      const hlEl = document.getElementById("feedLiveHeadlineShow");
-      const tkEl = document.getElementById("feedLiveTickerShow");
-      const repEl = document.getElementById("feedLiveReporterBadge");
-      if (hlEl) hlEl.innerText = data.mainHeadline || "ग्राउंड जीरो से लाइव कवरेज";
-      if (tkEl) tkEl.innerText = data.tickerText || "आवाज़ बुंदेलखंड न्यूज़ पर सीधा प्रसारण जारी है...";
-      if (repEl) repEl.innerText = data.reporterName ? `• ${data.reporterName}` : "";
-    }
 
     const url = data.streamUrl;
     const embedHtml = buildLiveEmbedHtml(url);
@@ -1927,11 +1933,6 @@ function loadPublicLiveBroadcast() {
     if (iframeBox && iframeBox.getAttribute("data-current-url") !== url) {
       iframeBox.innerHTML = embedHtml;
       iframeBox.setAttribute("data-current-url", url);
-    }
-
-    if (feedIframeBox && feedIframeBox.getAttribute("data-current-url") !== url) {
-      feedIframeBox.innerHTML = embedHtml;
-      feedIframeBox.setAttribute("data-current-url", url);
     }
   });
 }
