@@ -712,7 +712,7 @@ body { font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif; }
 
 <!-- ================= MANAGE REPORTERS ================= -->
 <section id="manageReportersSection" class="hidden bg-white p-5 rounded-2xl border space-y-5">
-<h3 class="text-sm font-bold border-b pb-2"><i class="fa-solid fa-user-plus text-red-600"></i> रिपोर्टर व डिस्ट्रिक्ट हेड (Panchayat / Block / Tahseel) प्रबंधन</h3>
+<h3 class="text-sm font-bold border-b pb-2"><i class="fa-solid fa-user-plus text-red-600"></i> रिपोर्टर व डिस्ट्रिक्ट हेड (District / Tahseel / Block / Panchayat) प्रबंधन</h3>
 
 <div class="bg-red-50 border border-red-200 rounded-xl p-4 space-y-3">
 <h3 class="font-bold text-sm text-red-800">प्रधान संपादक (Admin) की फोटो और पासवर्ड</h3>
@@ -753,18 +753,22 @@ body { font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif; }
   </div>
 </div>
 
-<div class="grid grid-cols-1 sm:grid-cols-3 gap-2">
+<div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-2">
   <div>
-    <label class="text-[11px] font-bold text-blue-950 block mb-0.5">नियुक्त पंचायत (Panchayat) *</label>
-    <input id="repPanchayatInput" type="text" placeholder="उदा. ममना पंचायत" class="w-full border border-blue-300 p-2 rounded text-xs font-bold bg-white">
+    <label class="text-[11px] font-bold text-blue-950 block mb-0.5">जिला (District) *</label>
+    <input id="repDistrictInput" type="text" placeholder="उदा. हमीरपुर" class="w-full border border-blue-400 p-2 rounded text-xs font-bold bg-white">
   </div>
   <div>
-    <label class="text-[11px] font-bold text-blue-950 block mb-0.5">नियुक्त ब्लॉक (Block) *</label>
+    <label class="text-[11px] font-bold text-blue-950 block mb-0.5">तहसील (Tahseel)</label>
+    <input id="repTahseelInput" type="text" placeholder="उदा. सरीला तहसील" class="w-full border border-blue-300 p-2 rounded text-xs font-bold bg-white">
+  </div>
+  <div>
+    <label class="text-[11px] font-bold text-blue-950 block mb-0.5">ब्लॉक (Block)</label>
     <input id="repBlockInput" type="text" placeholder="उदा. सरीला ब्लॉक" class="w-full border border-blue-300 p-2 rounded text-xs font-bold bg-white">
   </div>
   <div>
-    <label class="text-[11px] font-bold text-blue-950 block mb-0.5">नियुक्त तहसील (Tahseel) *</label>
-    <input id="repTahseelInput" type="text" placeholder="उदा. सरीला तहसील" class="w-full border border-blue-300 p-2 rounded text-xs font-bold bg-white">
+    <label class="text-[11px] font-bold text-blue-950 block mb-0.5">पंचायत (Panchayat)</label>
+    <input id="repPanchayatInput" type="text" placeholder="उदा. ममना पंचायत" class="w-full border border-blue-300 p-2 rounded text-xs font-bold bg-white">
   </div>
 </div>
 
@@ -772,7 +776,7 @@ body { font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif; }
   <input id="repPinInput" type="text" placeholder="लॉगिन पासवर्ड बनाएं *" class="w-full border border-blue-400 p-2 rounded text-xs font-bold bg-white">
   <input id="repPaymentInput" type="text" placeholder="बैंक खाता या UPI ID *" class="w-full border p-2 rounded text-xs bg-white">
 </div>
-<input id="repAddressInput" type="text" placeholder="पूरा स्थायी पता / जिला *" class="w-full border p-2 rounded text-xs bg-white">
+<input id="repAddressInput" type="text" placeholder="पूरा स्थायी पता *" class="w-full border p-2 rounded text-xs bg-white">
 <div>
   <label class="text-xs font-semibold block mb-1">रिपोर्टर / डिस्ट्रिक्ट हेड की पासपोर्ट फोटो</label>
   <input type="file" id="repPhotoFileInput" accept="image/*" class="w-full text-xs border p-1.5 rounded bg-white">
@@ -928,18 +932,22 @@ body { font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif; }
       </div>
     </div>
 
-    <div class="grid grid-cols-1 sm:grid-cols-3 gap-2 text-xs">
+    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-2 text-xs">
       <div>
-        <label class="font-bold text-gray-700">पंचायत *</label>
-        <input id="editRepPanchayat" type="text" class="w-full mt-0.5 border rounded-lg p-2 font-bold">
+        <label class="font-bold text-gray-700">जिला *</label>
+        <input id="editRepDistrict" type="text" class="w-full mt-0.5 border rounded-lg p-2 font-bold">
       </div>
       <div>
-        <label class="font-bold text-gray-700">ब्लॉक *</label>
+        <label class="font-bold text-gray-700">तहसील</label>
+        <input id="editRepTahseel" type="text" class="w-full mt-0.5 border rounded-lg p-2 font-bold">
+      </div>
+      <div>
+        <label class="font-bold text-gray-700">ब्लॉक</label>
         <input id="editRepBlock" type="text" class="w-full mt-0.5 border rounded-lg p-2 font-bold">
       </div>
       <div>
-        <label class="font-bold text-gray-700">तहसील *</label>
-        <input id="editRepTahseel" type="text" class="w-full mt-0.5 border rounded-lg p-2 font-bold">
+        <label class="font-bold text-gray-700">पंचायत</label>
+        <input id="editRepPanchayat" type="text" class="w-full mt-0.5 border rounded-lg p-2 font-bold">
       </div>
     </div>
 
@@ -1474,9 +1482,10 @@ let isInitialReporterAlertLoad = true;
 let myProfile = {
 name:"संवाददाता",
 designation:"पंचायत रिपोर्टर",
-panchayat:"",
-block:"",
+district:"",
 tahseel:"",
+block:"",
+panchayat:"",
 phone:"",
 address:"बुंदेलखंड",
 paymentDetail:"दर्ज नहीं",
@@ -1516,9 +1525,10 @@ function mapDesignationValue(roleOrDesig) {
 function formatJurisdictionText(obj) {
   if (!obj) return "";
   const parts = [];
-  if (obj.panchayat) parts.push(`पंचायत: ${obj.panchayat}`);
-  if (obj.block) parts.push(`ब्लॉक: ${obj.block}`);
+  if (obj.district) parts.push(`जिला: ${obj.district}`);
   if (obj.tahseel) parts.push(`तहसील: ${obj.tahseel}`);
+  if (obj.block) parts.push(`ब्लॉक: ${obj.block}`);
+  if (obj.panchayat) parts.push(`पंचायत: ${obj.panchayat}`);
   return parts.join(" • ");
 }
 
@@ -2326,7 +2336,7 @@ function loginReporterWithPassword() {
 
 function setupAdminSession() {
   currentUserPhone = ADMIN_PHONE; isAdmin = true; isReporter = false;
-  myProfile = { name: "मयंक सिंह", designation: "Admin", panchayat: "", block: "", tahseel: "", phone: ADMIN_PHONE, address: "सरीला, हमीरपुर (उ.प्र.)", paymentDetail: "Admin Account", photo: DEFAULT_PHOTO };
+  myProfile = { name: "मयंक सिंह", designation: "Admin", district: "", tahseel: "", block: "", panchayat: "", phone: ADMIN_PHONE, address: "सरीला, हमीरपुर (उ.प्र.)", paymentDetail: "Admin Account", photo: DEFAULT_PHOTO };
   listenToReporterApprovalNotifications(null);
   db.ref("settings/adminPhoto").once("value").then(snap => {
     if (snap.exists()) { adminPhoto = snap.val(); myProfile.photo = adminPhoto; document.getElementById("adminPhotoPreview").src = adminPhoto; }
@@ -2381,7 +2391,7 @@ function openIcard(rep){
   document.getElementById("cardName").innerText = rep.name || "रिपोर्टर";
   document.getElementById("cardDesignationLabel").innerText = formatRoleLabelHindi(rep.designation || rep.role);
   document.getElementById("cardId").innerText = rep.pressId || ("ABN-RP-" + Math.floor(1000 + Math.random() * 9000));
-  const areaSummary = [rep.panchayat, rep.block, rep.tahseel].filter(Boolean).join(", ") || rep.address || "बुंदेलखंड";
+  const areaSummary = [rep.district, rep.tahseel, rep.block, rep.panchayat].filter(Boolean).join(", ") || rep.address || "बुंदेलखंड";
   document.getElementById("cardAreaText").innerText = areaSummary;
   document.getElementById("cardPhoto").src = rep.photo || DEFAULT_PHOTO;
   const qrData = encodeURIComponent(`https://awajbundelkhandnews.in/verify?id=${rep.pressId || 'ABN'}&phone=${rep.phone}&name=${rep.name}`);
@@ -2689,22 +2699,23 @@ function addNewReporterByAdmin(){
   const designation = mapDesignationValue(document.getElementById("repRoleInput").value.trim());
   const name = document.getElementById("repNameInput").value.trim();
   const raw = document.getElementById("repPhoneInput").value.trim();
-  const panchayat = document.getElementById("repPanchayatInput").value.trim();
-  const block = document.getElementById("repBlockInput").value.trim();
+  const district = document.getElementById("repDistrictInput").value.trim();
   const tahseel = document.getElementById("repTahseelInput").value.trim();
+  const block = document.getElementById("repBlockInput").value.trim();
+  const panchayat = document.getElementById("repPanchayatInput").value.trim();
   const pin = document.getElementById("repPinInput").value.trim();
   const address = document.getElementById("repAddressInput").value.trim();
   const payment = document.getElementById("repPaymentInput").value.trim();
 
-  if(!name || !/^\d{10}$/.test(raw) || !panchayat || !block || !tahseel || pin.length < 4 || !address || !payment) {
-    return alert("कृपया पद, नाम, 10 अंकों का नंबर, पंचायत, ब्लॉक, तहसील, पासवर्ड, बैंक/UPI और पता सही-सही भरें।");
+  if(!name || !/^\d{10}$/.test(raw) || !district || pin.length < 4 || !address || !payment) {
+    return alert("कृपया पद, नाम, 10 अंकों का नंबर, जिला, पासवर्ड, बैंक/UPI और पता सही-सही भरें।");
   }
 
   const phone="+91"+raw;
   db.ref("authorized_reporters").orderByChild("phone").equalTo(phone).once("value").then(existing=>{
     if(existing.exists()) return alert("यह नंबर पहले से पंजीकृत है।");
     return db.ref("authorized_reporters").push({
-      name, designation, panchayat, block, tahseel,
+      name, designation, district, tahseel, block, panchayat,
       phone, pin, address, paymentDetail: payment,
       photo: compressedRepPhoto || DEFAULT_PHOTO, status: "approved",
       pressId: "ABN-RP-" + Math.floor(1000 + Math.random() * 9000), addedAt: Date.now()
@@ -2712,7 +2723,7 @@ function addNewReporterByAdmin(){
   }).then(res=>{
     if(!res)return;
     alert(`${formatRoleLabelHindi(designation)} सफलतापूर्वक नियुक्त हो गए हैं!`);
-    ["repNameInput","repPhoneInput","repPanchayatInput","repBlockInput","repTahseelInput","repPinInput","repAddressInput","repPaymentInput"].forEach(id=>document.getElementById(id).value="");
+    ["repNameInput","repPhoneInput","repDistrictInput","repTahseelInput","repBlockInput","repPanchayatInput","repPinInput","repAddressInput","repPaymentInput"].forEach(id=>document.getElementById(id).value="");
     document.getElementById("repRoleInput").value = "District Head";
     document.getElementById("repPhotoFileInput").value="";
     document.getElementById("repPhotoPreviewBox").classList.add("hidden");
@@ -2812,9 +2823,10 @@ function openEditReporterModal(key, rep) {
   document.getElementById("editRepKey").value = key;
   document.getElementById("editRepRole").value = mapDesignationValue(rep.designation || rep.role);
   document.getElementById("editRepName").value = rep.name || "";
-  document.getElementById("editRepPanchayat").value = rep.panchayat || "";
-  document.getElementById("editRepBlock").value = rep.block || "";
+  document.getElementById("editRepDistrict").value = rep.district || "";
   document.getElementById("editRepTahseel").value = rep.tahseel || "";
+  document.getElementById("editRepBlock").value = rep.block || "";
+  document.getElementById("editRepPanchayat").value = rep.panchayat || "";
   document.getElementById("editRepPhone").value = (rep.phone || "").replace("+91", "");
   document.getElementById("editRepPin").value = rep.pin || "";
   document.getElementById("editRepPressId").value = rep.pressId || "";
@@ -2833,25 +2845,27 @@ function saveEditedReporterDetails() {
   const key = document.getElementById("editRepKey").value;
   const designation = mapDesignationValue(document.getElementById("editRepRole").value.trim());
   const name = document.getElementById("editRepName").value.trim();
-  const panchayat = document.getElementById("editRepPanchayat").value.trim();
-  const block = document.getElementById("editRepBlock").value.trim();
+  const district = document.getElementById("editRepDistrict").value.trim();
   const tahseel = document.getElementById("editRepTahseel").value.trim();
+  const block = document.getElementById("editRepBlock").value.trim();
+  const panchayat = document.getElementById("editRepPanchayat").value.trim();
   const rawPhone = document.getElementById("editRepPhone").value.trim();
   const pin = document.getElementById("editRepPin").value.trim();
   const pressId = document.getElementById("editRepPressId").value.trim();
   const payment = document.getElementById("editRepPayment").value.trim();
   const address = document.getElementById("editRepAddress").value.trim();
 
-  if (!name || !/^\d{10}$/.test(rawPhone) || !panchayat || !block || !tahseel || pin.length < 4 || !address) {
-    return alert("कृपया पद, नाम, 10 अंकों का मोबाइल नंबर, पंचायत, ब्लॉक, तहसील, कम से कम 4 अंकों का पासवर्ड और पता सही भरें।");
+  if (!name || !/^\d{10}$/.test(rawPhone) || !district || pin.length < 4 || !address) {
+    return alert("कृपया पद, नाम, 10 अंकों का मोबाइल नंबर, जिला, कम से कम 4 अंकों का पासवर्ड और पता सही भरें।");
   }
 
   const updatePayload = {
     designation: designation,
     name: name,
-    panchayat: panchayat,
-    block: block,
+    district: district,
     tahseel: tahseel,
+    block: block,
+    panchayat: panchayat,
     phone: "+91" + rawPhone,
     pin: pin,
     pressId: pressId || "ABN-RP-0425",
@@ -2885,9 +2899,10 @@ function submitArticle(){
     imageUrl: compressedNewsImage || "", videoUrl: galleryNewsVideoBase64 || normalizeFacebookUrl(document.getElementById("newsVideoUrl").value.trim()),
     isShorts: false, reporterPhone: currentUserPhone, reporterName: myProfile.name,
     reporterRole: isAdmin ? "admin" : (myProfile.designation || "Panchayat Reporter"),
-    reporterPanchayat: myProfile.panchayat || "",
-    reporterBlock: myProfile.block || "",
+    reporterDistrict: myProfile.district || "",
     reporterTahseel: myProfile.tahseel || "",
+    reporterBlock: myProfile.block || "",
+    reporterPanchayat: myProfile.panchayat || "",
     reporterAddress: myProfile.address, reporterPhoto: myProfile.photo || DEFAULT_PHOTO, timestamp: Date.now(),
     status: isAdmin?"approved":"pending", payoutAmount: 30, views: 0, likes: 0
   }).then(()=>{ alert(isAdmin?"खबर प्रकाशित हो गई!":"खबर समीक्षा हेतु भेज दी गई!"); switchTab("feed"); });
@@ -2901,9 +2916,10 @@ function submitShortsArticle() {
     title, location, category: "शॉर्ट्स रील्स", content: "आवाज़ बुंदेलखंड न्यूज़ रील।", imageUrl: "", videoUrl: finalVideo,
     isShorts: true, reporterPhone: currentUserPhone, reporterName: myProfile.name,
     reporterRole: isAdmin ? "admin" : (myProfile.designation || "Panchayat Reporter"),
-    reporterPanchayat: myProfile.panchayat || "",
-    reporterBlock: myProfile.block || "",
+    reporterDistrict: myProfile.district || "",
     reporterTahseel: myProfile.tahseel || "",
+    reporterBlock: myProfile.block || "",
+    reporterPanchayat: myProfile.panchayat || "",
     reporterAddress: myProfile.address, reporterPhoto: myProfile.photo || DEFAULT_PHOTO, timestamp: Date.now(),
     status: isAdmin ? "approved" : "pending", payoutAmount: 30, views: 0, likes: 0
   }).then(()=>{ alert("शॉर्ट वीडियो सेव हो गया!"); switchTab("feed"); });
@@ -3192,9 +3208,10 @@ function renderNewsArticlesList(articles) {
       ? "प्रधान संपादक"
       : formatRoleLabelHindi(item.reporterRole);
     const authorAreaExtra = formatJurisdictionText({
-      panchayat: item.reporterPanchayat,
+      district: item.reporterDistrict,
+      tahseel: item.reporterTahseel,
       block: item.reporterBlock,
-      tahseel: item.reporterTahseel
+      panchayat: item.reporterPanchayat
     });
 
     let adminControlButtons = isAdmin ? `
