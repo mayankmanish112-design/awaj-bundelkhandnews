@@ -737,8 +737,10 @@ body { font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif; }
   <div>
     <label class="text-[11px] font-bold text-slate-800 block mb-0.5">पद / भूमिका *</label>
     <select id="repRoleInput" class="w-full border border-blue-400 p-2 rounded text-xs font-black bg-white text-slate-900">
-      <option value="Reporter">रिपोर्टर (Reporter)</option>
       <option value="District Head">डिस्ट्रिक्ट हेड (District Head)</option>
+      <option value="Tahseel Reporter">तहसील रिपोर्टर (Tahseel Reporter)</option>
+      <option value="Block Reporter">ब्लॉक रिपोर्टर (Block Reporter)</option>
+      <option value="Panchayat Reporter">पंचायत रिपोर्टर (Panchayat Reporter)</option>
     </select>
   </div>
   <div>
@@ -914,8 +916,10 @@ body { font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif; }
       <div>
         <label class="font-bold text-gray-700">पद / भूमिका *</label>
         <select id="editRepRole" class="w-full mt-0.5 border border-blue-400 rounded-lg p-2 font-black bg-white text-slate-900">
-          <option value="Reporter">रिपोर्टर (Reporter)</option>
           <option value="District Head">डिस्ट्रिक्ट हेड (District Head)</option>
+          <option value="Tahseel Reporter">तहसील रिपोर्टर (Tahseel Reporter)</option>
+          <option value="Block Reporter">ब्लॉक रिपोर्टर (Block Reporter)</option>
+          <option value="Panchayat Reporter">पंचायत रिपोर्टर (Panchayat Reporter)</option>
         </select>
       </div>
       <div>
@@ -1187,7 +1191,7 @@ body { font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif; }
         <div class="flex flex-col items-center mt-1 space-y-1.5">
           <div class="w-24 h-28 rounded-2xl border-2 border-blue-800 overflow-hidden shadow-md bg-slate-50 p-0.5"><img id="cardPhoto" src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png" class="w-full h-full object-cover rounded-xl"></div>
           <div class="w-48 bg-[#002D62] text-white text-center py-1 rounded-xl shadow"><h4 id="cardName" class="text-sm font-black tracking-wide leading-none">मयंक सिंह</h4></div>
-          <div class="flex items-center gap-2"><span class="w-6 h-[1.5px] bg-red-600"></span><span id="cardDesignationLabel" class="text-xs font-black text-slate-900 tracking-wider">रिपोर्टर</span><span class="w-6 h-[1.5px] bg-red-600"></span></div>
+          <div class="flex items-center gap-2"><span class="w-6 h-[1.5px] bg-red-600"></span><span id="cardDesignationLabel" class="text-xs font-black text-slate-900 tracking-wider">डिस्ट्रिक्ट हेड</span><span class="w-6 h-[1.5px] bg-red-600"></span></div>
         </div>
         <div class="px-4 text-[10px] font-bold text-slate-800 space-y-0.5">
           <div class="flex justify-between"><span class="text-slate-500">ID No.</span><span>: <strong id="cardId" class="text-blue-950 font-black">ABN-RP-0425</strong></span></div>
@@ -1469,7 +1473,7 @@ let isInitialReporterAlertLoad = true;
 
 let myProfile = {
 name:"संवाददाता",
-designation:"Reporter",
+designation:"पंचायत रिपोर्टर",
 panchayat:"",
 block:"",
 tahseel:"",
@@ -1492,7 +1496,21 @@ function formatRoleLabelHindi(roleOrDesig) {
   if (val.includes("district") || val.includes("डिस्ट्रिक्ट") || val.includes("जिला")) {
     return "डिस्ट्रिक्ट हेड (District Head)";
   }
-  return "रिपोर्टर (Reporter)";
+  if (val.includes("tahseel") || val.includes("tehsil") || val.includes("तहसील")) {
+    return "तहसील रिपोर्टर (Tahseel Reporter)";
+  }
+  if (val.includes("block") || val.includes("ब्लॉक")) {
+    return "ब्लॉक रिपोर्टर (Block Reporter)";
+  }
+  return "पंचायत रिपोर्टर (Panchayat Reporter)";
+}
+
+function mapDesignationValue(roleOrDesig) {
+  const val = String(roleOrDesig || "").toLowerCase();
+  if (val.includes("district") || val.includes("डिस्ट्रिक्ट") || val.includes("जिला")) return "District Head";
+  if (val.includes("tahseel") || val.includes("tehsil") || val.includes("तहसील")) return "Tahseel Reporter";
+  if (val.includes("block") || val.includes("ब्लॉक")) return "Block Reporter";
+  return "Panchayat Reporter";
 }
 
 function formatJurisdictionText(obj) {
@@ -2668,7 +2686,7 @@ document.getElementById("repPhotoFileInput").addEventListener("change",function(
 /* ================= COMPLETE REPORTER & DISTRICT HEAD MANAGEMENT ================= */
 function addNewReporterByAdmin(){
   if(!isAdmin)return;
-  const designation = document.getElementById("repRoleInput").value.trim() || "Reporter";
+  const designation = mapDesignationValue(document.getElementById("repRoleInput").value.trim());
   const name = document.getElementById("repNameInput").value.trim();
   const raw = document.getElementById("repPhoneInput").value.trim();
   const panchayat = document.getElementById("repPanchayatInput").value.trim();
@@ -2695,7 +2713,7 @@ function addNewReporterByAdmin(){
     if(!res)return;
     alert(`${formatRoleLabelHindi(designation)} सफलतापूर्वक नियुक्त हो गए हैं!`);
     ["repNameInput","repPhoneInput","repPanchayatInput","repBlockInput","repTahseelInput","repPinInput","repAddressInput","repPaymentInput"].forEach(id=>document.getElementById(id).value="");
-    document.getElementById("repRoleInput").value = "Reporter";
+    document.getElementById("repRoleInput").value = "District Head";
     document.getElementById("repPhotoFileInput").value="";
     document.getElementById("repPhotoPreviewBox").classList.add("hidden");
     compressedRepPhoto="";
@@ -2792,8 +2810,7 @@ function openEditReporterModal(key, rep) {
   editedRepNewPhotoBase64 = "";
   document.getElementById("editRepPhotoInput").value = "";
   document.getElementById("editRepKey").value = key;
-  const roleVal = formatRoleLabelHindi(rep.designation || rep.role).includes("District Head") ? "District Head" : "Reporter";
-  document.getElementById("editRepRole").value = roleVal;
+  document.getElementById("editRepRole").value = mapDesignationValue(rep.designation || rep.role);
   document.getElementById("editRepName").value = rep.name || "";
   document.getElementById("editRepPanchayat").value = rep.panchayat || "";
   document.getElementById("editRepBlock").value = rep.block || "";
@@ -2814,7 +2831,7 @@ function closeEditReporterModal() {
 function saveEditedReporterDetails() {
   if (!isAdmin) return;
   const key = document.getElementById("editRepKey").value;
-  const designation = document.getElementById("editRepRole").value.trim() || "Reporter";
+  const designation = mapDesignationValue(document.getElementById("editRepRole").value.trim());
   const name = document.getElementById("editRepName").value.trim();
   const panchayat = document.getElementById("editRepPanchayat").value.trim();
   const block = document.getElementById("editRepBlock").value.trim();
@@ -2867,7 +2884,7 @@ function submitArticle(){
     title, location, category: document.getElementById("newsCategory").value, content,
     imageUrl: compressedNewsImage || "", videoUrl: galleryNewsVideoBase64 || normalizeFacebookUrl(document.getElementById("newsVideoUrl").value.trim()),
     isShorts: false, reporterPhone: currentUserPhone, reporterName: myProfile.name,
-    reporterRole: isAdmin ? "admin" : (myProfile.designation || "reporter"),
+    reporterRole: isAdmin ? "admin" : (myProfile.designation || "Panchayat Reporter"),
     reporterPanchayat: myProfile.panchayat || "",
     reporterBlock: myProfile.block || "",
     reporterTahseel: myProfile.tahseel || "",
@@ -2883,7 +2900,7 @@ function submitShortsArticle() {
   db.ref("news_articles").push({
     title, location, category: "शॉर्ट्स रील्स", content: "आवाज़ बुंदेलखंड न्यूज़ रील।", imageUrl: "", videoUrl: finalVideo,
     isShorts: true, reporterPhone: currentUserPhone, reporterName: myProfile.name,
-    reporterRole: isAdmin ? "admin" : (myProfile.designation || "reporter"),
+    reporterRole: isAdmin ? "admin" : (myProfile.designation || "Panchayat Reporter"),
     reporterPanchayat: myProfile.panchayat || "",
     reporterBlock: myProfile.block || "",
     reporterTahseel: myProfile.tahseel || "",
