@@ -51,7 +51,7 @@ body { font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif; }
 </style>
 </head>
 
-<body class="bg-gray-100 font-sans min-h-screen flex flex-col" onclick="enableAudioOnFirstTouch()">
+<body class="bg-gray-100 font-sans min-h-screen flex flex-col">
 
 <!-- LIVE IN-APP NOTIFICATION TOAST BANNER -->
 <div id="liveNotifToast" class="hidden fixed top-16 left-1/2 -translate-x-1/2 z-[1000009] max-w-md w-[94%] bg-slate-950 text-white border-2 border-amber-400 rounded-2xl shadow-2xl p-3 flex items-start gap-2.5">
@@ -210,7 +210,7 @@ body { font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif; }
 </div>
 <div id="uAdVideoDiv" class="hidden p-3 bg-slate-50 border rounded-xl space-y-2">
 <div>
-<label class="font-bold text-gray-700 block mb-0.5">1. गैलरी से वीडियो फ़ाइल (अधिकतम 5 मिनट / 50 MB):</label>
+<label class="font-bold text-gray-700 block mb-0.5">1. गैलरी से छोटा वीडियो (अधिकतम 5 मिनट, तेज़ अपलोड के लिए लिंक बेहतर):</label>
 <input type="file" id="uAdVideoFile" accept="video/*" class="w-full text-xs border p-1 rounded bg-white">
 <div id="uAdVideoPrevBox" class="hidden mt-2 text-center">
 <video id="uAdVideoPrevVid" controls playsinline class="max-h-40 mx-auto rounded border bg-black"></video>
@@ -564,9 +564,9 @@ body { font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif; }
 </div>
 </div>
 <div class="p-3 bg-red-50/70 border border-red-200 rounded-xl space-y-2">
-<label class="text-xs font-bold text-red-900 flex items-center gap-1.5"><i class="fa-solid fa-video text-red-600"></i> खबर का वीडियो अटैच करें (अधिकतम 5 मिनट / 50 MB)</label>
+<label class="text-xs font-bold text-red-900 flex items-center gap-1.5"><i class="fa-solid fa-video text-red-600"></i> खबर का वीडियो (5 मिनट तक — तेज़ सबमिशन के लिए YouTube/FB लिंक सबसे अच्छा)</label>
 <div>
-<label class="text-[11px] font-semibold text-gray-700 block mb-0.5">1. मोबाइल गैलरी से वीडियो चुनें (5 मिनट तक):</label>
+<label class="text-[11px] font-semibold text-gray-700 block mb-0.5">1. गैलरी से छोटा वीडियो चुनें (5 मिनट तक, डेटाबेस सीमा के अनुसार हल्का रखें):</label>
 <input type="file" id="newsVideoFileInput" accept="video/*" class="w-full text-xs border p-1 rounded bg-white">
 <div id="newsVideoPreviewContainer" class="hidden mt-2">
 <video id="newsVideoLocalPreview" controls playsinline class="w-full max-h-48 rounded-lg border bg-black"></video>
@@ -601,7 +601,7 @@ body { font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif; }
 <input id="shortLocation" class="w-full mt-1 border rounded-lg px-3 py-2 text-sm" placeholder="हमीरपुर, सरीला">
 </div>
 <div class="p-3 bg-red-50 border border-red-200 rounded-xl space-y-2">
-<label class="text-xs font-bold text-red-900 flex items-center gap-1.5"><i class="fa-solid fa-photo-film text-red-600"></i> गैलरी से शॉर्ट वीडियो अपलोड करें (अधिकतम 60 सेकंड / 50 MB)</label>
+<label class="text-xs font-bold text-red-900 flex items-center gap-1.5"><i class="fa-solid fa-photo-film text-red-600"></i> गैलरी से शॉर्ट वीडियो (60 सेकंड तक) या लिंक डालें</label>
 <input type="file" id="shortVideoFileInput" accept="video/*" class="w-full text-xs border p-1 rounded bg-white">
 <div id="shortVideoPreviewContainer" class="hidden mt-2">
 <video id="shortVideoLocalPreview" controls playsinline class="w-full max-h-48 rounded-lg border bg-black"></video>
@@ -679,7 +679,7 @@ body { font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif; }
   <input id="adminAdSubInput" class="w-full mt-0.5 border rounded-lg p-2 text-xs" placeholder="उदा. विज्ञापन देने व रिपोर्टर बनने के लिए संपर्क करें">
 </div>
 <div class="space-y-1">
-  <label class="text-[11px] font-bold text-slate-700 block">1. गैलरी से अपना वीडियो Ad चुनें (अधिकतम 5 मिनट / 50 MB):</label>
+  <label class="text-[11px] font-bold text-slate-700 block">1. गैलरी से वीडियो Ad चुनें (5 मिनट तक):</label>
   <input type="file" id="adminAdVideoFileInput" accept="video/*" class="w-full text-xs border p-1 rounded bg-white">
   <div id="adminAdVideoPreviewBox" class="hidden mt-2 text-center"><video id="adminAdVideoLocalPrev" controls playsinline class="max-h-40 mx-auto rounded border bg-black"></video></div>
 </div>
@@ -1280,8 +1280,8 @@ const DEFAULT_ADMIN_PASS = "998124";
 const DEFAULT_TV_LOGO = "https://cdn-icons-png.flaticon.com/512/2965/2965879.png";
 const PAYOUT_PER_NEWS = 30;
 
-// Video upload limits: up to 50 MB file size; Short = 60s, Long/News = 5 min (300s)
-const MAX_VIDEO_FILE_BYTES = 50 * 1024 * 1024;
+// Video limits: 60s for Shorts, 300s (5 min) for Long/News; safe inline Base64 cap so Realtime DB never hangs
+const MAX_INLINE_BASE64_BYTES = 2 * 1024 * 1024;
 const MAX_SHORT_VIDEO_SECONDS = 60;
 const MAX_LONG_VIDEO_SECONDS = 300;
 
@@ -1305,7 +1305,6 @@ let galleryShortVideoBase64 = "";
 let adminSpecialVideoBase64 = "";
 let customLiveLogoBase64 = DEFAULT_TV_LOGO;
 
-let audioEnabledByUser = false;
 let activeCamStream = null;
 let sessionCountedViews = new Set();
 let preparedShareFile = null;
@@ -1317,6 +1316,65 @@ let activeNewsListenerRef = null;
 let observedVideosSet = new WeakSet();
 let scrollVideoRafId = null;
 let scrollVideoIntervalId = null;
+
+function escapeHTML(value) {
+return String(value || "").replace(/[&<>"']/g, char => ({
+"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"
+})[char]);
+}
+
+function normalizeFacebookUrl(rawUrl) {
+  let clean = (rawUrl || "").trim();
+  if (!clean) return "";
+  if (clean.startsWith("www.") || clean.startsWith("m.facebook.com") || clean.startsWith("facebook.com")) {
+    clean = "https://" + clean;
+  }
+  return clean;
+}
+
+function getFacebookPluginEmbedUrl(rawUrl, autoplay = false) {
+  const normalized = normalizeFacebookUrl(rawUrl);
+  if (!normalized) return "";
+  const encoded = encodeURIComponent(normalized);
+  return `https://www.facebook.com/plugins/video.php?href=${encoded}&show_text=0&autoplay=${autoplay ? "true" : "false"}`;
+}
+
+function buildLiveEmbedHtml(url) {
+  const cleanUrl = normalizeFacebookUrl(url);
+  const ytMatch = cleanUrl.match(/(?:youtu\.be\/|youtube\.com\/(?:watch\?v=|embed\/|shorts\/|live\/))([^?&/]+)/);
+  if (ytMatch) {
+    const embedSrc = `https://www.youtube.com/embed/${encodeURIComponent(ytMatch[1])}?autoplay=1&rel=0&modestbranding=1`;
+    return `<iframe data-src="${embedSrc}" src="" class="w-full h-full" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>`;
+  }
+  if (cleanUrl.includes("facebook.com") || cleanUrl.includes("fb.watch")) {
+    const fbSrc = getFacebookPluginEmbedUrl(cleanUrl, true);
+    return `<iframe data-src="${fbSrc}" src="" class="w-full h-full" frameborder="0" allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share" allowfullscreen></iframe>`;
+  }
+  return `<video class="w-full h-full object-contain bg-black" controls playsinline src="${escapeHTML(cleanUrl)}"></video>`;
+}
+
+function renderUniversalMediaEmbed(url) {
+  if (!url) return '';
+  const cleanUrl = normalizeFacebookUrl(url);
+  const ytMatch = cleanUrl.match(/(?:youtu\.be\/|youtube\.com\/(?:watch\?v=|embed\/|shorts\/|live\/))([^?&/]+)/);
+  if (ytMatch) {
+    const embedSrc = `https://www.youtube.com/embed/${encodeURIComponent(ytMatch[1])}?autoplay=0&rel=0`;
+    return `<div class="w-full aspect-video rounded-xl overflow-hidden my-2 shadow bg-black"><iframe loading="lazy" data-src="${embedSrc}" src="" class="w-full h-full" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe></div>`;
+  }
+  if (cleanUrl.includes('facebook.com') || cleanUrl.includes('fb.watch')) {
+    const fbSrc = getFacebookPluginEmbedUrl(cleanUrl, false);
+    return `
+      <div class="my-2 space-y-1">
+        <div class="w-full aspect-video rounded-xl overflow-hidden shadow bg-black">
+          <iframe loading="lazy" data-src="${fbSrc}" src="" class="w-full h-full" frameborder="0" allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share" allowfullscreen></iframe>
+        </div>
+        <div class="text-right">
+          <a href="${escapeHTML(cleanUrl)}" target="_blank" rel="noopener" class="text-[10px] font-bold text-blue-700 hover:underline">Facebook पर सीधा खोलें ↗</a>
+        </div>
+      </div>`;
+  }
+  return `<div class="w-full rounded-xl overflow-hidden my-2 bg-black shadow text-center"><video preload="metadata" muted class="w-full max-h-[500px] h-auto object-contain mx-auto" controls playsinline><source src="${escapeHTML(cleanUrl)}"></video></div>`;
+}
 
 function forcePauseVideo(video) {
   if (!video || !(video instanceof HTMLVideoElement)) return;
@@ -1493,12 +1551,6 @@ photo:"https://cdn-icons-png.flaticon.com/512/3135/3135715.png"
 };
 
 const DEFAULT_PHOTO = "https://cdn-icons-png.flaticon.com/512/3135/3135715.png";
-
-function escapeHTML(value) {
-return String(value || "").replace(/[&<>"']/g, char => ({
-"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"
-})[char]);
-}
 
 function formatRoleLabelHindi(roleOrDesig) {
   const val = String(roleOrDesig || "").toLowerCase();
@@ -2106,60 +2158,6 @@ setInterval(()=>{
   ["studioLiveClockSmall", "publicLiveClockSmall"].forEach(id => { const e = document.getElementById(id); if (e) e.innerText = smallTimeStr; });
 }, 1000);
 
-/* ================= FACEBOOK / YOUTUBE / DIRECT MEDIA HELPER ================= */
-function normalizeFacebookUrl(rawUrl) {
-  let clean = (rawUrl || "").trim();
-  if (!clean) return "";
-  if (clean.startsWith("www.") || clean.startsWith("m.facebook.com") || clean.startsWith("facebook.com")) {
-    clean = "https://" + clean;
-  }
-  return clean;
-}
-
-function getFacebookPluginEmbedUrl(rawUrl, autoplay = false) {
-  const normalized = normalizeFacebookUrl(rawUrl);
-  if (!normalized) return "";
-  const encoded = encodeURIComponent(normalized);
-  return `https://www.facebook.com/plugins/video.php?href=${encoded}&show_text=0&autoplay=${autoplay ? "true" : "false"}`;
-}
-
-function buildLiveEmbedHtml(url) {
-  const cleanUrl = normalizeFacebookUrl(url);
-  const ytMatch = cleanUrl.match(/(?:youtu\.be\/|youtube\.com\/(?:watch\?v=|embed\/|shorts\/|live\/))([^?&/]+)/);
-  if (ytMatch) {
-    const embedSrc = `https://www.youtube.com/embed/${encodeURIComponent(ytMatch[1])}?autoplay=1&rel=0&modestbranding=1`;
-    return `<iframe data-src="${embedSrc}" src="" class="w-full h-full" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>`;
-  }
-  if (cleanUrl.includes("facebook.com") || cleanUrl.includes("fb.watch")) {
-    const fbSrc = getFacebookPluginEmbedUrl(cleanUrl, true);
-    return `<iframe data-src="${fbSrc}" src="" class="w-full h-full" frameborder="0" allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share" allowfullscreen></iframe>`;
-  }
-  return `<video class="w-full h-full object-contain bg-black" controls playsinline src="${escapeHTML(cleanUrl)}"></video>`;
-}
-
-function renderUniversalMediaEmbed(url) {
-  if (!url) return '';
-  const cleanUrl = normalizeFacebookUrl(url);
-  const ytMatch = cleanUrl.match(/(?:youtu\.be\/|youtube\.com\/(?:watch\?v=|embed\/|shorts\/|live\/))([^?&/]+)/);
-  if (ytMatch) {
-    const embedSrc = `https://www.youtube.com/embed/${encodeURIComponent(ytMatch[1])}?autoplay=0&rel=0`;
-    return `<div class="w-full aspect-video rounded-xl overflow-hidden my-2 shadow bg-black"><iframe loading="lazy" data-src="${embedSrc}" src="" class="w-full h-full" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe></div>`;
-  }
-  if (cleanUrl.includes('facebook.com') || cleanUrl.includes('fb.watch')) {
-    const fbSrc = getFacebookPluginEmbedUrl(cleanUrl, false);
-    return `
-      <div class="my-2 space-y-1">
-        <div class="w-full aspect-video rounded-xl overflow-hidden shadow bg-black">
-          <iframe loading="lazy" data-src="${fbSrc}" src="" class="w-full h-full" frameborder="0" allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share" allowfullscreen></iframe>
-        </div>
-        <div class="text-right">
-          <a href="${escapeHTML(cleanUrl)}" target="_blank" rel="noopener" class="text-[10px] font-bold text-blue-700 hover:underline">Facebook पर सीधा खोलें ↗</a>
-        </div>
-      </div>`;
-  }
-  return `<div class="w-full rounded-xl overflow-hidden my-2 bg-black shadow text-center"><video preload="metadata" muted class="w-full max-h-[500px] h-auto object-contain mx-auto" controls playsinline><source src="${escapeHTML(cleanUrl)}"></video></div>`;
-}
-
 /* ================= LIVE TV BROADCAST ENGINE (SINGLE CARD + SHARE) ================= */
 document.getElementById("liveLogoFileInput").addEventListener("change", function(e) {
   const file = e.target.files[0]; if (!file) return;
@@ -2399,20 +2397,9 @@ function openIcard(rep){
   document.getElementById("icardModal").classList.remove("hidden");
 }
 
-function enableAudioOnFirstTouch() {
-  if (audioEnabledByUser) return;
-  const vid = document.getElementById("adminAutoplayVideo");
-  if (vid && vid.src && !vid.src.endsWith("/")) {
-    if (isElementInCenterZone(vid)) {
-      vid.muted = false;
-      vid.play().then(() => { audioEnabledByUser = true; updateSoundButtonUI(true); }).catch(() => {});
-    }
-  }
-}
-
 function toggleAdSound() {
   const vid = document.getElementById("adminAutoplayVideo"); if (!vid) return;
-  vid.muted = !vid.muted; if (!vid.muted) vid.play().catch(() => {}); audioEnabledByUser = !vid.muted; updateSoundButtonUI(!vid.muted);
+  vid.muted = !vid.muted; if (!vid.muted) vid.play().catch(() => {}); updateSoundButtonUI(!vid.muted);
 }
 
 function updateSoundButtonUI(isAudible) {
@@ -2433,6 +2420,7 @@ function loadAdminSpecialAd() {
     if (vid && vid.src !== data.videoUrl) {
       vid.removeAttribute("autoplay");
       vid.muted = true;
+      updateSoundButtonUI(false);
       vid.src = data.videoUrl;
       vid.load();
       forcePauseVideo(vid);
@@ -2480,13 +2468,13 @@ function compressImage(file,maxWidth,maxHeight,quality,callback){
   reader.readAsDataURL(file);
 }
 
-/* ================= VIDEO FILE VALIDATION (50 MB + DURATION CHECK) ================= */
+/* ================= SAFE VIDEO VALIDATION (60s SHORT / 5m LONG + REALTIME DB SIZE GUARD) ================= */
 function processVideoFileWithLimit(file, maxDurationSec, onValid) {
   if (!file || !file.type.startsWith("video/")) {
     return alert("कृपया सही वीडियो फ़ाइल चुनें।");
   }
-  if (file.size > MAX_VIDEO_FILE_BYTES) {
-    return alert("चेतावनी: वीडियो फ़ाइल 50 MB से बड़ी है। कृपया 50 MB से छोटा वीडियो चुनें या लिंक डालें।");
+  if (file.size > MAX_INLINE_BASE64_BYTES) {
+    return alert("बड़ा वीडियो सीधे डेटाबेस में भेजने पर ऐप धीमा या अटक सकता है। कृपया 5 मिनट तक का वीडियो YouTube/Facebook या वेब लिंक के ज़रिये डालें, या बहुत छोटा क्लिप चुनें।");
   }
 
   const tempUrl = URL.createObjectURL(file);
@@ -2612,6 +2600,7 @@ function submitUserAd() {
     receiptPhoto: userAdReceiptBase64, photo: userAdPhotoBase64 || "", videoUrl: finalVideo || "",
     actionLink: document.getElementById("uAdLink").value.trim() || "", status: "pending", timestamp: Date.now()
   }).then(() => { alert("धन्यवाद! आपका विज्ञापन एडमिन के पास पहुंच गया है।"); closeUserAdSection(); switchTab("feed"); })
+  .catch(err => alert("सबमिट करने में त्रुटि: " + err.message))
   .finally(() => { btn.disabled = false; btn.innerText = "विज्ञापन और स्क्रीनशॉट सबमिट करें"; });
 }
 
@@ -2890,10 +2879,37 @@ function closeRepPassModal() { document.getElementById("updateRepPasswordModal")
 function saveUpdatedRepPassword() { const newPass = document.getElementById("newRepPasswordInput").value.trim(); if (newPass.length < 4) return alert("कम से कम 4 अंकों का पासवर्ड लिखें।"); db.ref("authorized_reporters/" + document.getElementById("editRepPassKey").value).update({ pin: newPass }).then(() => { alert("पासवर्ड अपडेट हो गया!"); closeRepPassModal(); }); }
 function deleteReporter(key){ if(isAdmin && confirm("क्या आप वाकई इस रिपोर्टर को हटाना चाहते हैं?")) db.ref("authorized_reporters/"+key).remove(); }
 
+function resetNewsFormInputs() {
+  ["newsTitle", "newsLocation", "newsImageFileInput", "newsVideoFileInput", "newsVideoUrl", "newsContent"].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.value = "";
+  });
+  compressedNewsImage = "";
+  galleryNewsVideoBase64 = "";
+  const imgBox = document.getElementById("imagePreviewContainer");
+  const vidBox = document.getElementById("newsVideoPreviewContainer");
+  if (imgBox) imgBox.classList.add("hidden");
+  if (vidBox) vidBox.classList.add("hidden");
+}
+
+function resetShortsFormInputs() {
+  ["shortTitle", "shortLocation", "shortVideoFileInput", "shortVideoUrl"].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.value = "";
+  });
+  galleryShortVideoBase64 = "";
+  const vidBox = document.getElementById("shortVideoPreviewContainer");
+  if (vidBox) vidBox.classList.add("hidden");
+}
+
 function submitArticle(){
   if(!currentUserPhone) return alert("पहले लॉगिन करें।");
   const title=document.getElementById("newsTitle").value.trim(), location=document.getElementById("newsLocation").value.trim(), content=document.getElementById("newsContent").value.trim();
   if(!title || !location || !content) return alert("सभी जानकारी भरें।");
+
+  const btn = document.getElementById("btnSubmitNews");
+  if (btn) { btn.disabled = true; btn.innerText = "भेजा जा रहा है..."; }
+
   db.ref("news_articles").push({
     title, location, category: document.getElementById("newsCategory").value, content,
     imageUrl: compressedNewsImage || "", videoUrl: galleryNewsVideoBase64 || normalizeFacebookUrl(document.getElementById("newsVideoUrl").value.trim()),
@@ -2904,14 +2920,23 @@ function submitArticle(){
     reporterBlock: myProfile.block || "",
     reporterPanchayat: myProfile.panchayat || "",
     reporterAddress: myProfile.address, reporterPhoto: myProfile.photo || DEFAULT_PHOTO, timestamp: Date.now(),
-    status: isAdmin?"approved":"pending", payoutAmount: 30, views: 0, likes: 0
-  }).then(()=>{ alert(isAdmin?"खबर प्रकाशित हो गई!":"खबर समीक्षा हेतु भेज दी गई!"); switchTab("feed"); });
+    status: isAdmin?"approved":"pending", payoutAmount: PAYOUT_PER_NEWS, views: 0, likes: 0
+  }).then(()=>{
+    resetNewsFormInputs();
+    alert(isAdmin?"खबर प्रकाशित हो गई!":"खबर समीक्षा हेतु भेज दी गई!");
+    switchTab("feed");
+  }).catch(err => alert("खबर भेजने में त्रुटि: " + err.message))
+  .finally(() => { if (btn) { btn.disabled = false; btn.innerText = "समीक्षा हेतु भेजें"; } });
 }
 
 function submitShortsArticle() {
   if(!currentUserPhone) return alert("पहले लॉगिन करें।");
   const title = document.getElementById("shortTitle").value.trim(), location = document.getElementById("shortLocation").value.trim(), finalVideo = galleryShortVideoBase64 || normalizeFacebookUrl(document.getElementById("shortVideoUrl").value.trim());
   if(!title || !location || !finalVideo) return alert("सभी जानकारी भरें।");
+
+  const btn = document.getElementById("btnSubmitShorts");
+  if (btn) { btn.disabled = true; btn.innerText = "भेजा जा रहा है..."; }
+
   db.ref("news_articles").push({
     title, location, category: "शॉर्ट्स रील्स", content: "आवाज़ बुंदेलखंड न्यूज़ रील।", imageUrl: "", videoUrl: finalVideo,
     isShorts: true, reporterPhone: currentUserPhone, reporterName: myProfile.name,
@@ -2921,8 +2946,13 @@ function submitShortsArticle() {
     reporterBlock: myProfile.block || "",
     reporterPanchayat: myProfile.panchayat || "",
     reporterAddress: myProfile.address, reporterPhoto: myProfile.photo || DEFAULT_PHOTO, timestamp: Date.now(),
-    status: isAdmin ? "approved" : "pending", payoutAmount: 30, views: 0, likes: 0
-  }).then(()=>{ alert("शॉर्ट वीडियो सेव हो गया!"); switchTab("feed"); });
+    status: isAdmin ? "approved" : "pending", payoutAmount: PAYOUT_PER_NEWS, views: 0, likes: 0
+  }).then(()=>{
+    resetShortsFormInputs();
+    alert("शॉर्ट वीडियो सेव हो गया!");
+    switchTab("feed");
+  }).catch(err => alert("शॉर्ट वीडियो भेजने में त्रुटि: " + err.message))
+  .finally(() => { if (btn) { btn.disabled = false; btn.innerText = "शॉर्ट वीडियो प्रकाशित हेतु भेजें"; } });
 }
 
 function openEditArticleModal(key, title, location, category, videoUrl, content) { document.getElementById("editArticleKey").value = key; document.getElementById("editNewsTitle").value = title; document.getElementById("editNewsLocation").value = location; document.getElementById("editNewsCategory").value = category; document.getElementById("editNewsVideoUrl").value = videoUrl || ""; document.getElementById("editNewsContent").value = content; document.getElementById("editNewsModal").classList.remove("hidden"); }
@@ -3355,7 +3385,7 @@ function loadReporterWallet(){
   document.getElementById("dispReporterPayment").innerText=myProfile.paymentDetail || "दर्ज नहीं";
   db.ref("news_articles").orderByChild("reporterPhone").equalTo(currentUserPhone).on("value",snap=>{
     let count=0; Object.values(snap.val() || {}).forEach(item=>{ if(item.status==="approved")count++; });
-    document.getElementById("reporterApprovedCount").innerText=count; document.getElementById("reporterBalance").innerText=count*30;
+    document.getElementById("reporterApprovedCount").innerText=count; document.getElementById("reporterBalance").innerText=count*PAYOUT_PER_NEWS;
   });
 }
 
