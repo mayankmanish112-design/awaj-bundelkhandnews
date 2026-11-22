@@ -12,8 +12,6 @@
 <meta property="og:image" content="https://awajbundelkhandnews.in/assets/logo.png">
 <meta property="og:url" content="https://mayankmanish112-design.github.io">
 
-<link rel="preconnect" href="https://cdn.tailwindcss.com">
-<link rel="preconnect" href="https://www.gstatic.com">
 <script src="https://cdn.tailwindcss.com"></script>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
@@ -210,7 +208,7 @@ body { font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif; }
 </div>
 <div id="uAdVideoDiv" class="hidden p-3 bg-slate-50 border rounded-xl space-y-2">
 <div>
-<label class="font-bold text-gray-700 block mb-0.5">1. गैलरी से वीडियो (5 मिनट तक, अधिकतम 25 MB):</label>
+<label class="font-bold text-gray-700 block mb-0.5">1. गैलरी से वीडियो (अधिकतम 30 सेकंड):</label>
 <input type="file" id="uAdVideoFile" accept="video/*" class="w-full text-xs border p-1 rounded bg-white">
 <div id="uAdVideoPrevBox" class="hidden mt-2 text-center">
 <video id="uAdVideoPrevVid" controls playsinline class="max-h-40 mx-auto rounded border bg-black"></video>
@@ -505,10 +503,10 @@ body { font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif; }
   </div>
 </div>
 
-<!-- 60 SECONDS SHORTS BAR -->
+<!-- 30 SECONDS SHORTS BAR -->
 <div class="bg-white p-3 rounded-2xl border shadow-sm space-y-2">
 <div class="flex items-center justify-between">
-<span class="text-xs font-black text-gray-800 flex items-center gap-1.5"><i class="fa-solid fa-bolt text-amber-500"></i> बुंदेलखंड शॉर्ट्स (60 Sec रील्स)</span>
+<span class="text-xs font-black text-gray-800 flex items-center gap-1.5"><i class="fa-solid fa-bolt text-amber-500"></i> बुंदेलखंड शॉर्ट्स (30 Sec रील्स)</span>
 <span class="text-[9px] bg-red-100 text-red-700 font-extrabold px-1.5 py-0.5 rounded">लाइव बुलेटिन</span>
 </div>
 <div id="shortsBarContainer" class="flex gap-2.5 overflow-x-auto no-scrollbar py-1">
@@ -564,9 +562,9 @@ body { font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif; }
 </div>
 </div>
 <div class="p-3 bg-red-50/70 border border-red-200 rounded-xl space-y-2">
-<label class="text-xs font-bold text-red-900 flex items-center gap-1.5"><i class="fa-solid fa-video text-red-600"></i> खबर का वीडियो (5 मिनट तक, अधिकतम 25 MB — तेज़ सबमिशन के लिए YouTube/FB लिंक बेहतर)</label>
+<label class="text-xs font-bold text-red-900 flex items-center gap-1.5"><i class="fa-solid fa-video text-red-600"></i> खबर का वीडियो (अधिकतम 30 सेकंड — तेज़ सबमिशन के लिए लिंक भी डाल सकते हैं)</label>
 <div>
-<label class="text-[11px] font-semibold text-gray-700 block mb-0.5">1. गैलरी से वीडियो चुनें (5 मिनट तक, 25 MB तक):</label>
+<label class="text-[11px] font-semibold text-gray-700 block mb-0.5">1. गैलरी से वीडियो चुनें (30 सेकंड तक):</label>
 <input type="file" id="newsVideoFileInput" accept="video/*" class="w-full text-xs border p-1 rounded bg-white">
 <div id="newsVideoPreviewContainer" class="hidden mt-2">
 <video id="newsVideoLocalPreview" controls playsinline class="w-full max-h-48 rounded-lg border bg-black"></video>
@@ -589,8 +587,8 @@ body { font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif; }
 <!-- SHORT VIDEO POST SECTION -->
 <section id="shortsPostSection" class="hidden bg-white p-5 rounded-2xl shadow border space-y-3">
 <div class="border-b pb-2 flex justify-between items-center">
-<h3 class="text-sm font-bold text-gray-900 flex items-center gap-1.5"><i class="fa-solid fa-bolt text-amber-500"></i> नया शॉर्ट वीडियो (60s रील) दर्ज करें</h3>
-<span class="text-[10px] bg-amber-100 text-amber-800 px-2 py-0.5 rounded font-bold">अधिकतम 60 सेकंड</span>
+<h3 class="text-sm font-bold text-gray-900 flex items-center gap-1.5"><i class="fa-solid fa-bolt text-amber-500"></i> नया शॉर्ट वीडियो (30s रील) दर्ज करें</h3>
+<span class="text-[10px] bg-amber-100 text-amber-800 px-2 py-0.5 rounded font-bold">अधिकतम 30 सेकंड</span>
 </div>
 <div>
 <label class="text-xs font-semibold">शॉर्ट्स का शीर्षक *</label>
@@ -601,7 +599,7 @@ body { font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif; }
 <input id="shortLocation" class="w-full mt-1 border rounded-lg px-3 py-2 text-sm" placeholder="हमीरपुर, सरीला">
 </div>
 <div class="p-3 bg-red-50 border border-red-200 rounded-xl space-y-2">
-<label class="text-xs font-bold text-red-900 flex items-center gap-1.5"><i class="fa-solid fa-photo-film text-red-600"></i> गैलरी से शॉर्ट वीडियो (60 सेकंड तक, 25 MB तक) या लिंक डालें</label>
+<label class="text-xs font-bold text-red-900 flex items-center gap-1.5"><i class="fa-solid fa-photo-film text-red-600"></i> गैलरी से शॉर्ट वीडियो (30 सेकंड तक) या लिंक डालें</label>
 <input type="file" id="shortVideoFileInput" accept="video/*" class="w-full text-xs border p-1 rounded bg-white">
 <div id="shortVideoPreviewContainer" class="hidden mt-2">
 <video id="shortVideoLocalPreview" controls playsinline class="w-full max-h-48 rounded-lg border bg-black"></video>
@@ -679,7 +677,7 @@ body { font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif; }
   <input id="adminAdSubInput" class="w-full mt-0.5 border rounded-lg p-2 text-xs" placeholder="उदा. विज्ञापन देने व रिपोर्टर बनने के लिए संपर्क करें">
 </div>
 <div class="space-y-1">
-  <label class="text-[11px] font-bold text-slate-700 block">1. गैलरी से वीडियो Ad चुनें (5 मिनट तक, 25 MB तक):</label>
+  <label class="text-[11px] font-bold text-slate-700 block">1. गैलरी से वीडियो Ad चुनें (30 सेकंड तक):</label>
   <input type="file" id="adminAdVideoFileInput" accept="video/*" class="w-full text-xs border p-1 rounded bg-white">
   <div id="adminAdVideoPreviewBox" class="hidden mt-2 text-center"><video id="adminAdVideoLocalPrev" controls playsinline class="max-h-40 mx-auto rounded border bg-black"></video></div>
 </div>
@@ -1240,10 +1238,10 @@ body { font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif; }
   </div>
 </div>
 
-<!-- FULLSCREEN 60s SHORTS MODAL -->
+<!-- FULLSCREEN 30s SHORTS MODAL -->
 <div id="shortsModal" class="fixed inset-0 z-[9999999] bg-black hidden flex flex-col justify-between">
 <div class="p-3 flex items-center justify-between text-white z-20 bg-gradient-to-b from-black/80 to-transparent">
-<span class="text-xs font-bold text-amber-400 flex items-center gap-1.5"><i class="fa-solid fa-bolt text-red-500"></i> AB शॉर्ट्स (अधिकतम 60 सेकंड)</span>
+<span class="text-xs font-bold text-amber-400 flex items-center gap-1.5"><i class="fa-solid fa-bolt text-red-500"></i> AB शॉर्ट्स (अधिकतम 30 सेकंड)</span>
 <button onclick="closeShortsModal()" class="w-8 h-8 rounded-full bg-white/20 flex items-center justify-center text-white text-sm">✕</button>
 </div>
 <div class="relative flex-1 flex items-center justify-center bg-black overflow-hidden" id="shortsPlayerContainer"></div>
@@ -1280,17 +1278,16 @@ const DEFAULT_ADMIN_PASS = "998124";
 const DEFAULT_TV_LOGO = "https://cdn-icons-png.flaticon.com/512/2965/2965879.png";
 const PAYOUT_PER_NEWS = 30;
 
-// शॉर्ट/लॉन्ग गैलरी वीडियो सीमा: अधिकतम 25 MB (60s शॉर्ट / 5m लॉन्ग)
-const MAX_INLINE_BASE64_BYTES = 25 * 1024 * 1024;
-const MAX_SHORT_VIDEO_SECONDS = 60;
-const MAX_LONG_VIDEO_SECONDS = 300;
+// वीडियो सीमा: अधिकतम 30 सेकंड और सुरक्षित Base64 आकार ताकि ऐप तेज़ चले
+const MAX_INLINE_BASE64_BYTES = 6 * 1024 * 1024;
+const MAX_VIDEO_SECONDS = 30;
 
 let currentUserPhone = null;
 let isAdmin = false;
 let isReporter = false;
 let currentMobileReader = null;
 let appDownloadUrl = "https://mayankmanish112-design.github.io";
-let currentNewsLimit = 25;
+let currentNewsLimit = 20;
 let latestLiveBroadcastData = null;
 
 let adminPhoto = "";
@@ -1514,7 +1511,7 @@ function initScrollVideoController() {
   if (!scrollVideoIntervalId) {
     scrollVideoIntervalId = setInterval(() => {
       syncVideosWithScrollPosition();
-    }, 300);
+    }, 350);
   }
 }
 
@@ -1593,12 +1590,12 @@ function formatJurisdictionText(obj) {
 }
 
 function loadAppDownloadLink() {
-  db.ref("settings/appDownloadLink").on("value", snap => {
+  db.ref("settings/appDownloadLink").once("value").then(snap => {
     if (snap.exists() && snap.val()) appDownloadUrl = snap.val();
     else appDownloadUrl = location.href.split("#")[0];
     const inp = document.getElementById("adminAppDownloadLinkInput");
     if (inp) inp.value = appDownloadUrl;
-  });
+  }).catch(() => {});
 }
 
 function saveAppDownloadLink() {
@@ -1765,4 +1762,1639 @@ function refreshNotificationBadge() {
 }
 
 function openNotificationsModal() {
-  markAllNotifications
+  markAllNotificationsRead();
+  renderNotificationsListModal();
+  document.getElementById("notificationsModal").classList.remove("hidden");
+}
+
+function closeNotificationsModal() {
+  document.getElementById("notificationsModal").classList.add("hidden");
+}
+
+function renderNotificationsListModal() {
+  const container = document.getElementById("notificationsListContainer");
+  if (!container) return;
+  container.innerHTML = "";
+
+  const combined = [];
+
+  if (isReporter && currentUserPhone) {
+    reporterApprovalAlerts.forEach(item => {
+      combined.push({ ...item, sourceType: "reporter_approval" });
+    });
+  }
+
+  readerNewsAlerts.forEach(item => {
+    combined.push({ ...item, sourceType: "news" });
+  });
+
+  combined.sort((a, b) => (b.timestamp || 0) - (a.timestamp || 0));
+
+  if (combined.length === 0) {
+    container.innerHTML = "<p class='text-xs text-gray-400 text-center py-6'>अभी कोई नई सूचना उपलब्ध नहीं है।</p>";
+    return;
+  }
+
+  combined.forEach(item => {
+    const row = document.createElement("div");
+    const isApproval = item.sourceType === "reporter_approval";
+    row.className = isApproval
+      ? "p-3 rounded-2xl border border-emerald-300 bg-emerald-50/70 space-y-1 cursor-pointer hover:bg-emerald-50 transition"
+      : "p-3 rounded-2xl border border-slate-200 bg-slate-50 space-y-1 cursor-pointer hover:bg-red-50/40 transition";
+
+    row.innerHTML = `
+      <div class="flex items-center justify-between gap-2">
+        <span class="text-[9px] font-black px-2 py-0.5 rounded-full ${isApproval ? 'bg-emerald-700 text-white' : 'bg-red-700 text-white'}">
+          ${isApproval ? 'खबर स्वीकृत (Approved)' : 'नई खबर अलर्ट'}
+        </span>
+        <span class="text-[9px] text-gray-500 font-semibold">${formatNewsDateTime(item.timestamp)}</span>
+      </div>
+      <p class="text-xs font-black text-slate-900 leading-snug">${escapeHTML(item.title)}</p>
+      <p class="text-[10px] text-gray-600">${escapeHTML(item.sub || "")}</p>
+    `;
+
+    row.onclick = () => {
+      closeNotificationsModal();
+      switchTab("feed");
+      if (item.articleId) scrollToArticleCard(item.articleId);
+    };
+
+    container.appendChild(row);
+  });
+}
+
+function listenToPublishedNewsNotifications() {
+  db.ref("news_articles").orderByChild("status").equalTo("approved").limitToLast(15).on("value", snap => {
+    const val = snap.val() || {};
+    const list = [];
+
+    Object.entries(val).forEach(([key, article]) => {
+      list.push({
+        id: "news_" + key,
+        articleId: key,
+        title: article.title || "नई खबर प्रकाशित",
+        sub: `${article.location || "बुंदेलखंड"} • ${article.reporterName || "आवाज़ बुंदेलखंड"}`,
+        timestamp: article.timestamp || Date.now()
+      });
+    });
+
+    list.sort((a, b) => (b.timestamp || 0) - (a.timestamp || 0));
+    readerNewsAlerts = list.slice(0, 15);
+
+    if (!isInitialNewsAlertLoad) {
+      readerNewsAlerts.forEach(item => {
+        if (!seenNewsAlertKeys.has(item.id)) {
+          seenNewsAlertKeys.add(item.id);
+          playAlertBeep();
+          showInAppToast({
+            type: "news",
+            articleId: item.articleId,
+            badge: "नई खबर • पढ़ें",
+            title: item.title,
+            sub: item.sub
+          });
+          triggerSystemBrowserNotification("आवाज़ बुंदेलखंड न्यूज़", item.title);
+        }
+      });
+    } else {
+      readerNewsAlerts.forEach(item => seenNewsAlertKeys.add(item.id));
+      isInitialNewsAlertLoad = false;
+    }
+
+    refreshNotificationBadge();
+  });
+}
+
+function sendApprovalNotificationToReporter(reporterPhone, articleTitle, articleId) {
+  if (!reporterPhone) return;
+  const safePhoneKey = reporterPhone.replace(/[^0-9]/g, "");
+  if (!safePhoneKey) return;
+
+  db.ref("reporter_notifications/" + safePhoneKey).push({
+    articleId: articleId || "",
+    title: "आपकी खबर ADMIN द्वारा स्वीकृत कर दी गई है!",
+    sub: `खबर: ${articleTitle || ""} (+₹30 मानदेय पात्र)`,
+    timestamp: Date.now()
+  });
+}
+
+function listenToReporterApprovalNotifications(phoneWithCode) {
+  if (reporterNotifRef) {
+    reporterNotifRef.off();
+    reporterNotifRef = null;
+  }
+  reporterApprovalAlerts = [];
+  seenReporterAlertKeys = new Set();
+  isInitialReporterAlertLoad = true;
+
+  if (!phoneWithCode) {
+    refreshNotificationBadge();
+    return;
+  }
+
+  const safePhoneKey = phoneWithCode.replace(/[^0-9]/g, "");
+  reporterNotifRef = db.ref("reporter_notifications/" + safePhoneKey).limitToLast(15);
+  reporterNotifRef.on("value", snap => {
+    const val = snap.val() || {};
+    const list = [];
+
+    Object.entries(val).forEach(([key, item]) => {
+      list.push({
+        id: "rep_app_" + key,
+        articleId: item.articleId || "",
+        title: item.title || "खबर स्वीकृत हुई",
+        sub: item.sub || "",
+        timestamp: item.timestamp || Date.now()
+      });
+    });
+
+    list.sort((a, b) => (b.timestamp || 0) - (a.timestamp || 0));
+    reporterApprovalAlerts = list;
+
+    if (!isInitialReporterAlertLoad) {
+      reporterApprovalAlerts.forEach(item => {
+        if (!seenReporterAlertKeys.has(item.id)) {
+          seenReporterAlertKeys.add(item.id);
+          playAlertBeep();
+          showInAppToast({
+            type: "reporter_approval",
+            articleId: item.articleId,
+            badge: "ADMIN स्वीकृति",
+            title: item.title,
+            sub: item.sub
+          });
+          triggerSystemBrowserNotification("खबर स्वीकृत (Approved)", item.sub || item.title);
+        }
+      });
+    } else {
+      reporterApprovalAlerts.forEach(item => seenReporterAlertKeys.add(item.id));
+      isInitialReporterAlertLoad = false;
+    }
+
+    refreshNotificationBadge();
+  });
+}
+
+/* ================= READER MOBILE + PASSWORD LOGIN & REGISTER ================= */
+function openReaderAuthModal(mode = 'login') {
+  const modal = document.getElementById("readerAuthModal");
+  if (!modal) return;
+  modal.classList.remove("hidden");
+  modal.style.display = "flex";
+  switchReaderAuthTab(mode);
+}
+
+function closeReaderAuthModal() {
+  const modal = document.getElementById("readerAuthModal");
+  if (!modal) return;
+  modal.classList.add("hidden");
+  modal.style.display = "none";
+}
+
+function switchReaderAuthTab(mode) {
+  const loginBox = document.getElementById("readerLoginBox");
+  const regBox = document.getElementById("readerRegisterBox");
+  const btnLogin = document.getElementById("btnSwitchReaderLogin");
+  const btnReg = document.getElementById("btnSwitchReaderRegister");
+
+  if (!loginBox || !regBox || !btnLogin || !btnReg) return;
+
+  if (mode === "register") {
+    loginBox.classList.add("hidden");
+    regBox.classList.remove("hidden");
+    btnReg.className = "py-2 rounded-xl text-xs font-black bg-emerald-600 text-white shadow transition cursor-pointer";
+    btnLogin.className = "py-2 rounded-xl text-xs font-black text-gray-600 hover:text-slate-900 transition cursor-pointer";
+  } else {
+    regBox.classList.add("hidden");
+    loginBox.classList.remove("hidden");
+    btnLogin.className = "py-2 rounded-xl text-xs font-black bg-red-700 text-white shadow transition cursor-pointer";
+    btnReg.className = "py-2 rounded-xl text-xs font-black text-gray-600 hover:text-slate-900 transition cursor-pointer";
+  }
+}
+
+function registerReaderWithMobilePassword() {
+  const name = document.getElementById("readerRegName").value.trim();
+  const rawMobile = document.getElementById("readerRegMobile").value.trim();
+  const password = document.getElementById("readerRegPassword").value.trim();
+
+  if (!name || !/^\d{10}$/.test(rawMobile) || password.length < 4) {
+    return alert("कृपया पूरा नाम, 10 अंकों का सही मोबाइल नंबर और कम से कम 4 अक्षरों का पासवर्ड डालें!");
+  }
+
+  const fullPhone = "+91" + rawMobile;
+  const userKey = "91" + rawMobile;
+  const readerRef = db.ref("reader_accounts/" + userKey);
+
+  readerRef.once("value").then(snap => {
+    if (snap.exists()) {
+      alert("यह मोबाइल नंबर पहले से रजिस्टर है! कृपया लॉगिन करें।");
+      document.getElementById("readerLoginMobile").value = rawMobile;
+      switchReaderAuthTab("login");
+      return;
+    }
+
+    const newReader = {
+      uid: "reader_" + userKey,
+      name: name,
+      mobile: rawMobile,
+      phone: fullPhone,
+      password: password,
+      photo: DEFAULT_PHOTO,
+      createdAt: Date.now()
+    };
+
+    return readerRef.set(newReader).then(() => {
+      currentMobileReader = newReader;
+      localStorage.setItem("abn_reader_session", JSON.stringify(newReader));
+      updateReaderMobileUI(newReader);
+      closeReaderAuthModal();
+      document.getElementById("readerRegName").value = "";
+      document.getElementById("readerRegMobile").value = "";
+      document.getElementById("readerRegPassword").value = "";
+      alert(`रजिस्ट्रेशन सफल रहा! स्वागत है, ${name} जी।`);
+      loadNewsFeed();
+    });
+  }).catch(err => alert("रजिस्ट्रेशन में त्रुटि: " + err.message));
+}
+
+function loginReaderWithMobilePassword() {
+  const rawMobile = document.getElementById("readerLoginMobile").value.trim();
+  const password = document.getElementById("readerLoginPassword").value.trim();
+
+  if (!/^\d{10}$/.test(rawMobile) || !password) {
+    return alert("कृपया 10 अंकों का मोबाइल नंबर और पासवर्ड डालें!");
+  }
+
+  const userKey = "91" + rawMobile;
+  db.ref("reader_accounts/" + userKey).once("value").then(snap => {
+    if (!snap.exists()) {
+      return alert("यह मोबाइल नंबर रजिस्टर नहीं है। कृपया पहले 'नया रजिस्टर' करें।");
+    }
+
+    const readerData = snap.val();
+    if (String(readerData.password) !== password) {
+      return alert("गलत पासवर्ड! कृपया सही पासवर्ड डालें।");
+    }
+
+    currentMobileReader = readerData;
+    localStorage.setItem("abn_reader_session", JSON.stringify(readerData));
+    updateReaderMobileUI(readerData);
+    closeReaderAuthModal();
+    document.getElementById("readerLoginMobile").value = "";
+    document.getElementById("readerLoginPassword").value = "";
+    alert(`स्वागत है ${readerData.name} जी!`);
+    loadNewsFeed();
+  }).catch(err => alert("लॉगिन में त्रुटि: " + err.message));
+}
+
+function logoutReaderMobile() {
+  localStorage.removeItem("abn_reader_session");
+  currentMobileReader = null;
+  updateReaderMobileUI(null);
+}
+
+function updateReaderMobileUI(reader) {
+  const btn = document.getElementById("btnReaderMobileLogin");
+  const badge = document.getElementById("readerMobileBadge");
+  const banner = document.getElementById("readerMobileBanner");
+
+  if (reader) {
+    if (btn) btn.classList.add("hidden");
+    if (banner) banner.classList.add("hidden");
+    if (badge) {
+      badge.classList.remove("hidden");
+      badge.classList.add("flex");
+      document.getElementById("readerMobileName").innerText = reader.name || reader.mobile || "पाठक";
+    }
+  } else {
+    if (btn) btn.classList.remove("hidden");
+    if (banner) banner.classList.remove("hidden");
+    if (badge) {
+      badge.classList.add("hidden");
+      badge.classList.remove("flex");
+    }
+  }
+}
+
+function restoreSavedReaderSession() {
+  try {
+    const saved = localStorage.getItem("abn_reader_session");
+    if (saved) {
+      const parsed = JSON.parse(saved);
+      if (parsed && parsed.mobile && parsed.password) {
+        currentMobileReader = parsed;
+        updateReaderMobileUI(parsed);
+      }
+    }
+  } catch (e) {}
+}
+
+window.addEventListener("DOMContentLoaded", () => {
+  updatePushPermissionLabel();
+  initScrollVideoController();
+});
+
+function recordNewsArticleView(articleKey) {
+  if (!articleKey || sessionCountedViews.has(articleKey)) return;
+  sessionCountedViews.add(articleKey);
+  db.ref(`news_articles/${articleKey}/views`).transaction(currentViews => (currentViews || 0) + 1);
+  if (currentMobileReader) {
+    db.ref(`news_articles/${articleKey}/viewers/${currentMobileReader.uid}`).set({
+      uid: currentMobileReader.uid,
+      name: (currentMobileReader.name || "पाठक") + (currentMobileReader.mobile ? ` (${currentMobileReader.mobile})` : ""),
+      photo: currentMobileReader.photo || DEFAULT_PHOTO,
+      viewedAt: Date.now()
+    });
+  }
+}
+
+function toggleArticleLike(articleKey) {
+  const likedStorageKey = "abn_liked_" + articleKey;
+  const alreadyLiked = localStorage.getItem(likedStorageKey) === "true";
+  const likesRef = db.ref(`news_articles/${articleKey}/likes`);
+  if (alreadyLiked) { likesRef.transaction(curr => Math.max(0, (curr || 1) - 1)); localStorage.removeItem(likedStorageKey); }
+  else { likesRef.transaction(curr => (curr || 0) + 1); localStorage.setItem(likedStorageKey, "true"); }
+}
+
+function openViewersModal(articleKey, newsTitle) {
+  if (!isAdmin) return;
+  document.getElementById("viewerModalNewsTitle").innerText = newsTitle;
+  const container = document.getElementById("newsViewersListContainer");
+  container.innerHTML = "<p class='text-xs text-gray-400 text-center py-4'>पाठकों की सूची लोड हो रही है...</p>";
+  document.getElementById("newsViewersModal").classList.remove("hidden");
+
+  db.ref(`news_articles/${articleKey}/viewers`).once("value").then(snap => {
+    container.innerHTML = "";
+    const viewers = snap.val();
+    if (!viewers) {
+      container.innerHTML = `<div class="text-center py-6 space-y-1"><i class="fa-solid fa-user-slash text-2xl text-gray-300"></i><p class="text-xs font-bold text-gray-500">अभी तक किसी लॉगिन पाठक ने यह खबर नहीं देखी है।</p></div>`;
+      return;
+    }
+    Object.values(viewers).sort((a,b) => (b.viewedAt || 0) - (a.viewedAt || 0)).forEach(v => {
+      const row = document.createElement("div"); row.className = "flex items-center justify-between p-2 bg-slate-50 border rounded-xl";
+      row.innerHTML = `<div class="flex items-center gap-2.5"><img src="${v.photo || DEFAULT_PHOTO}" class="w-9 h-9 rounded-full object-cover border border-blue-700"><div><strong class="text-xs text-slate-900 block">${escapeHTML(v.name)}</strong><span class="text-[9px] text-gray-500">${formatNewsDateTime(v.viewedAt)}</span></div></div><span class="text-[9px] bg-emerald-100 text-emerald-800 font-bold px-2 py-0.5 rounded-full">देखा गया</span>`;
+      container.appendChild(row);
+    });
+  });
+}
+
+setInterval(()=>{
+  const now = new Date();
+  const el = document.getElementById("liveTime");
+  if(el) el.innerText = now.toLocaleTimeString("hi-IN");
+
+  let hours = now.getHours();
+  const minutes = String(now.getMinutes()).padStart(2, '0');
+  const ampm = hours >= 12 ? 'PM' : 'AM';
+  const hours12 = hours % 12 || 12;
+  const timeStr = `${hours12}:${minutes}`;
+  const smallTimeStr = `${String(now.getHours()).padStart(2, '0')}:${minutes}`;
+
+  ["studioBigTimeText", "publicBigTimeText"].forEach(id => { const e = document.getElementById(id); if (e) e.innerText = timeStr; });
+  ["studioAmPmText", "publicAmPmText"].forEach(id => { const e = document.getElementById(id); if (e) e.innerText = ampm; });
+  ["studioLiveClockSmall", "publicLiveClockSmall"].forEach(id => { const e = document.getElementById(id); if (e) e.innerText = smallTimeStr; });
+}, 1000);
+
+/* ================= LIVE TV BROADCAST ENGINE (SINGLE CARD + SHARE) ================= */
+document.getElementById("liveLogoFileInput").addEventListener("change", function(e) {
+  const file = e.target.files[0]; if (!file) return;
+  compressImage(file, 300, 300, 0.85, b64 => { customLiveLogoBase64 = b64; updateLiveLogoImagesUI(b64); });
+});
+
+function resetChannelLogo() { customLiveLogoBase64 = DEFAULT_TV_LOGO; document.getElementById("liveLogoFileInput").value = ""; updateLiveLogoImagesUI(DEFAULT_TV_LOGO); }
+function updateLiveLogoImagesUI(logoSrc) {
+  ["editLogoPreviewThumb", "studioTopLogoImg", "studioBottomLogoImg", "publicTopLogoImg", "publicBottomLogoImg"].forEach(id => { const el = document.getElementById(id); if (el) el.src = logoSrc; });
+}
+
+function syncLiveStudioInputsToPreview() {
+  document.getElementById("studioTopDownloadText").innerText = document.getElementById("liveTopBadgeInput").value.trim() || "आवाज़ बुंदेलखंड";
+  document.getElementById("studioBlueTagShow").innerText = document.getElementById("liveBlueTagInput").value.trim() || "TOP NEWS";
+  document.getElementById("studioMainHeadlineShow").innerText = document.getElementById("liveMainHeadlineInput").value.trim() || "आवाज़ बुंदेलखंड न्यूज़: लाइव कवरेज";
+  document.getElementById("studioBottomTickerShow").innerText = document.getElementById("liveBottomTickerInput").value.trim() || "आवाज़ बुंदेलखंड न्यूज़ पर सीधा प्रसारण जारी है...";
+}
+
+function shareLiveStreamToFriends() {
+  const linkToShare = appDownloadUrl || location.href.split("#")[0];
+  const headline = (latestLiveBroadcastData && latestLiveBroadcastData.mainHeadline)
+    ? latestLiveBroadcastData.mainHeadline
+    : "आवाज़ बुंदेलखंड न्यूज़ पर सीधा प्रसारण (LIVE)";
+  const streamLink = (latestLiveBroadcastData && latestLiveBroadcastData.streamUrl)
+    ? `\n🎥 लाइव लिंक: ${latestLiveBroadcastData.streamUrl}`
+    : "";
+  const shareText = `🔴 *LIVE • आवाज़ बुंदेलखंड न्यूज़*\n*${headline}*${streamLink}\n\n📲 आवाज़ बुंदेलखंड न्यूज़ ऐप / पोर्टल:\n${linkToShare}`;
+
+  if (navigator.share) {
+    navigator.share({
+      title: "आवाज़ बुंदेलखंड न्यूज़ - LIVE",
+      text: shareText,
+      url: linkToShare
+    }).catch(err => {
+      if (err.name !== "AbortError") {
+        window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(shareText)}`, "_blank");
+      }
+    });
+  } else {
+    window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(shareText)}`, "_blank");
+  }
+}
+
+async function startLiveCamera(facingMode = 'environment') {
+  try {
+    if (activeCamStream) activeCamStream.getTracks().forEach(track => track.stop());
+    const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: facingMode }, audio: true });
+    activeCamStream = stream;
+    document.getElementById("studioLocalCamVideo").srcObject = stream;
+    document.getElementById("studioNoCamMsg").classList.add("hidden");
+  } catch (err) { alert("कैमरा एक्सेस नहीं हो पाया: " + err.message); }
+}
+
+function stopLiveCamera() {
+  if (activeCamStream) { activeCamStream.getTracks().forEach(track => track.stop()); activeCamStream = null; }
+  const vid = document.getElementById("studioLocalCamVideo"); if (vid) vid.srcObject = null;
+  document.getElementById("studioNoCamMsg").classList.remove("hidden");
+}
+
+function publishOrUpdateLiveStream() {
+  if (!currentUserPhone || (!isAdmin && !isReporter)) return alert("पहले स्टाफ़ लॉगिन करें।");
+  const topBadge = document.getElementById("liveTopBadgeInput").value.trim() || "आवाज़ बुंदेलखंड";
+  const blueTag = document.getElementById("liveBlueTagInput").value.trim() || "TOP NEWS";
+  const mainHeadline = document.getElementById("liveMainHeadlineInput").value.trim();
+  const bottomTicker = document.getElementById("liveBottomTickerInput").value.trim();
+  const streamUrl = normalizeFacebookUrl(document.getElementById("liveStreamUrlInput").value.trim());
+
+  if (!mainHeadline || !bottomTicker) return alert("कृपया मुख्य बड़ी हेडलाइन और टिकर टेक्स्ट भरें।");
+  if (!streamUrl) return alert("कृपया YouTube Live / Facebook Live लिंक डालें!");
+
+  db.ref("settings/live_broadcast").set({
+    isLive: true, logoUrl: customLiveLogoBase64 || DEFAULT_TV_LOGO, topBadge: topBadge, blueTag: blueTag,
+    mainHeadline: mainHeadline, tickerText: bottomTicker, streamUrl: streamUrl, reporterName: myProfile.name, updatedAt: Date.now()
+  }).then(() => { alert("लाइव प्रसारण मुख्य समाचार पेज पर लाइव हो गया है!"); switchTab("feed"); });
+}
+
+function endLiveStream() {
+  if (!currentUserPhone || (!isAdmin && !isReporter)) return;
+  if (confirm("क्या आप लाइव प्रसारण बंद करना चाहते हैं?")) {
+    db.ref("settings/live_broadcast").set({ isLive: false }).then(() => { stopLiveCamera(); switchTab("feed"); });
+  }
+}
+
+function loadPublicLiveBroadcast() {
+  db.ref("settings/live_broadcast").on("value", snap => {
+    const data = snap.val();
+    const publicCard = document.getElementById("publicLiveStreamCard");
+    const iframeBox = document.getElementById("publicLiveIframeBox");
+    const directLinkEl = document.getElementById("publicLiveDirectLink");
+    const shareCapEl = document.getElementById("publicLiveShareCaption");
+
+    if (!data || !data.isLive || !data.streamUrl) {
+      latestLiveBroadcastData = null;
+      if (publicCard) publicCard.classList.add("hidden");
+      if (iframeBox) { iframeBox.innerHTML = ""; iframeBox.removeAttribute("data-current-url"); }
+      return;
+    }
+
+    latestLiveBroadcastData = data;
+    if (publicCard) publicCard.classList.remove("hidden");
+    updateLiveLogoImagesUI(data.logoUrl || DEFAULT_TV_LOGO);
+    document.getElementById("publicTopDownloadText").innerText = data.topBadge || "आवाज़ बुंदेलखंड";
+    document.getElementById("publicBlueTagShow").innerText = data.blueTag || "TOP NEWS";
+    document.getElementById("publicMainHeadlineShow").innerText = data.mainHeadline || "ग्राउंड जीरो से लाइव कवरेज";
+    document.getElementById("publicBottomTickerShow").innerText = data.tickerText || "आवाज़ बुंदेलखंड न्यूज़ पर सीधा प्रसारण जारी है...";
+
+    const url = normalizeFacebookUrl(data.streamUrl);
+    if (directLinkEl && shareCapEl) {
+      if (url.includes("facebook.com") || url.includes("fb.watch")) {
+        directLinkEl.href = url;
+        directLinkEl.classList.remove("hidden");
+        shareCapEl.classList.add("hidden");
+      } else {
+        directLinkEl.classList.add("hidden");
+        shareCapEl.classList.remove("hidden");
+      }
+    }
+
+    const embedHtml = buildLiveEmbedHtml(url);
+
+    if (iframeBox && iframeBox.getAttribute("data-current-url") !== url) {
+      iframeBox.innerHTML = embedHtml;
+      iframeBox.setAttribute("data-current-url", url);
+      initScrollVideoController();
+    }
+  });
+}
+
+/* ================= STAFF DUAL-OPTION LOGIN ================= */
+function openStaffLoginModal(defaultTab = 'admin') { document.getElementById("authModal").classList.remove("hidden"); switchLoginRoleTab(defaultTab); }
+function switchLoginRoleTab(type) {
+  const adminForm = document.getElementById("adminLoginFormBox"), repForm = document.getElementById("reporterLoginFormBox");
+  const btnAdmin = document.getElementById("btnSwitchAdminLogin"), btnRep = document.getElementById("btnSwitchReporterLogin");
+  if (type === "admin") {
+    adminForm.classList.remove("hidden"); repForm.classList.add("hidden");
+    btnAdmin.className = "py-2 rounded-xl text-xs font-black bg-red-700 text-white shadow transition";
+    btnRep.className = "py-2 rounded-xl text-xs font-black text-gray-600 hover:text-slate-900 transition";
+  } else {
+    adminForm.classList.add("hidden"); repForm.classList.remove("hidden");
+    btnRep.className = "py-2 rounded-xl text-xs font-black bg-blue-800 text-white shadow transition";
+    btnAdmin.className = "py-2 rounded-xl text-xs font-black text-gray-600 hover:text-slate-900 transition";
+  }
+}
+
+function loginAdminWithPassword() {
+  const rawPhone = document.getElementById("adminLoginPhoneInput").value.trim(), enteredPass = document.getElementById("adminLoginPassInput").value.trim();
+  if (!/^\d{10}$/.test(rawPhone) || !enteredPass) return alert("सही नंबर और पासवर्ड भरें।");
+  const fullPhone = "+91" + rawPhone;
+  if (fullPhone !== ADMIN_PHONE) return alert("यह नंबर एडमिन के रूप में पंजीकृत नहीं है!");
+
+  db.ref("settings/adminPin").once("value").then(snap => {
+    const savedPass = snap.exists() ? String(snap.val()) : DEFAULT_ADMIN_PASS;
+    if (enteredPass === savedPass) {
+      localStorage.setItem("abn_staff_role", "admin"); localStorage.setItem("abn_staff_phone", fullPhone); localStorage.setItem("abn_staff_pass", enteredPass);
+      document.getElementById("authModal").classList.add("hidden"); setupAdminSession();
+    } else alert("गलत एडमिन पासवर्ड!");
+  });
+}
+
+function loginReporterWithPassword() {
+  const rawPhone = document.getElementById("repLoginPhoneInput").value.trim(), enteredPass = document.getElementById("repLoginPassInput").value.trim();
+  if (!/^\d{10}$/.test(rawPhone) || !enteredPass) return alert("सही नंबर और पासवर्ड भरें।");
+  const fullPhone = "+91" + rawPhone;
+  db.ref("authorized_reporters").orderByChild("phone").equalTo(fullPhone).once("value").then(snap => {
+    if (!snap.exists()) return alert("यह मोबाइल नंबर पंजीकृत नहीं है।");
+    const repData = Object.values(snap.val())[0];
+    if (repData.status !== "approved") return alert("आपका अकाउंट स्वीकृत नहीं है।");
+    if (String(repData.pin) === enteredPass) {
+      localStorage.setItem("abn_staff_role", "reporter"); localStorage.setItem("abn_staff_phone", fullPhone); localStorage.setItem("abn_staff_pass", enteredPass);
+      document.getElementById("authModal").classList.add("hidden"); setupReporterSession(repData);
+    } else alert("गलत पासवर्ड!");
+  });
+}
+
+function setupAdminSession() {
+  currentUserPhone = ADMIN_PHONE; isAdmin = true; isReporter = false;
+  myProfile = { name: "मयंक सिंह", designation: "Admin", district: "", tahseel: "", block: "", panchayat: "", phone: ADMIN_PHONE, address: "सरीला, हमीरपुर (उ.प्र.)", paymentDetail: "Admin Account", photo: DEFAULT_PHOTO };
+  listenToReporterApprovalNotifications(null);
+  db.ref("settings/adminPhoto").once("value").then(snap => {
+    if (snap.exists()) { adminPhoto = snap.val(); myProfile.photo = adminPhoto; document.getElementById("adminPhotoPreview").src = adminPhoto; }
+    activateDashboard("मुख्य संपादक (Admin)", true);
+  });
+}
+
+function setupReporterSession(repData) {
+  currentUserPhone = repData.phone; isAdmin = false; isReporter = true; myProfile = repData;
+  listenToReporterApprovalNotifications(repData.phone);
+  const roleTitle = formatRoleLabelHindi(repData.designation || repData.role);
+  activateDashboard(roleTitle, false);
+}
+
+function updateAdminPin() {
+  if (!isAdmin) return;
+  const newPass = document.getElementById("adminNewPinInput").value.trim();
+  if (newPass.length < 4) return alert("कम से कम 4 अंकों का पासवर्ड डालें।");
+  db.ref("settings/adminPin").set(newPass).then(() => { localStorage.setItem("abn_staff_pass", newPass); document.getElementById("adminNewPinInput").value = ""; alert("नया Admin पासवर्ड सेव हो गया!"); });
+}
+
+function logoutDirect() { localStorage.removeItem("abn_staff_role"); localStorage.removeItem("abn_staff_phone"); localStorage.removeItem("abn_staff_pass"); location.reload(); }
+
+function checkSavedSession() {
+  const savedRole = localStorage.getItem("abn_staff_role"), savedPhone = localStorage.getItem("abn_staff_phone"), savedPass = localStorage.getItem("abn_staff_pass");
+  if (!savedPhone || !savedPass) return;
+  if (savedRole === "admin" && savedPhone === ADMIN_PHONE) {
+    db.ref("settings/adminPin").once("value").then(snap => { const currentPass = snap.exists() ? String(snap.val()) : DEFAULT_ADMIN_PASS; if (savedPass === currentPass) setupAdminSession(); });
+  } else if (savedRole === "reporter") {
+    db.ref("authorized_reporters").orderByChild("phone").equalTo(savedPhone).once("value").then(snap => {
+      if (snap.exists()) { const repData = Object.values(snap.val())[0]; if (repData.status === "approved" && String(repData.pin) === savedPass) setupReporterSession(repData); }
+    });
+  }
+}
+
+function activateDashboard(role, admin) {
+  document.getElementById("btnLoginOpen").classList.add("hidden");
+  document.getElementById("userProfileBadge").classList.remove("hidden"); document.getElementById("userProfileBadge").classList.add("flex");
+  document.getElementById("userRoleBadge").innerText = role;
+  document.getElementById("staffNavigation").classList.remove("hidden");
+
+  document.getElementById("tabAdmin").classList.toggle("hidden", !admin);
+  document.getElementById("tabManageAds").classList.toggle("hidden", !admin);
+  document.getElementById("tabManageReporters").classList.toggle("hidden", !admin);
+
+  switchTab("feed"); loadReporterWallet();
+  if (admin) { loadPendingNews(); loadReportersForAdmin(); loadAdsForAdmin(); }
+  loadNewsFeed();
+}
+
+function openIcard(rep){
+  document.getElementById("cardName").innerText = rep.name || "रिपोर्टर";
+  document.getElementById("cardDesignationLabel").innerText = formatRoleLabelHindi(rep.designation || rep.role);
+  document.getElementById("cardId").innerText = rep.pressId || ("ABN-RP-" + Math.floor(1000 + Math.random() * 9000));
+  const areaSummary = [rep.district, rep.tahseel, rep.block, rep.panchayat].filter(Boolean).join(", ") || rep.address || "बुंदेलखंड";
+  document.getElementById("cardAreaText").innerText = areaSummary;
+  document.getElementById("cardPhoto").src = rep.photo || DEFAULT_PHOTO;
+  const qrData = encodeURIComponent(`https://awajbundelkhandnews.in/verify?id=${rep.pressId || 'ABN'}&phone=${rep.phone}&name=${rep.name}`);
+  document.getElementById("cardQrImg").src = `https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${qrData}`;
+  document.getElementById("icardModal").classList.remove("hidden");
+}
+
+function toggleAdSound() {
+  const vid = document.getElementById("adminAutoplayVideo"); if (!vid) return;
+  vid.muted = !vid.muted; if (!vid.muted) vid.play().catch(() => {}); updateSoundButtonUI(!vid.muted);
+}
+
+function updateSoundButtonUI(isAudible) {
+  const icon = document.getElementById("soundIcon"), text = document.getElementById("soundText");
+  if (!icon || !text) return;
+  if (isAudible) { icon.className = "fa-solid fa-volume-high text-emerald-400"; text.innerText = "आवाज़ चालू है"; }
+  else { icon.className = "fa-solid fa-volume-xmark text-red-400"; text.innerText = "आवाज़ चालू करें"; }
+}
+
+function loadAdminSpecialAd() {
+  db.ref("settings/admin_special_ad").once("value").then(snap => {
+    const data = snap.val(), adCard = document.getElementById("adminHouseAdCard"), vid = document.getElementById("adminAutoplayVideo");
+    if (!data || !data.videoUrl) { if (adCard) adCard.classList.add("hidden"); if (vid) { vid.pause(); vid.src = ""; } return; }
+    if (adCard) adCard.classList.remove("hidden");
+    document.getElementById("adminAdTitleShow").innerText = data.title || "आवाज़ बुंदेलखंड न्यूज़ • स्पेशल विज्ञापन";
+    document.getElementById("adminAdSubtitleShow").innerText = data.sub || "प्रधान संपादक मयंक सिंह द्वारा विशेष रूप से प्रस्तुत";
+    document.getElementById("adminAdActionBtn").href = data.actionLink || "javascript:shareArticle()";
+    if (vid && vid.src !== data.videoUrl) {
+      vid.removeAttribute("autoplay");
+      vid.muted = true;
+      updateSoundButtonUI(false);
+      vid.src = data.videoUrl;
+      vid.load();
+      forcePauseVideo(vid);
+      initScrollVideoController();
+    }
+  }).catch(() => {});
+}
+
+function openShortsModal(title, url) {
+  document.querySelectorAll("video").forEach(v => { if (v.id !== "studioLocalCamVideo") forcePauseVideo(v); });
+  document.querySelectorAll("iframe[data-src]").forEach(frame => { frame.setAttribute("src", ""); });
+  document.getElementById("shortsTitleText").innerText = title;
+  const container = document.getElementById("shortsPlayerContainer");
+  const cleanUrl = normalizeFacebookUrl(url);
+  const ytMatch = cleanUrl.match(/(?:youtu\.be\/|youtube\.com\/(?:watch\?v=|embed\/|shorts\/|live\/))([^?&/]+)/);
+  if (ytMatch) container.innerHTML = `<iframe class="w-full h-full" src="https://www.youtube.com/embed/${encodeURIComponent(ytMatch[1])}?autoplay=1&loop=1&playlist=${encodeURIComponent(ytMatch[1])}" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>`;
+  else if (cleanUrl.includes('facebook.com') || cleanUrl.includes('fb.watch')) {
+    const fbSrc = getFacebookPluginEmbedUrl(cleanUrl, true);
+    container.innerHTML = `<iframe src="${fbSrc}" class="w-full h-full" frameborder="0" allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share" allowfullscreen></iframe>`;
+  } else {
+    container.innerHTML = `<video id="shortsActiveVideo" class="w-full max-h-full object-contain" loop playsinline autoplay controls src="${escapeHTML(cleanUrl)}"></video>`;
+    const vid = document.getElementById("shortsActiveVideo");
+    if (vid) vid.ontimeupdate = function() { if (vid.currentTime >= MAX_VIDEO_SECONDS) { vid.currentTime = 0; vid.play().catch(() => {}); } };
+  }
+  document.getElementById("shortsModal").classList.remove("hidden");
+}
+
+function closeShortsModal() { document.getElementById("shortsPlayerContainer").innerHTML = ""; document.getElementById("shortsModal").classList.add("hidden"); initScrollVideoController(); }
+
+function compressImage(file,maxWidth,maxHeight,quality,callback){
+  if(!file || !file.type.startsWith("image/")) return alert("कृपया सही फोटो चुनें।");
+  const reader=new FileReader();
+  reader.onload=e=>{
+    const img=new Image();
+    img.onload=()=>{
+      const canvas=document.createElement("canvas");
+      let w=img.width, h=img.height;
+      const ratio=Math.min(1,maxWidth/w,maxHeight/h);
+      canvas.width=Math.round(w*ratio); canvas.height=Math.round(h*ratio);
+      canvas.getContext("2d").drawImage(img,0,0,canvas.width,canvas.height);
+      callback(canvas.toDataURL("image/jpeg",quality));
+    };
+    img.src=e.target.result;
+  };
+  reader.readAsDataURL(file);
+}
+
+/* ================= 30-SECOND VIDEO VALIDATION + FAST BASE64 GUARD ================= */
+function processVideoFileWithLimit(file, onValid) {
+  if (!file || !file.type.startsWith("video/")) {
+    return alert("कृपया सही वीडियो फ़ाइल चुनें।");
+  }
+  if (file.size > MAX_INLINE_BASE64_BYTES) {
+    return alert("30 सेकंड का हल्का वीडियो चुनें या YouTube/Facebook लिंक डालें ताकि ऐप तेज़ और बिना अटके चले।");
+  }
+
+  const tempUrl = URL.createObjectURL(file);
+  const probeVid = document.createElement("video");
+  probeVid.preload = "metadata";
+  probeVid.onloadedmetadata = function() {
+    const dur = probeVid.duration || 0;
+    URL.revokeObjectURL(tempUrl);
+
+    if (dur > MAX_VIDEO_SECONDS + 0.8) {
+      return alert(`वीडियो अधिकतम 30 सेकंड का होना चाहिए। (चुने गए वीडियो की अवधि: ${Math.round(dur)} सेकंड)`);
+    }
+
+    const reader = new FileReader();
+    reader.onload = e => onValid(e.target.result);
+    reader.readAsDataURL(file);
+  };
+  probeVid.onerror = function() {
+    URL.revokeObjectURL(tempUrl);
+    const reader = new FileReader();
+    reader.onload = e => onValid(e.target.result);
+    reader.readAsDataURL(file);
+  };
+  probeVid.src = tempUrl;
+}
+
+document.getElementById("adminAdVideoFileInput").addEventListener("change", function(e) {
+  const file = e.target.files[0]; if (!file) return;
+  processVideoFileWithLimit(file, b64 => {
+    adminSpecialVideoBase64 = b64;
+    document.getElementById("adminAdVideoLocalPrev").src = b64;
+    document.getElementById("adminAdVideoPreviewBox").classList.remove("hidden");
+  });
+});
+
+function saveAdminSpecialAd() {
+  if (!isAdmin) return;
+  const finalVideo = adminSpecialVideoBase64 || normalizeFacebookUrl(document.getElementById("adminAdVideoUrlInput").value.trim());
+  if (!finalVideo) return alert("कृपया वीडियो चुनें या लिंक भरें!");
+  db.ref("settings/admin_special_ad").set({
+    title: document.getElementById("adminAdTitleInput").value.trim() || "आवाज़ बुंदेलखंड न्यूज़ • स्पेशल विज्ञापन",
+    sub: document.getElementById("adminAdSubInput").value.trim() || "प्रधान संपादक मयंक सिंह द्वारा विशेष रूप से प्रस्तुत",
+    videoUrl: finalVideo, actionLink: document.getElementById("adminAdActionLinkInput").value.trim() || "javascript:shareArticle()", updatedAt: Date.now()
+  }).then(() => alert("स्पेशल वीडियो Ad सेव हो गया!"));
+}
+
+function deleteAdminSpecialAd() {
+  if (!isAdmin) return;
+  if (confirm("क्या आप इस स्पेशल Ad को हटाना चाहते हैं?")) {
+    db.ref("settings/admin_special_ad").remove().then(() => { adminSpecialVideoBase64 = ""; alert("स्पेशल Ad हटा दिया गया है!"); });
+  }
+}
+
+document.getElementById("newsVideoFileInput").addEventListener("change", function(e) {
+  const file = e.target.files[0]; if (!file) return;
+  processVideoFileWithLimit(file, b64 => {
+    galleryNewsVideoBase64 = b64;
+    document.getElementById("newsVideoLocalPreview").src = b64;
+    document.getElementById("newsVideoPreviewContainer").classList.remove("hidden");
+  });
+});
+function removeNewsVideoFile() { galleryNewsVideoBase64 = ""; document.getElementById("newsVideoFileInput").value = ""; document.getElementById("newsVideoPreviewContainer").classList.add("hidden"); }
+
+document.getElementById("shortVideoFileInput").addEventListener("change", function(e) {
+  const file = e.target.files[0]; if (!file) return;
+  processVideoFileWithLimit(file, b64 => {
+    galleryShortVideoBase64 = b64;
+    document.getElementById("shortVideoLocalPreview").src = b64;
+    document.getElementById("shortVideoPreviewContainer").classList.remove("hidden");
+  });
+});
+function removeShortVideoFile() { galleryShortVideoBase64 = ""; document.getElementById("shortVideoFileInput").value = ""; document.getElementById("shortVideoPreviewContainer").classList.add("hidden"); }
+
+function openUserAdSection() { document.getElementById("userAdSection").classList.remove("hidden"); window.scrollTo({ top: 0, behavior: 'smooth' }); }
+function closeUserAdSection() { document.getElementById("userAdSection").classList.add("hidden"); }
+function toggleUserAdTypeInputs() {
+  const type = document.getElementById("uAdType").value;
+  document.getElementById("uAdPhotoDiv").classList.toggle("hidden", type !== "banner");
+  document.getElementById("uAdVideoDiv").classList.toggle("hidden", type !== "video");
+}
+function updateUpiPayAmount() {
+  const amount = document.getElementById("uAdPlan").value;
+  document.getElementById("upiPayAmountBadge").innerText = "₹" + amount;
+  const upiLink = `upi://pay?pa=${ADMIN_UPI}&pn=Awaj%20Bundelkhand%20News&am=${amount}&cu=INR`;
+  const payBtn = document.getElementById("btnDirectUpiPay");
+  if (payBtn) { payBtn.href = upiLink; payBtn.innerHTML = `<i class="fa-solid fa-mobile-screen-button"></i> सीधे PhonePe / GPay / Paytm से ₹${amount} पे करें`; }
+  const qrImg = document.getElementById("liveQrImage");
+  if (qrImg) qrImg.src = `https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=${encodeURIComponent(upiLink)}`;
+}
+
+document.getElementById("uAdPhotoFile").addEventListener("change", function(e) {
+  const file = e.target.files[0]; if (!file) return;
+  compressImage(file, 1280, 1280, 0.80, b64 => { userAdPhotoBase64 = b64; document.getElementById("uAdPhotoPrevImg").src = b64; document.getElementById("uAdPhotoPrevBox").classList.remove("hidden"); });
+});
+document.getElementById("uAdVideoFile").addEventListener("change", function(e) {
+  const file = e.target.files[0]; if (!file) return;
+  processVideoFileWithLimit(file, b64 => {
+    userAdVideoBase64 = b64;
+    document.getElementById("uAdVideoPrevVid").src = b64;
+    document.getElementById("uAdVideoPrevBox").classList.remove("hidden");
+  });
+});
+document.getElementById("uAdReceiptFile").addEventListener("change", function(e) {
+  const file = e.target.files[0]; if (!file) return;
+  compressImage(file, 800, 1000, 0.72, b64 => { userAdReceiptBase64 = b64; document.getElementById("uAdReceiptPrevImg").src = b64; document.getElementById("uAdReceiptPrevBox").classList.remove("hidden"); });
+});
+
+function submitUserAd() {
+  const name = document.getElementById("uAdName").value.trim(), phone = document.getElementById("uAdPhone").value.trim();
+  const type = document.getElementById("uAdType").value, amount = document.getElementById("uAdPlan").value;
+  const finalVideo = userAdVideoBase64 || normalizeFacebookUrl(document.getElementById("uAdVideoUrl").value.trim());
+
+  if (!name || !/^\d{10}$/.test(phone)) return alert("कृपया नाम और 10 अंकों का मोबाइल नंबर भरें।");
+  if (!userAdReceiptBase64) return alert("कृपया भुगतान का स्क्रीनशॉट अपलोड करें!");
+
+  const btn = document.getElementById("btnSubmitUserAd"); btn.disabled = true; btn.innerText = "सबमिट हो रहा है...";
+  db.ref("user_advertisements").push({
+    client: name, phone: phone, type: type, amount: parseInt(amount),
+    utr: document.getElementById("uAdUtr").value.trim() || "Receipt Attached",
+    receiptPhoto: userAdReceiptBase64, photo: userAdPhotoBase64 || "", videoUrl: finalVideo || "",
+    actionLink: document.getElementById("uAdLink").value.trim() || "", status: "pending", timestamp: Date.now()
+  }).then(() => { alert("धन्यवाद! आपका विज्ञापन एडमिन के पास पहुंच गया है।"); closeUserAdSection(); switchTab("feed"); })
+  .catch(err => alert("सबमिट करने में त्रुटि: " + err.message))
+  .finally(() => { btn.disabled = false; btn.innerText = "विज्ञापन और स्क्रीनशॉट सबमिट करें"; });
+}
+
+function loadAdsForAdmin() {
+  db.ref("user_advertisements").on("value", snap => {
+    const pendingBox = document.getElementById("pendingAdsListContainer"), activeBox = document.getElementById("activeAdsListContainer");
+    const countBadge = document.getElementById("pendingAdsCountBadge"), earningsBox = document.getElementById("totalAdEarnings");
+    pendingBox.innerHTML = ""; activeBox.innerHTML = "";
+    const ads = snap.val() || {};
+    let pendingCount = 0, totalEarned = 0;
+
+    Object.entries(ads).forEach(([key, ad]) => {
+      if (ad.status === "approved") {
+        totalEarned += (ad.amount || 0);
+        const item = document.createElement("div"); item.className = "p-3 bg-gray-50 border rounded-xl flex items-center justify-between text-xs";
+        item.innerHTML = `<div><strong class="text-blue-900">${escapeHTML(ad.client)}</strong> (${escapeHTML(ad.phone)})<span class="text-[10px] text-gray-500 block">राशि: ₹${ad.amount}</span></div>
+          <div class="flex items-center gap-1.5"><button class="bg-amber-500 px-2.5 py-1 rounded text-xs font-bold" onclick="openEditAdModal('${key}', '${escapeHTML(ad.client)}', '${escapeHTML(ad.phone)}', '${escapeHTML(ad.actionLink || '')}', '${escapeHTML(ad.videoUrl || '')}')">एडिट</button><button class="bg-red-600 text-white px-2.5 py-1 rounded text-xs font-bold" onclick="removeAdvertisement('${key}')">हटाएं</button></div>`;
+        activeBox.appendChild(item);
+      } else if (ad.status === "pending") {
+        pendingCount++;
+        const item = document.createElement("div"); item.className = "p-3 bg-amber-50/70 border border-amber-300 rounded-xl space-y-2 text-xs";
+        item.innerHTML = `<div class="flex justify-between items-center"><strong class="text-slate-900 text-sm">${escapeHTML(ad.client)}</strong><span class="bg-emerald-700 text-white px-2 py-0.5 rounded font-black">₹${ad.amount} भेजा गया</span></div>
+          ${ad.receiptPhoto ? `<a href="${ad.receiptPhoto}" target="_blank"><img src="${ad.receiptPhoto}" class="max-h-40 rounded border mx-auto bg-white"></a>` : ''}
+          <div class="flex gap-2 pt-1 border-t"><button onclick="approveAd('${key}')" class="flex-1 bg-emerald-600 text-white font-bold py-1.5 rounded-lg text-xs">✓ लाइव करें</button><button onclick="removeAdvertisement('${key}')" class="bg-red-600 text-white font-bold px-3 py-1.5 rounded-lg text-xs">हटाएं</button></div>`;
+        pendingBox.appendChild(item);
+      }
+    });
+    countBadge.innerText = pendingCount; earningsBox.innerText = "₹" + totalEarned;
+  });
+}
+
+function openEditAdModal(key, client, phone, actionLink, videoUrl) {
+  if (!isAdmin) return;
+  document.getElementById("editAdKey").value = key; document.getElementById("editAdClient").value = client;
+  document.getElementById("editAdPhone").value = phone; document.getElementById("editAdActionLink").value = actionLink;
+  document.getElementById("editAdVideoUrl").value = videoUrl; document.getElementById("editAdModal").classList.remove("hidden");
+}
+function closeEditAdModal() { document.getElementById("editAdModal").classList.add("hidden"); }
+function saveEditedAd() {
+  if (!isAdmin) return;
+  db.ref("user_advertisements/" + document.getElementById("editAdKey").value).update({
+    client: document.getElementById("editAdClient").value.trim(), phone: document.getElementById("editAdPhone").value.trim(),
+    actionLink: document.getElementById("editAdActionLink").value.trim(), videoUrl: normalizeFacebookUrl(document.getElementById("editAdVideoUrl").value.trim())
+  }).then(() => { alert("अपडेट हो गया!"); closeEditAdModal(); });
+}
+function approveAd(key) { if (isAdmin) db.ref("user_advertisements/" + key).update({ status: "approved" }); }
+function removeAdvertisement(key) { if (isAdmin && confirm("हटाना चाहते हैं?")) db.ref("user_advertisements/" + key).remove(); }
+
+function renderPublicAds() {
+  db.ref("user_advertisements").orderByChild("status").equalTo("approved").limitToLast(6).once("value").then(snap => {
+    const container = document.getElementById("multipleAdsContainer"); const ads = snap.val();
+    if (!ads || Object.keys(ads).length === 0) { container.classList.add("hidden"); container.innerHTML = ""; return; }
+    container.innerHTML = "";
+    Object.entries(ads).forEach(([key, ad]) => {
+      const adCard = document.createElement("div"); adCard.className = "bg-white p-2.5 rounded-2xl border shadow-sm space-y-1.5";
+      let mediaHtml = ad.type === "banner" && ad.photo ? `<a href="${ad.actionLink || '#'}" target="_blank"><img loading="lazy" src="${ad.photo}" class="w-full h-auto max-h-[600px] object-contain rounded-xl mx-auto block"></a>` : (ad.videoUrl ? renderUniversalMediaEmbed(ad.videoUrl) : "");
+      adCard.innerHTML = `<div class="flex justify-between items-center text-[9px] text-gray-400 font-bold uppercase border-b pb-1"><span>प्रायोजित विज्ञापन</span><span class="text-blue-600 font-black">${escapeHTML(ad.client)}</span></div>${mediaHtml}`;
+      container.appendChild(adCard);
+    });
+    container.classList.remove("hidden");
+    initScrollVideoController();
+  }).catch(() => {});
+}
+
+document.getElementById("newsImageFileInput").addEventListener("change",function(e){
+  const file=e.target.files[0]; if(!file)return;
+  compressImage(file,1200,1200,0.78,b64=>{ compressedNewsImage=b64; document.getElementById("newsPreviewImg").src=b64; document.getElementById("imagePreviewContainer").classList.remove("hidden"); });
+});
+function removeSelectedImage(){ compressedNewsImage=""; document.getElementById("newsImageFileInput").value=""; document.getElementById("imagePreviewContainer").classList.add("hidden"); }
+
+document.getElementById("adminPhotoInput").addEventListener("change",function(e){
+  const file=e.target.files[0]; if(!file)return;
+  compressImage(file,400,400,0.80,b64=>{ adminPhoto=b64; document.getElementById("adminPhotoPreview").src=b64; });
+});
+function saveAdminPhoto(){ if(isAdmin && adminPhoto) db.ref("settings/adminPhoto").set(adminPhoto).then(()=>alert("फोटो सेव हो गई।")); }
+
+document.getElementById("repPhotoFileInput").addEventListener("change",function(e){
+  const file=e.target.files[0]; if(!file)return;
+  compressImage(file,400,400,0.80,b64=>{ compressedRepPhoto=b64; document.getElementById("repPhotoPreview").src=b64; document.getElementById("repPhotoPreviewBox").classList.remove("hidden"); });
+});
+
+/* ================= COMPLETE REPORTER & DISTRICT HEAD MANAGEMENT ================= */
+function addNewReporterByAdmin(){
+  if(!isAdmin)return;
+  const designation = mapDesignationValue(document.getElementById("repRoleInput").value.trim());
+  const name = document.getElementById("repNameInput").value.trim();
+  const raw = document.getElementById("repPhoneInput").value.trim();
+  const district = document.getElementById("repDistrictInput").value.trim();
+  const tahseel = document.getElementById("repTahseelInput").value.trim();
+  const block = document.getElementById("repBlockInput").value.trim();
+  const panchayat = document.getElementById("repPanchayatInput").value.trim();
+  const pin = document.getElementById("repPinInput").value.trim();
+  const address = document.getElementById("repAddressInput").value.trim();
+  const payment = document.getElementById("repPaymentInput").value.trim();
+
+  if(!name || !/^\d{10}$/.test(raw) || !district || pin.length < 4 || !address || !payment) {
+    return alert("कृपया पद, नाम, 10 अंकों का नंबर, जिला, पासवर्ड, बैंक/UPI और पता सही-सही भरें।");
+  }
+
+  const phone="+91"+raw;
+  db.ref("authorized_reporters").orderByChild("phone").equalTo(phone).once("value").then(existing=>{
+    if(existing.exists()) return alert("यह नंबर पहले से पंजीकृत है।");
+    return db.ref("authorized_reporters").push({
+      name, designation, district, tahseel, block, panchayat,
+      phone, pin, address, paymentDetail: payment,
+      photo: compressedRepPhoto || DEFAULT_PHOTO, status: "approved",
+      pressId: "ABN-RP-" + Math.floor(1000 + Math.random() * 9000), addedAt: Date.now()
+    });
+  }).then(res=>{
+    if(!res)return;
+    alert(`${formatRoleLabelHindi(designation)} सफलतापूर्वक नियुक्त हो गए हैं!`);
+    ["repNameInput","repPhoneInput","repDistrictInput","repTahseelInput","repBlockInput","repPanchayatInput","repPinInput","repAddressInput","repPaymentInput"].forEach(id=>document.getElementById(id).value="");
+    document.getElementById("repRoleInput").value = "District Head";
+    document.getElementById("repPhotoFileInput").value="";
+    document.getElementById("repPhotoPreviewBox").classList.add("hidden");
+    compressedRepPhoto="";
+  });
+}
+
+function loadReportersForAdmin(){
+  db.ref("authorized_reporters").on("value", snap => {
+    const container = document.getElementById("approvedReportersList");
+    const countBadge = document.getElementById("totalReportersCountBadge");
+    container.innerHTML = "";
+    const reps = snap.val() || {};
+    const repEntries = Object.entries(reps).filter(([k, r]) => r.status === "approved");
+
+    if (countBadge) countBadge.innerText = "कुल: " + repEntries.length;
+
+    if (repEntries.length === 0) {
+      container.innerHTML = "<p class='text-center text-gray-400 py-4 text-xs'>अभी तक कोई रिपोर्टर या डिस्ट्रिक्ट हेड नहीं जोड़ा गया है।</p>";
+      return;
+    }
+
+    db.ref("news_articles").limitToLast(100).once("value").then(newsSnap => {
+      const news = newsSnap.val() || {};
+      repEntries.forEach(([key, rep]) => {
+        let count = 0;
+        Object.values(news).forEach(item => {
+          if (item.reporterPhone === rep.phone && item.status === "approved") count++;
+        });
+
+        const roleText = formatRoleLabelHindi(rep.designation || rep.role);
+        const isDistHead = roleText.includes("District Head");
+        const jurText = formatJurisdictionText(rep);
+
+        const card = document.createElement("div");
+        card.className = "p-3.5 bg-slate-50 border border-slate-200 rounded-2xl space-y-2.5 shadow-sm";
+        card.innerHTML = `
+          <div class="flex items-start gap-3">
+            <img src="${rep.photo || DEFAULT_PHOTO}" class="w-14 h-14 rounded-full object-cover border-2 border-blue-900 shadow-sm shrink-0">
+            <div class="flex-1 min-w-0">
+              <div class="flex items-center justify-between gap-1 flex-wrap">
+                <strong class="text-sm font-black text-slate-900 truncate">${escapeHTML(rep.name)}</strong>
+                <span class="text-[9px] ${isDistHead ? 'bg-amber-400 text-slate-950' : 'bg-blue-100 text-blue-900'} font-black px-2 py-0.5 rounded-full">${escapeHTML(roleText)}</span>
+              </div>
+              ${jurText ? `<div class="text-[10px] text-red-700 font-extrabold mt-0.5"><i class="fa-solid fa-map-pin text-red-600"></i> ${escapeHTML(jurText)}</div>` : ''}
+              <span class="text-[11px] text-slate-700 font-semibold block mt-0.5">
+                <i class="fa-solid fa-phone text-emerald-600 text-[10px]"></i> ${escapeHTML(rep.phone)} &nbsp;|&nbsp; 
+                <strong class="text-red-700">पासवर्ड: ${escapeHTML(rep.pin || 'N/A')}</strong> &nbsp;|&nbsp;
+                <span class="font-mono text-[10px] text-blue-900">${escapeHTML(rep.pressId || 'ABN-RP-0425')}</span>
+              </span>
+              <span class="text-[10px] text-gray-600 block truncate"><i class="fa-solid fa-location-dot text-red-500"></i> ${escapeHTML(rep.address || '')}</span>
+              <span class="text-[10px] text-emerald-700 font-bold block mt-0.5">
+                UPI/खाता: ${escapeHTML(rep.paymentDetail || 'N/A')} • मानदेय: ₹${count * 30} (${count} ख़बरें)
+              </span>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-2 sm:grid-cols-4 gap-1.5 pt-2 border-t border-slate-200">
+            <button type="button" class="btnEditRep bg-emerald-600 hover:bg-emerald-700 text-white py-1.5 px-2 rounded-lg text-[11px] font-black flex items-center justify-center gap-1 shadow-sm">
+              <i class="fa-solid fa-user-pen"></i> डिटेल एडिट
+            </button>
+            <button type="button" class="btnIdCard bg-blue-700 hover:bg-blue-800 text-white py-1.5 px-2 rounded-lg text-[11px] font-black flex items-center justify-center gap-1 shadow-sm">
+              <i class="fa-solid fa-id-card"></i> आई-कार्ड
+            </button>
+            <button type="button" class="btnPass bg-amber-500 hover:bg-amber-600 text-slate-950 py-1.5 px-2 rounded-lg text-[11px] font-black flex items-center justify-center gap-1 shadow-sm">
+              <i class="fa-solid fa-key"></i> पासवर्ड
+            </button>
+            <button type="button" class="btnDelRep bg-red-600 hover:bg-red-700 text-white py-1.5 px-2 rounded-lg text-[11px] font-bold flex items-center justify-center gap-1 shadow-sm">
+              <i class="fa-solid fa-trash"></i> हटाएं
+            </button>
+          </div>
+        `;
+
+        card.querySelector(".btnEditRep").onclick = () => openEditReporterModal(key, rep);
+        card.querySelector(".btnIdCard").onclick = () => openIcard(rep);
+        card.querySelector(".btnPass").onclick = () => openUpdateRepPassModal(key, rep.name, rep.pin || '');
+        card.querySelector(".btnDelRep").onclick = () => deleteReporter(key);
+
+        container.appendChild(card);
+      });
+    });
+  });
+}
+
+document.getElementById("editRepPhotoInput").addEventListener("change", function(e) {
+  const file = e.target.files[0]; if (!file) return;
+  compressImage(file, 400, 400, 0.80, b64 => {
+    editedRepNewPhotoBase64 = b64;
+    document.getElementById("editRepPhotoPreview").src = b64;
+  });
+});
+
+function openEditReporterModal(key, rep) {
+  if (!isAdmin) return;
+  editedRepNewPhotoBase64 = "";
+  document.getElementById("editRepPhotoInput").value = "";
+  document.getElementById("editRepKey").value = key;
+  document.getElementById("editRepRole").value = mapDesignationValue(rep.designation || rep.role);
+  document.getElementById("editRepName").value = rep.name || "";
+  document.getElementById("editRepDistrict").value = rep.district || "";
+  document.getElementById("editRepTahseel").value = rep.tahseel || "";
+  document.getElementById("editRepBlock").value = rep.block || "";
+  document.getElementById("editRepPanchayat").value = rep.panchayat || "";
+  document.getElementById("editRepPhone").value = (rep.phone || "").replace("+91", "");
+  document.getElementById("editRepPin").value = rep.pin || "";
+  document.getElementById("editRepPressId").value = rep.pressId || "";
+  document.getElementById("editRepPayment").value = rep.paymentDetail || "";
+  document.getElementById("editRepAddress").value = rep.address || "";
+  document.getElementById("editRepPhotoPreview").src = rep.photo || DEFAULT_PHOTO;
+  document.getElementById("editReporterDetailsModal").classList.remove("hidden");
+}
+
+function closeEditReporterModal() {
+  document.getElementById("editReporterDetailsModal").classList.add("hidden");
+}
+
+function saveEditedReporterDetails() {
+  if (!isAdmin) return;
+  const key = document.getElementById("editRepKey").value;
+  const designation = mapDesignationValue(document.getElementById("editRepRole").value.trim());
+  const name = document.getElementById("editRepName").value.trim();
+  const district = document.getElementById("editRepDistrict").value.trim();
+  const tahseel = document.getElementById("editRepTahseel").value.trim();
+  const block = document.getElementById("editRepBlock").value.trim();
+  const panchayat = document.getElementById("editRepPanchayat").value.trim();
+  const rawPhone = document.getElementById("editRepPhone").value.trim();
+  const pin = document.getElementById("editRepPin").value.trim();
+  const pressId = document.getElementById("editRepPressId").value.trim();
+  const payment = document.getElementById("editRepPayment").value.trim();
+  const address = document.getElementById("editRepAddress").value.trim();
+
+  if (!name || !/^\d{10}$/.test(rawPhone) || !district || pin.length < 4 || !address) {
+    return alert("कृपया पद, नाम, 10 अंकों का मोबाइल नंबर, जिला, कम से कम 4 अंकों का पासवर्ड और पता सही भरें।");
+  }
+
+  const updatePayload = {
+    designation: designation,
+    name: name,
+    district: district,
+    tahseel: tahseel,
+    block: block,
+    panchayat: panchayat,
+    phone: "+91" + rawPhone,
+    pin: pin,
+    pressId: pressId || "ABN-RP-0425",
+    paymentDetail: payment || "दर्ज नहीं",
+    address: address
+  };
+
+  if (editedRepNewPhotoBase64) {
+    updatePayload.photo = editedRepNewPhotoBase64;
+  }
+
+  db.ref("authorized_reporters/" + key).update(updatePayload)
+    .then(() => {
+      alert("रिपोर्टर / डिस्ट्रिक्ट हेड का विवरण सफलतापूर्वक अपडेट हो गया है!");
+      closeEditReporterModal();
+    })
+    .catch(err => alert("त्रुटि: " + err.message));
+}
+
+function openUpdateRepPassModal(key, name, currentPass) { document.getElementById("editRepPassKey").value = key; document.getElementById("editRepPassName").innerText = name; document.getElementById("newRepPasswordInput").value = currentPass; document.getElementById("updateRepPasswordModal").classList.remove("hidden"); }
+function closeRepPassModal() { document.getElementById("updateRepPasswordModal").classList.add("hidden"); }
+function saveUpdatedRepPassword() { const newPass = document.getElementById("newRepPasswordInput").value.trim(); if (newPass.length < 4) return alert("कम से कम 4 अंकों का पासवर्ड लिखें।"); db.ref("authorized_reporters/" + document.getElementById("editRepPassKey").value).update({ pin: newPass }).then(() => { alert("पासवर्ड अपडेट हो गया!"); closeRepPassModal(); }); }
+function deleteReporter(key){ if(isAdmin && confirm("क्या आप वाकई इस रिपोर्टर को हटाना चाहते हैं?")) db.ref("authorized_reporters/"+key).remove(); }
+
+function resetNewsFormInputs() {
+  ["newsTitle", "newsLocation", "newsImageFileInput", "newsVideoFileInput", "newsVideoUrl", "newsContent"].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.value = "";
+  });
+  compressedNewsImage = "";
+  galleryNewsVideoBase64 = "";
+  const imgBox = document.getElementById("imagePreviewContainer");
+  const vidBox = document.getElementById("newsVideoPreviewContainer");
+  if (imgBox) imgBox.classList.add("hidden");
+  if (vidBox) vidBox.classList.add("hidden");
+}
+
+function resetShortsFormInputs() {
+  ["shortTitle", "shortLocation", "shortVideoFileInput", "shortVideoUrl"].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.value = "";
+  });
+  galleryShortVideoBase64 = "";
+  const vidBox = document.getElementById("shortVideoPreviewContainer");
+  if (vidBox) vidBox.classList.add("hidden");
+}
+
+function submitArticle(){
+  if(!currentUserPhone) return alert("पहले लॉगिन करें।");
+  const title=document.getElementById("newsTitle").value.trim(), location=document.getElementById("newsLocation").value.trim(), content=document.getElementById("newsContent").value.trim();
+  if(!title || !location || !content) return alert("सभी जानकारी भरें।");
+
+  const btn = document.getElementById("btnSubmitNews");
+  if (btn) { btn.disabled = true; btn.innerText = "भेजा जा रहा है..."; }
+
+  db.ref("news_articles").push({
+    title, location, category: document.getElementById("newsCategory").value, content,
+    imageUrl: compressedNewsImage || "", videoUrl: galleryNewsVideoBase64 || normalizeFacebookUrl(document.getElementById("newsVideoUrl").value.trim()),
+    isShorts: false, reporterPhone: currentUserPhone, reporterName: myProfile.name,
+    reporterRole: isAdmin ? "admin" : (myProfile.designation || "Panchayat Reporter"),
+    reporterDistrict: myProfile.district || "",
+    reporterTahseel: myProfile.tahseel || "",
+    reporterBlock: myProfile.block || "",
+    reporterPanchayat: myProfile.panchayat || "",
+    reporterAddress: myProfile.address, reporterPhoto: myProfile.photo || DEFAULT_PHOTO, timestamp: Date.now(),
+    status: isAdmin?"approved":"pending", payoutAmount: PAYOUT_PER_NEWS, views: 0, likes: 0
+  }).then(()=>{
+    resetNewsFormInputs();
+    alert(isAdmin?"खबर प्रकाशित हो गई!":"खबर समीक्षा हेतु भेज दी गई!");
+    switchTab("feed");
+  }).catch(err => alert("खबर भेजने में त्रुटि: " + err.message))
+  .finally(() => { if (btn) { btn.disabled = false; btn.innerText = "समीक्षा हेतु भेजें"; } });
+}
+
+function submitShortsArticle() {
+  if(!currentUserPhone) return alert("पहले लॉगिन करें।");
+  const title = document.getElementById("shortTitle").value.trim(), location = document.getElementById("shortLocation").value.trim(), finalVideo = galleryShortVideoBase64 || normalizeFacebookUrl(document.getElementById("shortVideoUrl").value.trim());
+  if(!title || !location || !finalVideo) return alert("सभी जानकारी भरें।");
+
+  const btn = document.getElementById("btnSubmitShorts");
+  if (btn) { btn.disabled = true; btn.innerText = "भेजा जा रहा है..."; }
+
+  db.ref("news_articles").push({
+    title, location, category: "शॉर्ट्स रील्स", content: "आवाज़ बुंदेलखंड न्यूज़ रील।", imageUrl: "", videoUrl: finalVideo,
+    isShorts: true, reporterPhone: currentUserPhone, reporterName: myProfile.name,
+    reporterRole: isAdmin ? "admin" : (myProfile.designation || "Panchayat Reporter"),
+    reporterDistrict: myProfile.district || "",
+    reporterTahseel: myProfile.tahseel || "",
+    reporterBlock: myProfile.block || "",
+    reporterPanchayat: myProfile.panchayat || "",
+    reporterAddress: myProfile.address, reporterPhoto: myProfile.photo || DEFAULT_PHOTO, timestamp: Date.now(),
+    status: isAdmin ? "approved" : "pending", payoutAmount: PAYOUT_PER_NEWS, views: 0, likes: 0
+  }).then(()=>{
+    resetShortsFormInputs();
+    alert("शॉर्ट वीडियो सेव हो गया!");
+    switchTab("feed");
+  }).catch(err => alert("शॉर्ट वीडियो भेजने में त्रुटि: " + err.message))
+  .finally(() => { if (btn) { btn.disabled = false; btn.innerText = "शॉर्ट वीडियो प्रकाशित हेतु भेजें"; } });
+}
+
+function openEditArticleModal(key, title, location, category, videoUrl, content) { document.getElementById("editArticleKey").value = key; document.getElementById("editNewsTitle").value = title; document.getElementById("editNewsLocation").value = location; document.getElementById("editNewsCategory").value = category; document.getElementById("editNewsVideoUrl").value = videoUrl || ""; document.getElementById("editNewsContent").value = content; document.getElementById("editNewsModal").classList.remove("hidden"); }
+function closeEditModal() { document.getElementById("editNewsModal").classList.add("hidden"); }
+function saveEditedArticle() { db.ref("news_articles/" + document.getElementById("editArticleKey").value).update({ title: document.getElementById("editNewsTitle").value.trim(), location: document.getElementById("editNewsLocation").value.trim(), category: document.getElementById("editNewsCategory").value, videoUrl: normalizeFacebookUrl(document.getElementById("editNewsVideoUrl").value.trim()), content: document.getElementById("editNewsContent").value.trim() }).then(() => { alert("अपडेट हो गया!"); closeEditModal(); }); }
+function deleteArticleByAdmin(key) { if (isAdmin && confirm("डिलीट करना चाहते हैं?")) db.ref("news_articles/" + key).remove(); }
+
+/* ================= ZERO-CROP FULL HD CARD SHARE ENGINE ================= */
+function drawWrappedCardHeadlineHD(ctx, text, x, y, maxWidth, lineHeight, maxLines) {
+  const words = text.split(" ");
+  let line = "";
+  let lineCount = 0;
+  for (let n = 0; n < words.length; n++) {
+    const testLine = line + words[n] + " ";
+    const metrics = ctx.measureText(testLine);
+    if (metrics.width > maxWidth && n > 0) {
+      ctx.fillText(line.trim(), x, y);
+      line = words[n] + " ";
+      y += lineHeight;
+      lineCount++;
+      if (lineCount >= maxLines - 1) {
+        let remaining = words.slice(n).join(" ");
+        while (ctx.measureText(remaining + "...").width > maxWidth && remaining.length > 0) {
+          remaining = remaining.slice(0, -1);
+        }
+        ctx.fillText(remaining.trim() + "...", x, y);
+        return;
+      }
+    } else {
+      line = testLine;
+    }
+  }
+  ctx.fillText(line.trim(), x, y);
+}
+
+function buildAndShareNewsCard(title, imageUrl, content) {
+  const linkToShare = appDownloadUrl || location.href.split("#")[0];
+  preparedShareTitle = title;
+  preparedShareText = `*${title}*\n\n📲 पूरी खबर पढ़ने व ताज़ा बुंदेलखंड न्यूज़ देखने के लिए ऐप इंस्टॉल करें:\n${linkToShare}`;
+
+  const renderFullCardCanvas = (loadedImg) => {
+    const canvasW = 1200;
+    let imgDrawH = 750;
+    if (loadedImg && loadedImg.width > 0 && loadedImg.height > 0) {
+      imgDrawH = Math.round((loadedImg.height / loadedImg.width) * canvasW);
+      if (imgDrawH < 500) imgDrawH = 500;
+      if (imgDrawH > 1300) imgDrawH = 1300;
+    }
+
+    const whiteBarH = 165;
+    const blackFooterH = 285;
+    const totalCanvasH = imgDrawH + whiteBarH + blackFooterH;
+
+    const canvas = document.createElement("canvas");
+    const ctx = canvas.getContext("2d");
+    canvas.width = canvasW;
+    canvas.height = totalCanvasH;
+
+    ctx.imageSmoothingEnabled = true;
+    ctx.imageSmoothingQuality = "high";
+
+    if (loadedImg && loadedImg.width > 0) {
+      ctx.fillStyle = "#09090b";
+      ctx.fillRect(0, 0, canvasW, imgDrawH);
+      const scale = Math.min(canvasW / loadedImg.width, imgDrawH / loadedImg.height);
+      const drawW = loadedImg.width * scale;
+      const drawH = loadedImg.height * scale;
+      const offsetX = (canvasW - drawW) / 2;
+      const offsetY = (imgDrawH - drawH) / 2;
+      ctx.drawImage(loadedImg, offsetX, offsetY, drawW, drawH);
+    } else {
+      drawDefaultBannerBackgroundHD(ctx, canvasW, imgDrawH);
+    }
+
+    const whiteY = imgDrawH;
+    ctx.fillStyle = "#ffffff";
+    ctx.fillRect(0, whiteY, canvasW, whiteBarH);
+
+    ctx.fillStyle = "#e5e7eb";
+    ctx.fillRect(0, whiteY, canvasW, 3);
+
+    const logoX = 32, logoY = whiteY + 22, logoW = 124, logoH = 120;
+    ctx.fillStyle = "#f59e0b";
+    ctx.fillRect(logoX - 4, logoY - 4, logoW + 8, logoH + 8);
+    ctx.fillStyle = "#991b1b";
+    ctx.fillRect(logoX, logoY, logoW, 82);
+    ctx.fillStyle = "#002244";
+    ctx.fillRect(logoX, logoY + 82, logoW, 38);
+
+    ctx.textAlign = "center";
+    ctx.fillStyle = "#ffffff";
+    ctx.font = "900 26px sans-serif";
+    ctx.fillText("आवाज़", logoX + logoW / 2, logoY + 34);
+    ctx.font = "800 22px sans-serif";
+    ctx.fillText("बुंदेलखंड", logoX + logoW / 2, logoY + 66);
+    ctx.fillStyle = "#fbbf24";
+    ctx.font = "900 22px sans-serif";
+    ctx.fillText("NEWS", logoX + logoW / 2, logoY + 109);
+    ctx.textAlign = "left";
+
+    const textX = 182;
+    ctx.fillStyle = "#0f172a";
+    ctx.font = "900 34px sans-serif";
+    ctx.fillText("बुंदेलखंड का सबसे विश्वसनीय न्यूज़ ऐप", textX, whiteY + 68);
+    ctx.fillStyle = "#475569";
+    ctx.font = "700 24px sans-serif";
+    ctx.fillText("इंस्टॉल करें आवाज़ बुंदेलखंड न्यूज़ और पाएं लोकल अपडेट", textX, whiteY + 114);
+
+    const gpX = 935, gpY = whiteY + 38, gpW = 232, gpH = 88;
+    ctx.fillStyle = "#000000";
+    ctx.beginPath();
+    if (ctx.roundRect) ctx.roundRect(gpX, gpY, gpW, gpH, 14);
+    else ctx.fillRect(gpX, gpY, gpW, gpH);
+    ctx.fill();
+
+    ctx.fillStyle = "#38bdf8";
+    ctx.beginPath();
+    ctx.moveTo(gpX + 24, gpY + 20);
+    ctx.lineTo(gpX + 54, gpY + 44);
+    ctx.lineTo(gpX + 24, gpY + 68);
+    ctx.closePath();
+    ctx.fill();
+
+    ctx.fillStyle = "#d1d5db";
+    ctx.font = "bold 16px sans-serif";
+    ctx.fillText("GET IT ON", gpX + 70, gpY + 34);
+    ctx.fillStyle = "#ffffff";
+    ctx.font = "bold 26px sans-serif";
+    ctx.fillText("Google Play", gpX + 68, gpY + 68);
+
+    const blackY = whiteY + whiteBarH;
+    ctx.fillStyle = "#09090b";
+    ctx.fillRect(0, blackY, canvasW, blackFooterH);
+
+    ctx.fillStyle = "#ffffff";
+    ctx.font = "bold 44px sans-serif";
+    drawWrappedCardHeadlineHD(ctx, title, 40, blackY + 75, 1120, 60, 2);
+
+    ctx.fillStyle = "#38bdf8";
+    ctx.font = "bold 28px sans-serif";
+    const displayUrl = linkToShare.replace(/^https?:\/\//, "");
+    ctx.fillText(displayUrl, 40, blackY + 235);
+
+    const hdDataUrl = canvas.toDataURL("image/jpeg", 0.96);
+    document.getElementById("hdSharePreviewImg").src = hdDataUrl;
+    document.getElementById("btnDownloadHdCard").href = hdDataUrl;
+
+    canvas.toBlob(blob => {
+      if (blob) {
+        preparedShareFile = new File([blob], `Awaj_Bundelkhand_HD_${Date.now()}.jpg`, { type: "image/jpeg" });
+      }
+      document.getElementById("hdShareModal").classList.remove("hidden");
+    }, "image/jpeg", 0.96);
+  };
+
+  if (imageUrl && !imageUrl.includes("youtube.com")) {
+    const img = new Image();
+    img.crossOrigin = "anonymous";
+    img.onload = () => renderFullCardCanvas(img);
+    img.onerror = () => renderFullCardCanvas(null);
+    img.src = imageUrl;
+  } else {
+    renderFullCardCanvas(null);
+  }
+}
+
+document.getElementById("btnExecuteHdShare").addEventListener("click", async function() {
+  if (preparedShareFile && navigator.canShare && navigator.canShare({ files: [preparedShareFile] })) {
+    try {
+      await navigator.share({ files: [preparedShareFile], title: preparedShareTitle, text: preparedShareText });
+      document.getElementById("hdShareModal").classList.add("hidden");
+      return;
+    } catch (err) {
+      if (err.name === "AbortError") return;
+    }
+  }
+  alert("आपके ब्राउज़र में डायरेक्ट फ़ाइल शेयरिंग समर्थित नहीं है। ऊपर 'गैलरी में HD फोटो सेव करें' बटन दबाकर फोटो सेव करें या WhatsApp लिंक भेजें।");
+  window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(preparedShareText)}`, "_blank");
+});
+
+function drawDefaultBannerBackgroundHD(ctx, w, h) {
+  const grad = ctx.createLinearGradient(0, 0, w, h);
+  grad.addColorStop(0, "#7f1d1d"); grad.addColorStop(0.5, "#991b1b"); grad.addColorStop(1, "#001d4a");
+  ctx.fillStyle = grad; ctx.fillRect(0, 0, w, h);
+  ctx.strokeStyle = "#fbbf24"; ctx.lineWidth = 10; ctx.strokeRect(45, 45, w - 90, h - 90);
+  ctx.fillStyle = "#fbbf24"; ctx.font = "bold 46px sans-serif"; ctx.textAlign = "center";
+  ctx.fillText("ब्रेकिंग न्यूज़ • ग्राउंड रिपोर्ट", w / 2, h * 0.36);
+  ctx.fillStyle = "#ffffff"; ctx.font = "900 88px sans-serif";
+  ctx.fillText("आवाज़ बुंदेलखंड न्यूज़", w / 2, h * 0.52);
+  ctx.fillStyle = "#e2e8f0"; ctx.font = "bold 38px sans-serif";
+  ctx.fillText("निष्पक्ष एवं सटीक डिजिटल पत्रकारिता", w / 2, h * 0.65);
+  ctx.textAlign = "left";
+}
+
+function shareArticle() {
+  buildAndShareNewsCard("आवाज़ बुंदेलखंड न्यूज़: बुंदेलखंड की हर ताज़ा खबर सीधे आपके मोबाइल पर", "", "");
+}
+
+/* ================= FAST PAGINATED NEWS FEED ================= */
+function loadMoreNewsArticles() {
+  currentNewsLimit += 20;
+  loadNewsFeed();
+}
+
+function renderNewsArticlesList(articles) {
+  const list = document.getElementById("newsFeedList");
+  const shortsBar = document.getElementById("shortsBarContainer");
+  const tickerText = document.getElementById("liveTickerText");
+  const loadMoreBox = document.getElementById("loadMoreBox");
+
+  list.innerHTML = "";
+  shortsBar.innerHTML = "";
+
+  if (!articles || Object.keys(articles).length === 0) {
+    list.innerHTML = "<p class='text-center text-gray-400 py-8 text-xs font-bold'>वर्तमान में कोई नई खबर उपलब्ध नहीं है।</p>";
+    shortsBar.innerHTML = "<p class='text-[10px] text-gray-400 py-2'>कोई शॉर्ट वीडियो उपलब्ध नहीं है।</p>";
+    if (loadMoreBox) loadMoreBox.classList.add("hidden");
+    return;
+  }
+
+  const sortedEntries = Object.entries(articles)
+    .filter(([k, item]) => item.status === "approved")
+    .sort((a,b) => (b[1].timestamp || 0) - (a[1].timestamp || 0));
+
+  if (loadMoreBox) {
+    loadMoreBox.classList.toggle("hidden", sortedEntries.length < currentNewsLimit);
+  }
+
+  let shortsFound = false;
+  let tickerHeadlines = [];
+
+  sortedEntries.forEach(([key, item]) => {
+    tickerHeadlines.push(`${item.location}: ${item.title}`);
+
+    if (item.videoUrl && item.isShorts) {
+      shortsFound = true;
+      const shortItem = document.createElement("div");
+      shortItem.className = "shrink-0 w-28 h-40 bg-slate-900 rounded-xl relative overflow-hidden shadow cursor-pointer border border-slate-700 flex flex-col justify-between p-2";
+      shortItem.onclick = () => { recordNewsArticleView(key); openShortsModal(item.title, item.videoUrl); };
+      shortItem.innerHTML = `
+        <span class="bg-red-600 text-white text-[8px] font-bold px-1.5 py-0.5 rounded w-max">30s शॉर्ट</span>
+        <div class="text-white text-center my-auto"><i class="fa-solid fa-play text-xl opacity-80"></i></div>
+        <div>
+          <p class="text-[10px] font-bold text-white line-clamp-2 leading-tight">${escapeHTML(item.title)}</p>
+          <span class="text-[8px] text-amber-300 font-semibold">${escapeHTML(item.reporterName)}</span>
+        </div>
+      `;
+      shortsBar.appendChild(shortItem);
+    }
+
+    const card = document.createElement("div");
+    card.id = "news-card-" + key;
+    card.className = "bg-white p-4 rounded-2xl border shadow-sm space-y-3 relative transition";
+    card.onclick = () => recordNewsArticleView(key);
+
+    let media = "";
+    if (item.imageUrl) media += `<img loading="lazy" decoding="async" src="${item.imageUrl}" class="w-full rounded-xl max-h-96 object-contain bg-black mb-2">`;
+    if (item.videoUrl) media += renderUniversalMediaEmbed(item.videoUrl);
+
+    const formattedMillionViews = formatMillionViews(item.views, item.timestamp);
+    const isLiked = localStorage.getItem("abn_liked_" + key) === "true";
+    const baseLikes = item.timestamp ? ((item.timestamp % 850) + 120) : 250;
+    const totalLikes = baseLikes + (item.likes || 0);
+
+    let adminOnlyViewersBtn = "";
+    if (isAdmin) {
+      const readerViewersArr = Object.values(item.viewers || {});
+      let viewerAvatarsHtml = "";
+      if (readerViewersArr.length > 0) {
+        const top3 = readerViewersArr.slice(0, 3);
+        viewerAvatarsHtml = `<div class="flex items-center -space-x-1.5 mr-1">${top3.map(v => `<img src="${v.photo || DEFAULT_PHOTO}" class="w-5 h-5 rounded-full border border-white object-cover">`).join("")}</div>`;
+      }
+      adminOnlyViewersBtn = `
+        <button type="button" class="btnSeeViewers flex items-center gap-1 bg-blue-50 hover:bg-blue-100 text-blue-800 px-2.5 py-1 rounded-full font-bold border border-blue-200 transition">
+          ${viewerAvatarsHtml}
+          <span>किसने देखा (${readerViewersArr.length})</span>
+        </button>
+      `;
+    }
+
+    const exactDateTime = formatNewsDateTime(item.timestamp);
+    const authorRoleLabel = item.reporterRole === "admin"
+      ? "प्रधान संपादक"
+      : formatRoleLabelHindi(item.reporterRole);
+    const authorAreaExtra = formatJurisdictionText({
+      district: item.reporterDistrict,
+      tahseel: item.reporterTahseel,
+      block: item.reporterBlock,
+      panchayat: item.reporterPanchayat
+    });
+
+    let adminControlButtons = isAdmin ? `
+      <div class="flex gap-2 pt-2 border-t mt-2">
+        <button class="btnEdit bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold px-3 py-1.5 rounded text-xs flex items-center gap-1">
+          <i class="fa-solid fa-pen-to-square"></i> एडिट
+        </button>
+        <button class="btnDelete bg-red-600 hover:bg-red-700 text-white font-bold px-3 py-1.5 rounded text-xs flex items-center gap-1">
+          <i class="fa-solid fa-trash"></i> डिलीट
+        </button>
+      </div>` : "";
+
+    card.innerHTML = `
+      <div class="flex items-center gap-2 border-b pb-2">
+        <img loading="lazy" src="${item.reporterPhoto || DEFAULT_PHOTO}" class="w-10 h-10 rounded-full object-cover border border-red-500">
+        <div class="flex-1">
+          <strong class="text-xs text-slate-900">${escapeHTML(item.reporterName)}</strong>
+          <div class="text-[10px] text-red-700 font-bold">${escapeHTML(authorRoleLabel)} • ${escapeHTML(item.location)}</div>
+          ${authorAreaExtra ? `<div class="text-[9px] text-blue-900 font-semibold">${escapeHTML(authorAreaExtra)}</div>` : ''}
+          <div class="text-[10px] text-gray-500 font-semibold flex items-center gap-1 mt-0.5">
+            <i class="fa-regular fa-clock text-red-600"></i> ${exactDateTime}
+          </div>
+        </div>
+        <span class="text-[10px] bg-red-50 text-red-700 px-2 py-1 rounded font-bold shrink-0">${escapeHTML(item.category)}</span>
+      </div>
+
+      <h2 class="text-base font-bold text-slate-900 leading-snug">${escapeHTML(item.title)}</h2>
+      ${media}
+      <p class="text-sm text-gray-700 whitespace-pre-line leading-relaxed">${escapeHTML(item.content)}</p>
+
+      <div class="flex flex-wrap items-center justify-between gap-2 border-t pt-2.5 text-[11px]">
+        <div class="flex items-center gap-1.5 bg-slate-100 px-3 py-1 rounded-full font-black text-slate-800">
+          <i class="fa-solid fa-eye text-red-600"></i>
+          <span>${formattedMillionViews} लोगों ने देखा</span>
+        </div>
+        ${adminOnlyViewersBtn}
+      </div>
+
+      <div class="flex flex-wrap items-center gap-2 pt-1">
+        <button type="button" class="likeBtn flex items-center gap-1.5 px-3 py-2 rounded-lg text-xs font-black border transition ${isLiked ? 'bg-red-50 border-red-300 text-red-700' : 'bg-gray-50 border-gray-200 text-gray-700 hover:bg-gray-100'}">
+          <i class="fa-${isLiked ? 'solid' : 'regular'} fa-heart text-red-600 text-sm"></i>
+          <span>पसंद (${totalLikes})</span>
+        </button>
+
+        <button type="button" class="shareBtn bg-green-600 hover:bg-green-700 text-white px-3 py-2 rounded-lg text-xs font-bold transition flex items-center gap-1.5 shadow-sm">
+          <i class="fa-solid fa-image"></i> HD फोटो कार्ड शेयर करें
+        </button>
+
+        <button type="button" class="whatsappBtn bg-emerald-700 hover:bg-emerald-800 text-white px-3 py-2 rounded-lg text-xs font-bold transition flex items-center gap-1.5 shadow-sm">
+          <i class="fa-brands fa-whatsapp"></i> WhatsApp
+        </button>
+      </div>
+      ${adminControlButtons}
+    `;
+
+    card.querySelector(".likeBtn").onclick = (e) => { e.stopPropagation(); recordNewsArticleView(key); toggleArticleLike(key); };
+    const viewersBtn = card.querySelector(".btnSeeViewers");
+    if (viewersBtn && isAdmin) { viewersBtn.onclick = (e) => { e.stopPropagation(); openViewersModal(key, item.title); }; }
+
+    card.querySelector(".shareBtn").onclick = (e) => {
+      e.stopPropagation();
+      recordNewsArticleView(key);
+      buildAndShareNewsCard(item.title, item.imageUrl, item.content);
+    };
+
+    card.querySelector(".whatsappBtn").onclick = (e) => {
+      e.stopPropagation();
+      recordNewsArticleView(key);
+      buildAndShareNewsCard(item.title, item.imageUrl, item.content);
+    };
+
+    if (isAdmin) {
+      card.querySelector(".btnEdit").onclick = (e) => { e.stopPropagation(); openEditArticleModal(key, item.title, item.location, item.category, item.videoUrl, item.content); };
+      card.querySelector(".btnDelete").onclick = (e) => { e.stopPropagation(); deleteArticleByAdmin(key); };
+    }
+
+    list.appendChild(card);
+  });
+
+  if (tickerHeadlines.length > 0 && tickerText) {
+    tickerText.innerText = tickerHeadlines.slice(0, 10).join("   •••   ") + "   •••   आवाज़ बुंदेलखंड न्यूज़ नेटवर्क";
+  }
+
+  if (!shortsFound) {
+    shortsBar.innerHTML = "<p class='text-[10px] text-gray-400 py-2'>अभी कोई 30-सेकेंड रील्स उपलब्ध नहीं हैं।</p>";
+  }
+
+  initScrollVideoController();
+}
+
+function loadNewsFeed(){
+  renderPublicAds();
+
+  if (activeNewsListenerRef) {
+    activeNewsListenerRef.off();
+  }
+
+  activeNewsListenerRef = db.ref("news_articles").orderByChild("status").equalTo("approved").limitToLast(currentNewsLimit);
+  activeNewsListenerRef.on("value", snap => {
+    renderNewsArticlesList(snap.val() || {});
+  }, err => {
+    const list = document.getElementById("newsFeedList");
+    if (list) list.innerHTML = "<p class='text-center text-red-600 py-6 text-xs font-bold'>समाचार लोड करने में समस्या आई। कृपया पेज रीफ़्रेश करें।</p>";
+  });
+}
+
+function loadPendingNews(){
+  db.ref("news_articles").orderByChild("status").equalTo("pending").on("value",snap=>{
+    const list=document.getElementById("pendingNewsList"); list.innerHTML=""; const articles=snap.val() || {};
+    Object.entries(articles).forEach(([key,item])=>{
+      const card=document.createElement("div"); card.className="bg-gray-50 border rounded-lg p-3 space-y-2";
+      card.innerHTML=`<strong>${escapeHTML(item.title)}</strong><div class="text-[10px] text-gray-500">रिपोर्टर: ${escapeHTML(item.reporterName || "")} (${escapeHTML(item.reporterPhone || "")})</div><p class="text-xs">${escapeHTML(item.content)}</p><div class="flex gap-2"><button class="approve bg-green-600 text-white px-3 py-1.5 rounded text-xs font-bold">स्वीकृत करें</button><button class="reject bg-red-600 text-white px-3 py-1.5 rounded text-xs font-bold">अस्वीकार करें</button></div>`;
+      card.querySelector(".approve").onclick=()=>{
+        db.ref("news_articles/"+key).update({status:"approved"}).then(()=>{
+          sendApprovalNotificationToReporter(item.reporterPhone, item.title, key);
+        });
+      };
+      card.querySelector(".reject").onclick=()=>db.ref("news_articles/"+key).update({status:"rejected"});
+      list.appendChild(card);
+    });
+    if(!Object.keys(articles).length) list.innerHTML="कोई खबर समीक्षा के लिए लंबित नहीं है।";
+  });
+}
+
+function loadReporterWallet(){
+  if(!currentUserPhone)return;
+  document.getElementById("dispReporterAddress").innerText=myProfile.address || "दर्ज नहीं";
+  document.getElementById("dispReporterPayment").innerText=myProfile.paymentDetail || "दर्ज नहीं";
+  db.ref("news_articles").orderByChild("reporterPhone").equalTo(currentUserPhone).on("value",snap=>{
+    let count=0; Object.values(snap.val() || {}).forEach(item=>{ if(item.status==="approved")count++; });
+    document.getElementById("reporterApprovedCount").innerText=count; document.getElementById("reporterBalance").innerText=count*PAYOUT_PER_NEWS;
+  });
+}
+
+function switchTab(tab){
+  if((tab==="admin" || tab==="manageAds" || tab==="manageReporters") && !isAdmin)return;
+  if((tab==="liveStudio" || tab==="reporter" || tab==="shortsPost" || tab==="wallet") && !currentUserPhone)return;
+  document.querySelectorAll("video").forEach(v => { if (v.id !== "studioLocalCamVideo") forcePauseVideo(v); });
+  document.querySelectorAll("iframe[data-src]").forEach(frame => { frame.setAttribute("src", ""); });
+  const sectionMap = { "feed": "feedSection", "liveStudio": "liveStudioSection", "reporter": "reporterSection", "shortsPost": "shortsPostSection", "wallet": "walletSection", "admin": "adminSection", "manageAds": "manageAdsSection", "manageReporters": "manageReportersSection" };
+  Object.keys(sectionMap).forEach(key => {
+    const sec = document.getElementById(sectionMap[key]); if (sec) sec.classList.add("hidden");
+    const btn = document.getElementById("tab" + key.charAt(0).toUpperCase() + key.slice(1));
+    if (btn) { btn.classList.remove("border-red-700", "text-red-700"); btn.classList.add("border-transparent", "text-gray-500"); }
+  });
+  const targetSec = document.getElementById(sectionMap[tab]); if (targetSec) targetSec.classList.remove("hidden");
+  const targetBtn = document.getElementById("tab" + tab.charAt(0).toUpperCase() + tab.slice(1));
+  if (targetBtn) { targetBtn.classList.add("border-red-700", "text-red-700"); targetBtn.classList.remove("border-transparent", "text-gray-500"); }
+  initScrollVideoController();
+}
+
+restoreSavedReaderSession();
+loadAppDownloadLink();
+loadNewsFeed();
+loadAdminSpecialAd();
+loadPublicLiveBroadcast();
+listenToPublishedNewsNotifications();
+checkSavedSession();
+</script>
+
+</body>
+</html>
